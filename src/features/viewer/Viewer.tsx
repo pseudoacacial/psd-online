@@ -1,43 +1,57 @@
 import { useEffect } from "react"
+import { useState } from "react"
 
 export const Viewer = ({ file }: ViewerProps) => {
   const checkChildren = (object: { children?: {} }) => {
+    const coords = {
+      top: object.top,
+      right: object.right,
+      bottom: object.bottom,
+      left: object.left,
+    }
+    draw(object)
+
     if (object.children === undefined) {
-      console.log(object)
-      const coords = {
-        top: object.top,
-        right: object.right,
-        bottom: object.bottom,
-        left: object.left,
-      }
-      draw(coords)
     } else {
       object.children.forEach(child => {
-        console.log("checking", child)
         checkChildren(child)
       })
     }
   }
 
-  const draw = (coords: {
-    top: Number
-    right: Number
-    bottom: Number
-    left: Number
-  }) =>
-    console.log("drawing", coords.top, coords.right, coords.bottom, coords.left)
+  const draw = (object: Object) => {
+    if (object.artboard !== undefined) {
+      console.log(object.artboard.rect)
+      console.log("adding to state")
+      setElements(n => [...n, { rect: object.artboard.rect }])
+    }
 
-  // useEffect(()=> {
-  //   checkChildren
-  // }, [])
-  console.log(file)
+    console.log("drawing")
+  }
 
-  checkChildren(file)
+  const [elements, setElements] = useState<[]>([])
+  // console.log(file)
+
+  useEffect(() => {
+    setElements([])
+    checkChildren(file)
+  }, [file])
 
   return (
-    <div>
-      {Object.keys(file)}
-      {Object.keys(file).length}
+    <div className="viewer">
+      {elements.map((element, index) => {
+        return (
+          <div
+            className="element"
+            style={{
+              top: element.rect.top,
+              left: element.rect.left,
+              width: element.rect.right - element.rect.left,
+              height: element.rect.bottom - element.rect.top,
+            }}
+          ></div>
+        )
+      })}
     </div>
   )
 }

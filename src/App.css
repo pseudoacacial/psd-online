@@ -37,3 +37,8 @@
     transform: translateY(0px);
   }
 }
+
+.element {
+  border: 2px solid cornflowerblue;
+  box-sizing: border-box;
+}

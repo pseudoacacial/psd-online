@@ -11,7 +11,6 @@ const App = () => {
 
   const handleFile: FileInputProps["handleFile"] = psd => {
     setPsd(psd)
-    // console.log(psd)
   }
 
   return (
