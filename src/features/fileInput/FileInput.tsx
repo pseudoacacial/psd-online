@@ -15,7 +15,8 @@ export const FileInput = ({ handleFile }: FileInputProps) => {
             const arrayBuffer = e.target.result // This is the ArrayBuffer
             const psd = readPsd(arrayBuffer) // Output the ArrayBuffer
             // You can now use the arrayBuffer as needed
-            console.log(psd)
+            // console.log(psd)
+            handleFile(psd)
           }
 
           reader.onerror = function (e) {
