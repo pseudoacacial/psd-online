@@ -1,7 +1,7 @@
 import { readPsd } from "ag-psd"
 import { useEffect } from "react"
 
-export const FileInput = () => {
+export const FileInput = ({ handleFile }: FileInputProps) => {
   useEffect(() => {
     document
       .querySelector(".input")
