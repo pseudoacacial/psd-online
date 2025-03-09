@@ -3,6 +3,12 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface PsdObject {
   id: number
+  rect?: {
+    top: number
+    left: number
+    bottom: number
+    right: number
+  }
 }
 // Define the TS type for the counter slice's state
 export interface DocumentSliceState {
@@ -22,11 +28,14 @@ export const documentSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     add: (state, action: PayloadAction<PsdObject>) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value = [...state.value, action.payload]
+      state.value = state.value
+
+      state.value = [
+        ...state.value
+          //remove object with same id
+          .filter(x => x.id !== action.payload.id),
+        action.payload,
+      ]
     },
     remove: (state, action: PayloadAction<number>) => {
       state.value = state.value.filter(x => x.id !== action.payload)

@@ -6,7 +6,6 @@ export const FileInput = ({ handleFile }: FileInputProps) => {
     document
       .querySelector(".input")
       ?.addEventListener("change", function (event) {
-        console.log("changed")
         const file = event.target.files[0] // Get the selected file
         if (file) {
           const reader = new FileReader()
@@ -15,7 +14,6 @@ export const FileInput = ({ handleFile }: FileInputProps) => {
             const arrayBuffer = e.target.result // This is the ArrayBuffer
             const psd = readPsd(arrayBuffer) // Output the ArrayBuffer
             // You can now use the arrayBuffer as needed
-            // console.log(psd)
             handleFile(psd)
           }
 

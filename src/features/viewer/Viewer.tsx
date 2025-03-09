@@ -1,7 +1,12 @@
 import { useEffect } from "react"
 import { useState } from "react"
 
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+
+import { add, remove, modify } from "./documentSlice"
+
 export const Viewer = ({ file }: ViewerProps) => {
+  const dispatch = useAppDispatch()
   const checkChildren = (object: { children?: {} }) => {
     const coords = {
       top: object.top,
@@ -23,6 +28,11 @@ export const Viewer = ({ file }: ViewerProps) => {
     if (object.artboard !== undefined) {
       console.log(object.artboard.rect)
       console.log("adding to state")
+      console.log(object)
+      console.log(object)
+
+      dispatch(add({ id: object.name, rect: object.artboard.rect }))
+
       setElements(n => [...n, { rect: object.artboard.rect }])
     }
 
