@@ -3,17 +3,12 @@ import { useState } from "react"
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
-import { add, remove, modify } from "./documentSlice"
+import { add, remove, modify, selectDocument, PsdObject } from "./documentSlice"
 
 export const Viewer = ({ file }: ViewerProps) => {
   const dispatch = useAppDispatch()
+  const document = useAppSelector(selectDocument)
   const checkChildren = (object: { children?: {} }) => {
-    const coords = {
-      top: object.top,
-      right: object.right,
-      bottom: object.bottom,
-      left: object.left,
-    }
     draw(object)
 
     if (object.children === undefined) {
@@ -26,29 +21,19 @@ export const Viewer = ({ file }: ViewerProps) => {
 
   const draw = (object: Object) => {
     if (object.artboard !== undefined) {
-      console.log(object.artboard.rect)
-      console.log("adding to state")
-      console.log(object)
-      console.log(object)
-
       dispatch(add({ id: object.name, rect: object.artboard.rect }))
-
-      setElements(n => [...n, { rect: object.artboard.rect }])
     }
 
     console.log("drawing")
   }
 
-  const [elements, setElements] = useState<[]>([])
-
   useEffect(() => {
-    setElements([])
     checkChildren(file)
   }, [file])
 
   return (
     <div className="viewer">
-      {elements.map((element, index) => {
+      {/* {elements.map((element, index) => {
         return (
           <div
             className="element"
@@ -59,6 +44,21 @@ export const Viewer = ({ file }: ViewerProps) => {
               height: element.rect.bottom - element.rect.top,
             }}
           ></div>
+        )
+      })} */}
+      {document.map((element, index) => {
+        return (
+          <div
+            className="element"
+            style={{
+              top: element.rect.top,
+              left: element.rect.left,
+              width: element.rect.right - element.rect.left,
+              height: element.rect.bottom - element.rect.top,
+            }}
+          >
+            {/* {{ element.id }} */}
+          </div>
         )
       })}
     </div>

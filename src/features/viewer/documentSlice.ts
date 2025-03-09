@@ -47,10 +47,15 @@ export const documentSlice = createSlice({
       )
     },
   },
+  selectors: {
+    selectDocument: document => document.value,
+  },
 })
 
 // Export the generated action creators for use in components
 export const { add, remove, modify } = documentSlice.actions
+
+export const { selectDocument } = documentSlice.selectors
 
 // Export the slice reducer for use in the store configuration
 export default documentSlice.reducer
