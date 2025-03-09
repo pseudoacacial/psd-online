@@ -30,7 +30,6 @@ export const Viewer = ({ file }: ViewerProps) => {
   }
 
   const [elements, setElements] = useState<[]>([])
-  // console.log(file)
 
   useEffect(() => {
     setElements([])
