@@ -3,63 +3,85 @@ import { useState } from "react"
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
-import { add, remove, modify, selectDocument, PsdObject } from "./documentSlice"
+import {
+  add,
+  remove,
+  modify,
+  addChild,
+  selectDocument,
+  PsdObject,
+} from "./documentSlice"
+
+import { Element } from "./Element"
+
+export type FileElement = {
+  artboard?: {
+    rect: {
+      top: string
+      left: string
+      bottom: string
+      right: string
+    }
+  }
+  children?: {}
+  id: number
+  name: string
+  left: string
+  right: string
+  top: string
+  bottom: string
+}
 
 export const Viewer = ({ file }: ViewerProps) => {
   const dispatch = useAppDispatch()
   const document = useAppSelector(selectDocument)
-  const checkChildren = (object: { children?: {} }) => {
-    draw(object)
+
+  const checkChildren = (object: FileElement, parentId: number) => {
+    if (object.artboard !== undefined) {
+      dispatch(
+        add({
+          id: object.id,
+          name: object.name,
+          type: "artboard",
+          rect: object.artboard.rect,
+          children: [],
+        }),
+      )
+    } else {
+      dispatch(
+        addChild({
+          object: {
+            name: object.name,
+            id: object.id,
+            rect: {
+              left: object.left,
+              right: object.right,
+              top: object.top,
+              bottom: object.bottom,
+            },
+            children: [],
+          },
+          parentId: parentId,
+        }),
+      )
+    }
 
     if (object.children === undefined) {
     } else {
       object.children.forEach(child => {
-        checkChildren(child)
+        checkChildren(child, object.id)
       })
     }
   }
 
-  const draw = (object: Object) => {
-    if (object.artboard !== undefined) {
-      dispatch(add({ id: object.name, rect: object.artboard.rect }))
-    }
-
-    console.log("drawing")
-  }
-
   useEffect(() => {
-    checkChildren(file)
+    checkChildren(file as FileElement, null)
   }, [file])
 
   return (
     <div className="viewer">
-      {/* {elements.map((element, index) => {
-        return (
-          <div
-            className="element"
-            style={{
-              top: element.rect.top,
-              left: element.rect.left,
-              width: element.rect.right - element.rect.left,
-              height: element.rect.bottom - element.rect.top,
-            }}
-          ></div>
-        )
-      })} */}
       {document.map((element, index) => {
-        return (
-          <div
-            className="element"
-            style={{
-              top: element.rect.top,
-              left: element.rect.left,
-              width: element.rect.right - element.rect.left,
-              height: element.rect.bottom - element.rect.top,
-            }}
-          >
-            {/* {{ element.id }} */}
-          </div>
-        )
+        return <Element element={element}></Element>
       })}
     </div>
   )

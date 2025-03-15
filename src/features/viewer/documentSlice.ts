@@ -3,21 +3,30 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface PsdObject {
   id: number
+  name: string
+  type?: string
   rect?: {
-    top: number
-    left: number
-    bottom: number
-    right: number
+    top: string
+    left: string
+    bottom: string
+    right: string
   }
+  children: PsdObject[]
+}
+
+export interface PsdObjectChild {
+  object: PsdObject
+  // array of IDs of elements that are the elements ancestors
+  parentId: number
 }
 // Define the TS type for the counter slice's state
 export interface DocumentSliceState {
-  value: Array<PsdObject> | []
+  artboards: Array<PsdObject> | []
 }
 
 // Define the initial value for the slice state
 const initialState: DocumentSliceState = {
-  value: [],
+  artboards: [],
 }
 
 // Slices contain Redux reducer logic for updating state, and
@@ -28,32 +37,51 @@ export const documentSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     add: (state, action: PayloadAction<PsdObject>) => {
-      state.value = state.value
-
-      state.value = [
-        ...state.value
+      state.artboards = [
+        ...state.artboards
           //remove object with same id
           .filter(x => x.id !== action.payload.id),
         action.payload,
       ]
     },
-    remove: (state, action: PayloadAction<number>) => {
-      state.value = state.value.filter(x => x.id !== action.payload)
+    remove: (state, action: PayloadAction<string>) => {
+      state.artboards = state.artboards.filter(x => x.id !== action.payload)
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
     modify: (state, action: PayloadAction<PsdObject>) => {
-      state.value = state.value.map(x =>
+      state.artboards = state.artboards.map(x =>
         x.id === action.payload.id ? action.payload : x,
       )
     },
+    addChild: (state, action: PayloadAction<PsdObjectChild>) => {
+      let copy = state.artboards
+
+      function formatData(
+        arr: PsdObject[],
+        Id: number,
+        objectToAdd: PsdObject,
+      ) {
+        arr.forEach(i => {
+          if (i.id === Id) {
+            i.children = [...i.children, objectToAdd]
+          } else {
+            formatData(i.children, Id, objectToAdd)
+          }
+        })
+      }
+
+      formatData(copy, action.payload.parentId, action.payload.object)
+
+      state.artboards = copy
+    },
   },
   selectors: {
-    selectDocument: document => document.value,
+    selectDocument: document => document.artboards,
   },
 })
 
 // Export the generated action creators for use in components
-export const { add, remove, modify } = documentSlice.actions
+export const { add, remove, modify, addChild } = documentSlice.actions
 
 export const { selectDocument } = documentSlice.selectors
 
