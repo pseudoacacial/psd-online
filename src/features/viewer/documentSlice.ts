@@ -22,11 +22,13 @@ export interface PsdObjectChild {
 // Define the TS type for the counter slice's state
 export interface DocumentSliceState {
   artboards: Array<PsdObject> | []
+  elements: Array<PsdObject> | []
 }
 
 // Define the initial value for the slice state
 const initialState: DocumentSliceState = {
   artboards: [],
+  elements: [],
 }
 
 // Slices contain Redux reducer logic for updating state, and
@@ -37,12 +39,21 @@ export const documentSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     add: (state, action: PayloadAction<PsdObject>) => {
-      state.artboards = [
-        ...state.artboards
-          //remove object with same id
-          .filter(x => x.id !== action.payload.id),
-        action.payload,
-      ]
+      if (action.payload.type === "artboard") {
+        state.artboards = [
+          ...state.artboards
+            //remove object with same id
+            .filter(x => x.id !== action.payload.id),
+          action.payload,
+        ]
+      } else {
+        state.elements = [
+          ...state.elements
+            //remove object with same id
+            .filter(x => x.id !== action.payload.id),
+          action.payload,
+        ]
+      }
     },
     remove: (state, action: PayloadAction<string>) => {
       state.artboards = state.artboards.filter(x => x.id !== action.payload)
@@ -54,7 +65,7 @@ export const documentSlice = createSlice({
       )
     },
     addChild: (state, action: PayloadAction<PsdObjectChild>) => {
-      let copy = state.artboards
+      let copy = state.elements
 
       function formatData(
         arr: PsdObject[],
@@ -72,11 +83,11 @@ export const documentSlice = createSlice({
 
       formatData(copy, action.payload.parentId, action.payload.object)
 
-      state.artboards = copy
+      state.elements = copy
     },
   },
   selectors: {
-    selectDocument: document => document.artboards,
+    selectDocument: document => document,
   },
 })
 

@@ -48,7 +48,7 @@
   position: absolute;
 }
 .artboard {
-  /* position: absolute; */
+  /* position: static; */
   border: 2px solid tomato;
 }
 .viewer {

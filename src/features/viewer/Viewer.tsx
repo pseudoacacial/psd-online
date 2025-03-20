@@ -45,23 +45,21 @@ export const Viewer = ({ file }: ViewerProps) => {
           type: "artboard",
           rect: object.artboard.rect,
           children: [],
+          referencePoint: object.referencePoint,
         }),
       )
     } else {
       dispatch(
-        addChild({
-          object: {
-            name: object.name,
-            id: object.id,
-            rect: {
-              left: object.left,
-              right: object.right,
-              top: object.top,
-              bottom: object.bottom,
-            },
-            children: [],
+        add({
+          name: object.name,
+          id: object.id,
+          rect: {
+            left: object.left,
+            right: object.right,
+            top: object.top,
+            bottom: object.bottom,
           },
-          parentId: parentId,
+          children: [],
         }),
       )
     }
@@ -80,7 +78,10 @@ export const Viewer = ({ file }: ViewerProps) => {
 
   return (
     <div className="viewer">
-      {document.map((element, index) => {
+      {document.elements.map((element, index) => {
+        return <Element element={element}></Element>
+      })}
+      {document.artboards.map((element, index) => {
         return <Element element={element}></Element>
       })}
     </div>

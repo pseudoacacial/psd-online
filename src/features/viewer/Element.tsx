@@ -17,8 +17,10 @@ export const Element = ({ element }: ElementProps) => {
         }
       }
     >
-      {element.name}
-      {element.children?.map(child => <Element element={child}></Element>)}
+      {/* {element.name} */}
+      {element.children?.map(child => (
+        <Element key={element.id + element.name} element={child}></Element>
+      ))}
     </div>
   )
 }
