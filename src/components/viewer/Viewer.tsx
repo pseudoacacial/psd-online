@@ -77,7 +77,7 @@ export const Viewer = ({ file }: ViewerProps) => {
   }, [file])
 
   return (
-    <div className="viewer">
+    <div className="viewer absolute">
       {document.elements.map((element, index) => {
         return <ViewerElement element={element}></ViewerElement>
       })}
