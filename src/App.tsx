@@ -6,7 +6,7 @@ import logo from "./logo.svg"
 import { useState } from "react"
 import { Viewer, ViewerProps } from "./components/viewer/Viewer"
 import { SelectorsList } from "./components/selectorsList/SelectorsList"
-
+import { Matches } from "./components/matches/Matches"
 const App = () => {
   const [psd, setPsd] = useState(null)
 
@@ -19,7 +19,11 @@ const App = () => {
       <FileInput handleFile={handleFile} />
 
       <div className="w-full flex overflow-hidden gap-2 p-2">
-        <SelectorsList></SelectorsList>
+        <div className="flex-column">
+          <SelectorsList></SelectorsList>
+          <Matches></Matches>
+        </div>
+
         <Viewer file={psd} />
       </div>
     </div>

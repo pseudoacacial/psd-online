@@ -15,9 +15,8 @@ export const SelectorsList = () => {
   const selectors = useAppSelector(selectSelectors)
 
   const [input, setInput] = useState("")
-  const [selectorSList, setSelectorsList] = useState<Selector[]>([])
 
-  const handleInputChange = event => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInput(event.target.value)
   }
   const handleAddClick = () => {
@@ -27,8 +26,9 @@ export const SelectorsList = () => {
         cssSelector: input,
       }),
     )
+    setInput("")
   }
-  const handleRemoveClick = e => {
+  const handleRemoveClick = (e: React.BaseSyntheticEvent) => {
     dispatch(remove(e.target.dataset.key))
   }
   return (
@@ -47,6 +47,7 @@ export const SelectorsList = () => {
           className="grow shrink min-w-0"
           role="form"
           onChange={handleInputChange}
+          value={input}
         ></input>
         <button
           onClick={handleAddClick}
