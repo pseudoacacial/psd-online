@@ -78,7 +78,7 @@ export const Viewer = ({ file }: ViewerProps) => {
   }, [file])
 
   return (
-    <div className="viewer absolute">
+    <div className="viewer relative overflow-hidden">
       {document.elements.map((element, index) => {
         return <ViewerElement element={element}></ViewerElement>
       })}

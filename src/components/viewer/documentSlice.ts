@@ -55,7 +55,7 @@ export const documentSlice = createSlice({
         ]
       }
     },
-    remove: (state, action: PayloadAction<string>) => {
+    remove: (state, action: PayloadAction<number>) => {
       state.artboards = state.artboards.filter(x => x.id !== action.payload)
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
