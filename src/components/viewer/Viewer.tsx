@@ -12,7 +12,7 @@ import {
   PsdObject,
 } from "./documentSlice"
 
-import { Element } from "./Element"
+import { Element, ViewerElement } from "../ViewerElement/ViewerElement"
 
 export type FileElement = {
   artboard?: {
@@ -79,10 +79,10 @@ export const Viewer = ({ file }: ViewerProps) => {
   return (
     <div className="viewer">
       {document.elements.map((element, index) => {
-        return <Element element={element}></Element>
+        return <ViewerElement element={element}></ViewerElement>
       })}
       {document.artboards.map((element, index) => {
-        return <Element element={element}></Element>
+        return <ViewerElement element={element}></ViewerElement>
       })}
     </div>
   )

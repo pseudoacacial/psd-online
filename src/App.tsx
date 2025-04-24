@@ -1,10 +1,10 @@
 import "./App.css"
-import { Counter } from "./features/counter/Counter"
-import { Quotes } from "./features/quotes/Quotes"
-import { FileInput, FileInputProps } from "./features/fileInput/FileInput"
+import { Counter } from "./components/counter/Counter"
+import { Quotes } from "./components/quotes/Quotes"
+import { FileInput, FileInputProps } from "./components/fileInput/FileInput"
 import logo from "./logo.svg"
 import { useState } from "react"
-import { Viewer, ViewerProps } from "./features/viewer/Viewer"
+import { Viewer, ViewerProps } from "./components/viewer/Viewer"
 
 const App = () => {
   const [psd, setPsd] = useState({})
@@ -15,14 +15,8 @@ const App = () => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <FileInput handleFile={handleFile} />
-        <Viewer file={psd} />
-        <Counter />
-
-        <Quotes />
-      </header>
+      <FileInput handleFile={handleFile} />
+      <Viewer file={psd} />
     </div>
   )
 }

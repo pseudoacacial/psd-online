@@ -1,10 +1,16 @@
-import { add, remove, modify, selectDocument, PsdObject } from "./documentSlice"
+import {
+  add,
+  remove,
+  modify,
+  selectDocument,
+  PsdObject,
+} from "../viewer/documentSlice"
 
-export type ElementProps = {
+export type ViewerElementProps = {
   element: PsdObject
 }
 
-export const Element = ({ element }: ElementProps) => {
+export const ViewerElement = ({ element }: ViewerElementProps) => {
   return (
     <div
       className={`element${element.type ? " " + element.type : ""}`}
@@ -19,7 +25,10 @@ export const Element = ({ element }: ElementProps) => {
     >
       {/* {element.name} */}
       {element.children?.map(child => (
-        <Element key={element.id + element.name} element={child}></Element>
+        <ViewerElement
+          key={element.id + element.name}
+          element={child}
+        ></ViewerElement>
       ))}
     </div>
   )
