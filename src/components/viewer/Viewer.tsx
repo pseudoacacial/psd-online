@@ -12,7 +12,7 @@ import {
   PsdObject,
 } from "./documentSlice"
 
-import { ViewerElement } from "../ViewerElement/ViewerElement"
+import { ViewerElement } from "../viewerElement/ViewerElement"
 
 export type FileElement = {
   artboard?: {
