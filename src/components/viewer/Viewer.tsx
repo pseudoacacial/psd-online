@@ -12,7 +12,7 @@ import {
   PsdObject,
 } from "./documentSlice"
 
-import { Element, ViewerElement } from "../ViewerElement/ViewerElement"
+import { ViewerElement } from "../ViewerElement/ViewerElement"
 
 export type FileElement = {
   artboard?: {
@@ -73,6 +73,7 @@ export const Viewer = ({ file }: ViewerProps) => {
   }
 
   useEffect(() => {
+    if (file === null) return
     checkChildren(file as FileElement, null)
   }, [file])
 
@@ -89,5 +90,5 @@ export const Viewer = ({ file }: ViewerProps) => {
 }
 
 export type ViewerProps = {
-  file: Object
+  file: Object | null
 }

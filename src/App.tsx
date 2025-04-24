@@ -7,7 +7,7 @@ import { useState } from "react"
 import { Viewer, ViewerProps } from "./components/viewer/Viewer"
 
 const App = () => {
-  const [psd, setPsd] = useState({})
+  const [psd, setPsd] = useState(null)
 
   const handleFile: FileInputProps["handleFile"] = psd => {
     setPsd(psd)
