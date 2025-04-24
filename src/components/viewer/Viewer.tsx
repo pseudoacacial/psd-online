@@ -37,31 +37,34 @@ export const Viewer = ({ file }: ViewerProps) => {
   const document = useAppSelector(selectDocument)
 
   const checkChildren = (object: FileElement, parentId: number) => {
-    if (object.artboard !== undefined) {
-      dispatch(
-        add({
-          id: object.id,
-          name: object.name,
-          type: "artboard",
-          rect: object.artboard.rect,
-          children: [],
-          referencePoint: object.referencePoint,
-        }),
-      )
-    } else {
-      dispatch(
-        add({
-          name: object.name,
-          id: object.id,
-          rect: {
-            left: object.left,
-            right: object.right,
-            top: object.top,
-            bottom: object.bottom,
-          },
-          children: [],
-        }),
-      )
+    // don't do this part if it's the start of the file
+    if (object.id) {
+      if (object.artboard !== undefined) {
+        dispatch(
+          add({
+            id: object.id,
+            name: object.name,
+            type: "artboard",
+            rect: object.artboard.rect,
+            children: [],
+            referencePoint: object.referencePoint,
+          }),
+        )
+      } else {
+        dispatch(
+          add({
+            name: object.name,
+            id: object.id,
+            rect: {
+              left: object.left,
+              right: object.right,
+              top: object.top,
+              bottom: object.bottom,
+            },
+            children: [],
+          }),
+        )
+      }
     }
 
     if (object.children === undefined) {
@@ -80,10 +83,14 @@ export const Viewer = ({ file }: ViewerProps) => {
   return (
     <div className="viewer relative overflow-hidden">
       {document.elements.map((element, index) => {
-        return <ViewerElement element={element}></ViewerElement>
+        return (
+          <ViewerElement key={element.id} element={element}></ViewerElement>
+        )
       })}
       {document.artboards.map((element, index) => {
-        return <ViewerElement element={element}></ViewerElement>
+        return (
+          <ViewerElement key={element.id} element={element}></ViewerElement>
+        )
       })}
     </div>
   )
