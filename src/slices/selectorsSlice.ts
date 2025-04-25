@@ -3,8 +3,8 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface Selector {
   id: string
-  cssSelector: string
-  psdSelector?: string
+  cssSelector?: string
+  psdSelector: string
 }
 
 // Define the TS type for the counter slice's state
@@ -43,7 +43,7 @@ export const selectorsSlice = createSlice({
     },
   },
   selectors: {
-    selectSelectors: selector => selector,
+    selectSelectors: selector => selector.selectors,
   },
 })
 

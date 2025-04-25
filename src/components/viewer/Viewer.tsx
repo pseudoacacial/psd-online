@@ -10,7 +10,7 @@ import {
   addChild,
   selectDocument,
   PsdObject,
-} from "./documentSlice"
+} from "../../slices/documentSlice"
 
 import { ViewerElement } from "../viewerElement/ViewerElement"
 

@@ -4,7 +4,7 @@ import {
   modify,
   selectDocument,
   PsdObject,
-} from "../viewer/documentSlice"
+} from "../../slices/documentSlice"
 
 export type ViewerElementProps = {
   element: PsdObject

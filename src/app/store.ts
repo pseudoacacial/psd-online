@@ -2,8 +2,8 @@ import type { Action, ThunkAction } from "@reduxjs/toolkit"
 import { combineSlices, configureStore } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
 import { counterSlice } from "../components/counter/counterSlice"
-import { documentSlice } from "../components/viewer/documentSlice"
-import { selectorsSlice } from "../components/selectorsList/selectorsSlice"
+import { documentSlice } from "../slices/documentSlice"
+import { selectorsSlice } from "../slices/selectorsSlice"
 import { quotesApiSlice } from "../components/quotes/quotesApiSlice"
 
 // `combineSlices` automatically combines the reducers using

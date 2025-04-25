@@ -8,7 +8,7 @@ import {
   modify,
   selectSelectors,
   Selector,
-} from "./selectorsSlice"
+} from "../../slices/selectorsSlice"
 
 export const SelectorsList = () => {
   const dispatch = useAppDispatch()
@@ -23,7 +23,7 @@ export const SelectorsList = () => {
     dispatch(
       add({
         id: self.crypto.randomUUID(),
-        cssSelector: input,
+        psdSelector: input,
       }),
     )
     setInput("")
@@ -33,9 +33,9 @@ export const SelectorsList = () => {
   }
   return (
     <div className="selectorsList flex-column w-60">
-      {selectors.selectors.map(element => (
+      {selectors.map(element => (
         <div className="flex border justify-between" key={element.id}>
-          <div className="">{element.cssSelector}</div>
+          <div className="">{element.psdSelector}</div>
           <button data-key={element.id} onClick={handleRemoveClick}>
             remove
           </button>
