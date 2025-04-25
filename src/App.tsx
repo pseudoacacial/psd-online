@@ -1,22 +1,16 @@
 import "./App.css"
 import { Counter } from "./components/counter/Counter"
 import { Quotes } from "./components/quotes/Quotes"
-import { FileInput, FileInputProps } from "./components/fileInput/FileInput"
+import { FileInput } from "./components/fileInput/FileInput"
 import logo from "./logo.svg"
 import { useState } from "react"
 import { Viewer, ViewerProps } from "./components/viewer/Viewer"
 import { QueryList } from "./components/queryList/queryList"
 import { Matches } from "./components/matches/Matches"
 const App = () => {
-  const [psd, setPsd] = useState(null)
-
-  const handleFile: FileInputProps["handleFile"] = psd => {
-    setPsd(psd)
-  }
-
   return (
     <div className="App">
-      <FileInput handleFile={handleFile} />
+      <FileInput />
 
       <div className="w-full flex overflow-hidden gap-2 p-2">
         <div className="flex-column">
@@ -24,7 +18,7 @@ const App = () => {
           <Matches></Matches>
         </div>
 
-        <Viewer file={psd} />
+        <Viewer />
       </div>
     </div>
   )
