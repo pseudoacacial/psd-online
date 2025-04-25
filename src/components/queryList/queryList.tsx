@@ -28,6 +28,11 @@ export const QueryList = () => {
     )
     setInput("")
   }
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      handleAddClick()
+    }
+  }
   const handleRemoveClick = (e: React.BaseSyntheticEvent) => {
     dispatch(remove(e.target.dataset.key))
   }
@@ -41,7 +46,8 @@ export const QueryList = () => {
           </button>
         </div>
       ))}
-      <div className="flex border justify-between">
+
+      <div className="flex border justify-between" onKeyDown={handleKeyPress}>
         <input
           type="text"
           className="grow shrink min-w-0"
