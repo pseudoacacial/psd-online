@@ -23,7 +23,7 @@ export type FileElement = {
       right: string
     }
   }
-  children?: {}
+  children?: FileElement[]
   id: number
   name: string
   left: string
@@ -47,7 +47,6 @@ export const Viewer = ({ file }: ViewerProps) => {
             type: "artboard",
             rect: object.artboard.rect,
             children: [],
-            referencePoint: object.referencePoint,
           }),
         )
       } else {

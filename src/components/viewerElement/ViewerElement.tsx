@@ -14,6 +14,7 @@ export const ViewerElement = ({ element }: ViewerElementProps) => {
   return (
     <div
       className={`element${element.type ? " " + element.type : ""}`}
+      data-name={element.name}
       style={
         element.rect && {
           top: element.rect.top,
