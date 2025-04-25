@@ -3,7 +3,7 @@ import { combineSlices, configureStore } from "@reduxjs/toolkit"
 import { setupListeners } from "@reduxjs/toolkit/query"
 import { counterSlice } from "../components/counter/counterSlice"
 import { documentSlice } from "../slices/documentSlice"
-import { selectorsSlice } from "../slices/selectorsSlice"
+import { QuerySlice } from "../slices/querySlice"
 import { quotesApiSlice } from "../components/quotes/quotesApiSlice"
 
 // `combineSlices` automatically combines the reducers using
@@ -12,7 +12,7 @@ const rootReducer = combineSlices(
   counterSlice,
   quotesApiSlice,
   documentSlice,
-  selectorsSlice,
+  QuerySlice,
 )
 // Infer the `RootState` type from the root reducer
 export type RootState = ReturnType<typeof rootReducer>

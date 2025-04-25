@@ -6,13 +6,13 @@ import {
   add,
   remove,
   modify,
-  selectSelectors,
-  Selector,
-} from "../../slices/selectorsSlice"
+  selectQueries,
+  Query,
+} from "../../slices/querySlice"
 
-export const SelectorsList = () => {
+export const QueryList = () => {
   const dispatch = useAppDispatch()
-  const selectors = useAppSelector(selectSelectors)
+  const selectors = useAppSelector(selectQueries)
 
   const [input, setInput] = useState("")
 
@@ -32,7 +32,7 @@ export const SelectorsList = () => {
     dispatch(remove(e.target.dataset.key))
   }
   return (
-    <div className="selectorsList flex-column w-60">
+    <div className="queryList flex-column w-60">
       {selectors.map(element => (
         <div className="flex border justify-between" key={element.id}>
           <div className="">{element.psdSelector}</div>

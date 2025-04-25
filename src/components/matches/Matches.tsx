@@ -1,4 +1,4 @@
-import { selectSelectors, Selector } from "../../slices/selectorsSlice"
+import { selectQueries, Query } from "../../slices/querySlice"
 import { selectDocument, selectElements } from "../../slices/documentSlice"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { selectMatches } from "../../selectors/matchSelectors"

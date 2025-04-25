@@ -1,7 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit"
 
 import { selectDocument } from "../slices/documentSlice"
-import { selectSelectors, Selector } from "../slices/selectorsSlice"
+import { selectQueries, Query } from "../slices/querySlice"
 
 interface Match {
   selectorId: string
@@ -9,9 +9,9 @@ interface Match {
 }
 
 export const selectMatches = createSelector(
-  [selectDocument, selectSelectors],
+  [selectDocument, selectQueries],
   (document, selectors) => {
-    const getMatches = (selector: Selector) => {
+    const getMatches = (selector: Query) => {
       let matches: Match[] = []
 
       document.elements.forEach(element => {
