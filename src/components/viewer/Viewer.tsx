@@ -9,6 +9,7 @@ import {
   modify,
   addChild,
   selectDocument,
+  selectElementsFlat,
   PsdObject,
 } from "../../slices/documentSlice"
 
@@ -35,6 +36,7 @@ export type FileElement = {
 export const Viewer = ({ file }: ViewerProps) => {
   const dispatch = useAppDispatch()
   const document = useAppSelector(selectDocument)
+  const elements = useAppSelector(selectElementsFlat)
 
   const checkChildren = (object: FileElement, parentId: number) => {
     // don't do this part if it's the start of the file
@@ -49,18 +51,29 @@ export const Viewer = ({ file }: ViewerProps) => {
             children: [],
           }),
         )
-      } else {
         dispatch(
           add({
-            name: object.name,
             id: object.id,
-            rect: {
-              left: object.left,
-              right: object.right,
-              top: object.top,
-              bottom: object.bottom,
-            },
+            name: object.name,
+            rect: object.artboard.rect,
             children: [],
+          }),
+        )
+      } else {
+        dispatch(
+          addChild({
+            object: {
+              name: object.name,
+              id: object.id,
+              rect: {
+                left: object.left,
+                right: object.right,
+                top: object.top,
+                bottom: object.bottom,
+              },
+              children: [],
+            },
+            parentId: parentId,
           }),
         )
       }
@@ -81,7 +94,7 @@ export const Viewer = ({ file }: ViewerProps) => {
 
   return (
     <div className="viewer relative overflow-hidden">
-      {document.elements.map((element, index) => {
+      {elements.map((element, index) => {
         return (
           <ViewerElement key={element.id} element={element}></ViewerElement>
         )

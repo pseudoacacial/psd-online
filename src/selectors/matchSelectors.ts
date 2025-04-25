@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit"
 
-import { selectDocument } from "../slices/documentSlice"
+import { selectDocument, selectElementsFlat } from "../slices/documentSlice"
 import { selectQueries, Query } from "../slices/querySlice"
 
 interface Match {
@@ -9,12 +9,12 @@ interface Match {
 }
 
 export const selectMatches = createSelector(
-  [selectDocument, selectQueries],
-  (document, selectors) => {
+  [selectElementsFlat, selectQueries],
+  (elements, selectors) => {
     const getMatches = (selector: Query) => {
       let matches: Match[] = []
 
-      document.elements.forEach(element => {
+      elements.forEach(element => {
         if (element.name.match(selector.psdSelector)) {
           matches.push({
             selectorId: selector.id,
