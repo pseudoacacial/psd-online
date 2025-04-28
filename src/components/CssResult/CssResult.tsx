@@ -12,6 +12,8 @@ export const CssResult = () => {
 
   const [CssResult, setCssResult] = useState("")
 
+  const groupNameRegex = /(\d+x\d+)/
+
   const getMatchCss = (match: Match) => {
     let matchCss = ""
     const query = queries.find(query => query.id === match.selectorId)
@@ -30,13 +32,22 @@ export const CssResult = () => {
   const groupMatchesByArtboard = () => {
     const matchesByArtboard = {}
     artboards.forEach(artboard => {
-      matchesByArtboard[artboard.id] = []
+      if (artboard.name.match(groupNameRegex)) {
+        // matchesByArtboard[artboard.id] = []
+        matchesByArtboard[artboard.name.match(groupNameRegex)[1]] = []
+      }
     })
+
     matches.forEach(match => {
       const psdElement = elements.find(
         element => element.id === match.documentId,
       )
-      psdElement && matchesByArtboard[psdElement.artboardId].push(match)
+      const artboard = artboards.find(
+        artboard => artboard.id === psdElement?.artboardId,
+      )
+
+      psdElement &&
+        matchesByArtboard[artboard.name.match(groupNameRegex)[1]].push(match)
     })
     return matchesByArtboard
   }
@@ -44,11 +55,8 @@ export const CssResult = () => {
     // setCssResult()
     let cssResult = ""
     for (const [key, value] of Object.entries(groupMatchesByArtboard())) {
-      const artboard = artboards.find(artboard => artboard.id === parseInt(key))
       cssResult +=
-        `${artboard?.name} {\n` +
-        value.map(match => getMatchCss(match)).join("\n") +
-        "}\n"
+        `${key} {\n` + value.map(match => getMatchCss(match)).join("\n") + "}\n"
     }
     setCssResult(cssResult)
     // artboards.map(),
