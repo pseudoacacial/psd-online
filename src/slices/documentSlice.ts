@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface PsdObject {
   id: number
+  artboardId: number
   name: string
   type?: string
   rect?: {
@@ -42,6 +43,12 @@ export const documentSlice = createSlice({
       if (action.payload.type === "artboard") {
         state.artboards = [
           ...state.artboards
+            //remove object with same id
+            .filter(x => x.id !== action.payload.id),
+          action.payload,
+        ]
+        state.elements = [
+          ...state.elements
             //remove object with same id
             .filter(x => x.id !== action.payload.id),
           action.payload,

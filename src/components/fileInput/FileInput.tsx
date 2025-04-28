@@ -34,7 +34,11 @@ export type FileElement = {
 export const FileInput = () => {
   const [psd, setPsd] = useState(null)
   const dispatch = useAppDispatch()
-  const checkChildren = (object: FileElement, parentId: number) => {
+  const checkChildren = (
+    object: FileElement,
+    parentId: number,
+    artboardId: number,
+  ) => {
     // don't do this part if it's the start of the file
     if (object.id) {
       if (object.artboard !== undefined) {
@@ -47,20 +51,13 @@ export const FileInput = () => {
             children: [],
           }),
         )
-        dispatch(
-          add({
-            id: object.id,
-            name: object.name,
-            rect: object.artboard.rect,
-            children: [],
-          }),
-        )
       } else {
         dispatch(
           addChild({
             object: {
               name: object.name,
               id: object.id,
+              artboardId: artboardId,
               rect: {
                 left: object.left,
                 right: object.right,
@@ -78,14 +75,19 @@ export const FileInput = () => {
     if (object.children === undefined) {
     } else {
       object.children.forEach(child => {
-        checkChildren(child, object.id)
+        if (object.artboard) {
+          checkChildren(child, object.id, object.id)
+        } else {
+          checkChildren(child, object.id, artboardId)
+        }
       })
     }
   }
 
   useEffect(() => {
     if (psd === null) return
-    checkChildren(psd as FileElement, null)
+    checkChildren(psd as FileElement, null, null)
+    console.log(psd)
   }, [psd])
 
   useEffect(() => {

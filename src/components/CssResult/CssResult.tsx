@@ -22,13 +22,38 @@ export const CssResult = () => {
       " {\n" +
       `left: ${psdElement?.rect?.left}px;\n` +
       `top: ${psdElement?.rect?.top}px;\n` +
-      "}"
+      "}\n"
 
     return matchCss
   }
 
+  const groupMatchesByArtboard = () => {
+    const matchesByArtboard = {}
+    artboards.forEach(artboard => {
+      matchesByArtboard[artboard.id] = []
+    })
+    matches.forEach(match => {
+      const psdElement = elements.find(
+        element => element.id === match.documentId,
+      )
+      psdElement && matchesByArtboard[psdElement.artboardId].push(match)
+    })
+    return matchesByArtboard
+  }
   useEffect(() => {
-    setCssResult(matches.map(match => getMatchCss(match)).join("\n"))
+    // setCssResult()
+    let cssResult = ""
+    for (const [key, value] of Object.entries(groupMatchesByArtboard())) {
+      const artboard = artboards.find(artboard => artboard.id === parseInt(key))
+      cssResult +=
+        `${artboard?.name} {\n` +
+        value.map(match => getMatchCss(match)).join("\n") +
+        "}\n"
+    }
+    setCssResult(cssResult)
+    // artboards.map(),
+    // matches.map(match => getMatchCss(match)).join("\n")
+    // setCssResult(matches.map(match => getMatchCss(match)).join("\n"))
   }, [matches])
   return (
     <div className="CssResult">
