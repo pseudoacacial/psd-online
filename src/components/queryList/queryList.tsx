@@ -14,19 +14,24 @@ export const QueryList = () => {
   const dispatch = useAppDispatch()
   const selectors = useAppSelector(selectQueries)
 
-  const [input, setInput] = useState("")
+  const [cssName, setCssName] = useState("")
+  const [psdName, setPsdName] = useState("")
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(event.target.value)
+  const handlePsdNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPsdName(event.target.value)
+  }
+  const handleCssNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCssName(event.target.value)
   }
   const handleAddClick = () => {
     dispatch(
       add({
         id: self.crypto.randomUUID(),
-        psdSelector: input,
+        psdSelector: psdName,
+        cssSelector: cssName,
       }),
     )
-    setInput("")
+    setCssName("")
   }
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
@@ -37,7 +42,7 @@ export const QueryList = () => {
     dispatch(remove(e.target.dataset.key))
   }
   return (
-    <div className="queryList flex-column w-60">
+    <div className="queryList flex-column w-80">
       {selectors.map(element => (
         <div className="flex border justify-between" key={element.id}>
           <div className="">{element.psdSelector}</div>
@@ -47,13 +52,27 @@ export const QueryList = () => {
         </div>
       ))}
 
-      <div className="flex border justify-between" onKeyDown={handleKeyPress}>
+      <div
+        className="flex border justify-between gap-2"
+        onKeyDown={handleKeyPress}
+      >
         <input
           type="text"
           className="grow shrink min-w-0"
           role="form"
-          onChange={handleInputChange}
-          value={input}
+          onChange={handleCssNameChange}
+          value={cssName}
+          placeholder="css name"
+          aria-label="css name"
+        ></input>
+        <input
+          type="text"
+          className="grow shrink min-w-0"
+          role="form"
+          onChange={handlePsdNameChange}
+          value={psdName}
+          placeholder="psd name"
+          aria-label="psd name"
         ></input>
         <button
           onClick={handleAddClick}
