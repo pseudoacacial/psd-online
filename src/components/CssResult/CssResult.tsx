@@ -18,12 +18,27 @@ export const CssResult = () => {
     let matchCss = ""
     const query = queries.find(query => query.id === match.selectorId)
     const psdElement = elements.find(element => element.id === match.documentId)
+    const artboard = artboards.find(
+      artboard => artboard.id === psdElement?.artboardId,
+    )
+
+    const result = {
+      left:
+        artboard !== undefined
+          ? psdElement.rect.left - artboard.rect.left
+          : psdElement.rect.left,
+      top:
+        artboard !== undefined
+          ? psdElement.rect.top - artboard.rect.top
+          : psdElement.rect.top,
+    }
+
     //add css name
     matchCss +=
       `${query?.cssSelector}` +
       " {\n" +
-      `left: ${psdElement?.rect?.left}px;\n` +
-      `top: ${psdElement?.rect?.top}px;\n` +
+      `left: ${result.left}px;\n` +
+      `top: ${result.top}px;\n` +
       "}\n"
 
     return matchCss

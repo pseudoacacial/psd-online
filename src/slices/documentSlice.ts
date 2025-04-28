@@ -5,12 +5,12 @@ export interface PsdObject {
   id: number
   artboardId: number
   name: string
-  type?: string
-  rect?: {
-    top: string
-    left: string
-    bottom: string
-    right: string
+  type?: "artboard" | "group" | "layer"
+  rect: {
+    top: number
+    left: number
+    bottom: number
+    right: number
   }
   children: PsdObject[]
 }
@@ -87,8 +87,56 @@ export const documentSlice = createSlice({
           }
         })
       }
+      const stretch = (
+        rectToStretch: PsdObject["rect"],
+        rectToFit: PsdObject["rect"],
+      ) => {
+        const fitRect = {
+          top: rectToFit.top,
+          right: rectToFit.right,
+          bottom: rectToFit.bottom,
+          left: rectToFit.left,
+        }
+        let rectCopy = {
+          top: rectToStretch.top,
+          right: rectToStretch.right,
+          bottom: rectToStretch.bottom,
+          left: rectToStretch.left,
+        }
+        // assert(typeof rectCopy === "object")
 
-      formatData(copy, action.payload.parentId, action.payload.object)
+        //if group's size is smaller than the child, stretch!
+        if (rectToStretch.top > fitRect.top) rectCopy.top = fitRect.top
+        if (rectToStretch.right < fitRect.right) rectCopy.right = fitRect.right
+        if (rectToStretch.bottom < fitRect.bottom)
+          rectCopy.bottom = fitRect.bottom
+        if (rectToStretch.left > fitRect.left) rectCopy.left = fitRect.left
+
+        //if group has no size yet, set the size to this child
+        if (rectToStretch.top === null) rectCopy.top = fitRect.top
+        if (rectToStretch.right === null) rectCopy.right = fitRect.right
+        if (rectToStretch.bottom === null) rectCopy.bottom = fitRect.bottom
+        if (rectToStretch.left === null) rectCopy.left = fitRect.left
+        return rectCopy
+      }
+
+      function formatDataWithResize(
+        arr: PsdObject[],
+        Id: number,
+        objectToAdd: PsdObject,
+      ) {
+        arr.forEach(i => {
+          if (i.id === Id) {
+            //stretch the group when you add child to it
+            i.rect = { ...stretch(i.rect, objectToAdd.rect) }
+            i.children = [...i.children, objectToAdd]
+          } else {
+            formatDataWithResize(i.children, Id, objectToAdd)
+          }
+        })
+      }
+
+      formatDataWithResize(copy, action.payload.parentId, action.payload.object)
 
       state.elements = copy
     },

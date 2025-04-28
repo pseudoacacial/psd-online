@@ -23,6 +23,8 @@ export type FileElement = {
     }
   }
   children?: FileElement[]
+  placedLayer?: object
+  text?: object
   id: number
   name: string
   left: string
@@ -41,10 +43,19 @@ export const FileInput = () => {
   ) => {
     // don't do this part if it's the start of the file
     if (object.id) {
+      //is layer if
+      const isLayer =
+        //has no children
+        !object.children ||
+        object.children.length < 1 ||
+        //or is a text or raster
+        object.text ||
+        object.placedLayer
       if (object.artboard !== undefined) {
         dispatch(
           add({
             id: object.id,
+            artboardId: object.id,
             name: object.name,
             type: "artboard",
             rect: object.artboard.rect,
@@ -56,14 +67,22 @@ export const FileInput = () => {
           addChild({
             object: {
               name: object.name,
+              type: isLayer ? "layer" : "group",
               id: object.id,
               artboardId: artboardId,
-              rect: {
-                left: object.left,
-                right: object.right,
-                top: object.top,
-                bottom: object.bottom,
-              },
+              rect: isLayer
+                ? {
+                    left: object.left,
+                    right: object.right,
+                    top: object.top,
+                    bottom: object.bottom,
+                  }
+                : {
+                    left: null,
+                    right: null,
+                    top: null,
+                    bottom: null,
+                  },
               children: [],
             },
             parentId: parentId,
@@ -87,7 +106,7 @@ export const FileInput = () => {
   useEffect(() => {
     if (psd === null) return
     checkChildren(psd as FileElement, null, null)
-    console.log(psd)
+    // console.log(psd)
   }, [psd])
 
   useEffect(() => {
