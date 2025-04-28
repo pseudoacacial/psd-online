@@ -19,8 +19,14 @@ export const ViewerElement = ({ element }: ViewerElementProps) => {
         element.rect && {
           top: element.rect.top,
           left: element.rect.left,
-          width: element.rect.right - element.rect.left,
-          height: element.rect.bottom - element.rect.top,
+          width:
+            element.rect.right != null &&
+            element.rect.left != null &&
+            element.rect.right - element.rect.left,
+          height:
+            element.rect.bottom != null &&
+            element.rect.top != null &&
+            element.rect.bottom - element.rect.top,
         }
       }
     >
