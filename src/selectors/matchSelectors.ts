@@ -3,7 +3,7 @@ import { createSelector } from "@reduxjs/toolkit"
 import { selectDocument, selectElementsFlat } from "../slices/documentSlice"
 import { selectQueries, Query } from "../slices/querySlice"
 
-interface Match {
+export interface Match {
   selectorId: string
   documentId: number
 }

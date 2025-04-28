@@ -89,6 +89,7 @@ export const documentSlice = createSlice({
   selectors: {
     selectDocument: document => document,
     selectElements: document => document.elements,
+    selectArtboards: document => document.artboards,
     selectElementsFlat: document => {
       let elementsFlat: PsdObject[] = []
       const flattenElement = (element: PsdObject) => {
@@ -111,8 +112,12 @@ export const documentSlice = createSlice({
 // Export the generated action creators for use in components
 export const { add, remove, modify, addChild } = documentSlice.actions
 
-export const { selectDocument, selectElements, selectElementsFlat } =
-  documentSlice.selectors
+export const {
+  selectDocument,
+  selectElements,
+  selectElementsFlat,
+  selectArtboards,
+} = documentSlice.selectors
 
 // Export the slice reducer for use in the store configuration
 export default documentSlice.reducer

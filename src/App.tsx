@@ -7,6 +7,7 @@ import { useState } from "react"
 import { Viewer, ViewerProps } from "./components/viewer/Viewer"
 import { QueryList } from "./components/queryList/queryList"
 import { Matches } from "./components/matches/Matches"
+import { CssResult } from "./components/CssResult/CssResult"
 const App = () => {
   return (
     <div className="App">
@@ -16,6 +17,7 @@ const App = () => {
         <div className="flex-column">
           <QueryList></QueryList>
           <Matches></Matches>
+          <CssResult></CssResult>
         </div>
 
         <Viewer />
