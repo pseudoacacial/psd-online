@@ -9,6 +9,7 @@ import {
   selectQueries,
   Query,
 } from "../../slices/querySlice"
+import { QueryListItem } from "../queryListItem/QueryListItem"
 
 export const QueryList = () => {
   const dispatch = useAppDispatch()
@@ -44,12 +45,7 @@ export const QueryList = () => {
   return (
     <div className="queryList flex-column w-80">
       {selectors.map(element => (
-        <div className="flex border justify-between" key={element.id}>
-          <div className="">{element.psdSelector}</div>
-          <button data-key={element.id} onClick={handleRemoveClick}>
-            remove
-          </button>
-        </div>
+        <QueryListItem query={element}></QueryListItem>
       ))}
 
       <div

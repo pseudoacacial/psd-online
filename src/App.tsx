@@ -5,7 +5,7 @@ import { FileInput } from "./components/fileInput/FileInput"
 import logo from "./logo.svg"
 import { useState } from "react"
 import { Viewer, ViewerProps } from "./components/viewer/Viewer"
-import { QueryList } from "./components/queryList/queryList"
+import { QueryList } from "./components/queryList/QueryList"
 import { Matches } from "./components/matches/Matches"
 import { CssResult } from "./components/CssResult/CssResult"
 const App = () => {
