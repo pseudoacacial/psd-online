@@ -39,7 +39,7 @@ export const FileInput = () => {
   const dispatch = useAppDispatch()
   const checkChildren = (
     object: FileElement,
-    parentId: number | null,
+    parentPath: number[],
     artboardId: number | null,
   ) => {
     // don't do this part if it's the start of the file
@@ -57,6 +57,7 @@ export const FileInput = () => {
           add({
             id: object.id,
             artboardId: object.id,
+            IdPath: [],
             name: object.name,
             type: "artboard",
             rect: { ...object.artboard.rect },
@@ -64,7 +65,8 @@ export const FileInput = () => {
           }),
         )
       } else {
-        if (parentId) {
+        if (parentPath) {
+          console.log("adding child")
           dispatch(
             addChild({
               object: {
@@ -72,6 +74,7 @@ export const FileInput = () => {
                 type: isLayer ? "layer" : "group",
                 id: object.id,
                 artboardId: artboardId,
+                IdPath: [...parentPath],
                 rect: isLayer
                   ? {
                       left: object.left,
@@ -87,7 +90,7 @@ export const FileInput = () => {
                     },
                 children: [],
               },
-              parentId: parentId,
+              parentPath: parentPath,
             }),
           )
         } else {
@@ -95,6 +98,7 @@ export const FileInput = () => {
             add({
               id: object.id,
               artboardId: null,
+              IdPath: [],
               name: object.name,
               type: isLayer ? "layer" : "group",
               rect: isLayer
@@ -121,9 +125,9 @@ export const FileInput = () => {
     } else {
       object.children.forEach(child => {
         if (object.artboard) {
-          checkChildren(child, object.id, object.id)
+          checkChildren(child, [...parentPath, object.id], null)
         } else {
-          checkChildren(child, object.id, artboardId)
+          checkChildren(child, [...parentPath, object.id], artboardId)
         }
       })
     }
@@ -132,7 +136,7 @@ export const FileInput = () => {
   useEffect(() => {
     if (psd === null) return
     dispatch(reset())
-    checkChildren(psd as unknown as FileElement, null, null)
+    checkChildren(psd as unknown as FileElement, [], null)
     // console.log(psd)
   }, [psd])
 

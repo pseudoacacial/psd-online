@@ -4,6 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 export interface PsdObject {
   id: number
   artboardId: number | null
+  IdPath: number[]
   name: string
   type?: "artboard" | "group" | "layer"
   rect:
@@ -25,7 +26,7 @@ export interface PsdObject {
 export interface PsdObjectChild {
   object: PsdObject
   // array of IDs of elements that are the elements ancestors
-  parentId: number | null
+  parentPath: number[]
 }
 // Define the TS type for the counter slice's state
 export interface DocumentSliceState {
@@ -97,7 +98,7 @@ export const documentSlice = createSlice({
       const stretch = (
         rectToStretch: PsdObject["rect"],
         rectToFit: PsdObject["rect"],
-      ) => {
+      ): PsdObject["rect"] => {
         const fitRect = {
           top: rectToFit.top,
           right: rectToFit.right,
@@ -151,9 +152,33 @@ export const documentSlice = createSlice({
         })
       }
 
-      formatDataWithResize(copy, action.payload.parentId, action.payload.object)
+      formatDataWithResize(
+        copy,
+        action.payload.parentPath[action.payload.parentPath.length - 1],
+        action.payload.object,
+      )
 
       state.elements = copy
+
+      //argument: id of the element to stretch: action.payload.parentId
+      //find parent of parent
+      // const parentParentId = state.elements.find(
+      //   element => element.id === action.payload.parentPath,
+      // )?.parentId
+
+      // console.log("parentId", action.payload.parentPath)
+      // console.log("parentParentId", parentParentId)
+
+      // const idToStretch = state.elements.find(
+      //   element => element.id === parentParentId,
+      // )?.parentId
+
+      // //stretch parent element
+      // state.elements = state.elements.map(x =>
+      //   x.id === idToStretch
+      //     ? { ...x, rect: { ...stretch(x.rect, action.payload.object.rect) } }
+      //     : x,
+      // )
     },
     reset: (state, action: PayloadAction<void>) => {
       state.elements = []
