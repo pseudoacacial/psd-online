@@ -1,6 +1,6 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 import {
   add,
@@ -17,15 +17,36 @@ export interface QueryListItemProps {
 export const QueryListItem = ({ query }: QueryListItemProps) => {
   const dispatch = useAppDispatch()
 
-  const [cssName, setCssName] = useState("")
+  const [cssName, setCssName] = useState<string | undefined>("")
   const [psdName, setPsdName] = useState("")
+
+  useEffect(() => {
+    setCssName(query.cssSelector)
+    setPsdName(query.psdSelector)
+  }, [])
 
   const handlePsdNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPsdName(event.target.value)
+    dispatch(
+      modify({
+        id: query.id,
+        psdSelector: event.target.value,
+        cssSelector: cssName,
+      }),
+    )
   }
   const handleCssNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCssName(event.target.value)
+    dispatch(
+      modify({
+        id: query.id,
+        psdSelector: psdName,
+        cssSelector: event.target.value,
+      }),
+    )
   }
+
+  const queryListItemRef = useRef(null)
   const handleAddClick = () => {
     dispatch(
       add({
@@ -42,14 +63,33 @@ export const QueryListItem = ({ query }: QueryListItemProps) => {
     }
   }
   const handleRemoveClick = (e: React.BaseSyntheticEvent) => {
-    dispatch(remove(e.target.dataset.key))
+    dispatch(remove(query.id))
   }
   return (
-    <div className="flex border justify-between" key={query.id}>
-      <div className="">{query.psdSelector}</div>
-      <button data-key={query.id} onClick={handleRemoveClick}>
-        remove
-      </button>
+    <div
+      className="flex border justify-between"
+      key={query.id}
+      data-key={query.id}
+    >
+      <input
+        type="text"
+        className="grow shrink min-w-0"
+        role="form"
+        onChange={handleCssNameChange}
+        value={cssName}
+        placeholder="css name"
+        aria-label="css name"
+      ></input>
+      <input
+        type="text"
+        className="grow shrink min-w-0"
+        role="form"
+        onChange={handlePsdNameChange}
+        value={psdName}
+        placeholder="psd name"
+        aria-label="psd name"
+      ></input>
+      <button onClick={handleRemoveClick}>remove</button>
     </div>
   )
 }

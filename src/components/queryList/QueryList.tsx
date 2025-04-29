@@ -33,6 +33,7 @@ export const QueryList = () => {
       }),
     )
     setCssName("")
+    setPsdName("")
   }
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
