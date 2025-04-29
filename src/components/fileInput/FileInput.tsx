@@ -8,6 +8,7 @@ import {
   remove,
   modify,
   addChild,
+  reset,
   selectDocument,
   selectElementsFlat,
   PsdObject,
@@ -39,7 +40,7 @@ export const FileInput = () => {
   const checkChildren = (
     object: FileElement,
     parentId: number | null,
-    artboardId: number | null
+    artboardId: number | null,
   ) => {
     // don't do this part if it's the start of the file
     if (object.id) {
@@ -60,7 +61,7 @@ export const FileInput = () => {
             type: "artboard",
             rect: { ...object.artboard.rect },
             children: [],
-          })
+          }),
         )
       } else {
         if (parentId) {
@@ -87,7 +88,7 @@ export const FileInput = () => {
                 children: [],
               },
               parentId: parentId,
-            })
+            }),
           )
         } else {
           dispatch(
@@ -110,7 +111,7 @@ export const FileInput = () => {
                     bottom: undefined,
                   },
               children: [],
-            })
+            }),
           )
         }
       }
@@ -118,7 +119,7 @@ export const FileInput = () => {
 
     if (object.children === undefined) {
     } else {
-      object.children.forEach((child) => {
+      object.children.forEach(child => {
         if (object.artboard) {
           checkChildren(child, object.id, object.id)
         } else {
@@ -130,12 +131,13 @@ export const FileInput = () => {
 
   useEffect(() => {
     if (psd === null) return
+    dispatch(reset())
     checkChildren(psd as unknown as FileElement, null, null)
     // console.log(psd)
   }, [psd])
 
   useEffect(() => {
-    document.querySelector(".input")?.addEventListener("change", (event) => {
+    document.querySelector(".input")?.addEventListener("change", event => {
       const file = event.target?.files[0] // Get the selected file
       if (file) {
         const reader = new FileReader()
