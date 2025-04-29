@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface Query {
   id: string
-  cssSelector?: string | undefined
+  cssSelector?: string
   psdSelector: string
 }
 

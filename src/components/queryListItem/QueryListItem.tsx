@@ -46,7 +46,6 @@ export const QueryListItem = ({ query }: QueryListItemProps) => {
     )
   }
 
-  const queryListItemRef = useRef(null)
   const handleAddClick = () => {
     dispatch(
       add({

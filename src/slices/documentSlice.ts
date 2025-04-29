@@ -3,22 +3,29 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface PsdObject {
   id: number
-  artboardId: number
+  artboardId: number | null
   name: string
   type?: "artboard" | "group" | "layer"
-  rect: {
-    top: number
-    left: number
-    bottom: number
-    right: number
-  }
+  rect:
+    | {
+        top: number
+        left: number
+        bottom: number
+        right: number
+      }
+    | {
+        top: undefined
+        left: undefined
+        bottom: undefined
+        right: undefined
+      }
   children: PsdObject[]
 }
 
 export interface PsdObjectChild {
   object: PsdObject
   // array of IDs of elements that are the elements ancestors
-  parentId: number
+  parentId: number | null
 }
 // Define the TS type for the counter slice's state
 export interface DocumentSliceState {
@@ -105,6 +112,19 @@ export const documentSlice = createSlice({
         }
         // assert(typeof rectCopy === "object")
 
+        //if group has no size yet, set the size to this child
+        if (
+          rectToStretch.top === undefined ||
+          rectToStretch.right === undefined ||
+          rectToStretch.bottom === undefined ||
+          rectToStretch.left === undefined
+        ) {
+          rectCopy.top = fitRect.top
+          rectCopy.right = fitRect.right
+          rectCopy.bottom = fitRect.bottom
+          rectCopy.left = fitRect.left
+          return rectCopy
+        }
         //if group's size is smaller than the child, stretch!
         if (rectToStretch.top > fitRect.top) rectCopy.top = fitRect.top
         if (rectToStretch.right < fitRect.right) rectCopy.right = fitRect.right
@@ -112,11 +132,6 @@ export const documentSlice = createSlice({
           rectCopy.bottom = fitRect.bottom
         if (rectToStretch.left > fitRect.left) rectCopy.left = fitRect.left
 
-        //if group has no size yet, set the size to this child
-        if (rectToStretch.top === null) rectCopy.top = fitRect.top
-        if (rectToStretch.right === null) rectCopy.right = fitRect.right
-        if (rectToStretch.bottom === null) rectCopy.bottom = fitRect.bottom
-        if (rectToStretch.left === null) rectCopy.left = fitRect.left
         return rectCopy
       }
 

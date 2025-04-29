@@ -46,7 +46,7 @@ export const QueryList = () => {
   return (
     <div className="queryList flex-column w-80">
       {selectors.map(element => (
-        <QueryListItem query={element}></QueryListItem>
+        <QueryListItem key={element.id} query={element}></QueryListItem>
       ))}
 
       <div

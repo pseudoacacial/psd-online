@@ -1,4 +1,4 @@
-import { readPsd } from "ag-psd"
+import { Psd, readPsd } from "ag-psd"
 import { useEffect, useState } from "react"
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
@@ -16,10 +16,10 @@ import {
 export type FileElement = {
   artboard?: {
     rect: {
-      top: string
-      left: string
-      bottom: string
-      right: string
+      top: number
+      left: number
+      bottom: number
+      right: number
     }
   }
   children?: FileElement[]
@@ -27,19 +27,19 @@ export type FileElement = {
   text?: object
   id: number
   name: string
-  left: string
-  right: string
-  top: string
-  bottom: string
+  left: number
+  right: number
+  top: number
+  bottom: number
 }
 
 export const FileInput = () => {
-  const [psd, setPsd] = useState(null)
+  const [psd, setPsd] = useState<Psd | null>(null)
   const dispatch = useAppDispatch()
   const checkChildren = (
     object: FileElement,
-    parentId: number,
-    artboardId: number,
+    parentId: number | null,
+    artboardId: number | null,
   ) => {
     // don't do this part if it's the start of the file
     if (object.id) {
@@ -58,7 +58,7 @@ export const FileInput = () => {
             artboardId: object.id,
             name: object.name,
             type: "artboard",
-            rect: object.artboard.rect,
+            rect: { ...object.artboard.rect },
             children: [],
           }),
         )
@@ -78,10 +78,10 @@ export const FileInput = () => {
                     bottom: object.bottom,
                   }
                 : {
-                    left: null,
-                    right: null,
-                    top: null,
-                    bottom: null,
+                    left: undefined,
+                    right: undefined,
+                    top: undefined,
+                    bottom: undefined,
                   },
               children: [],
             },
@@ -105,7 +105,7 @@ export const FileInput = () => {
 
   useEffect(() => {
     if (psd === null) return
-    checkChildren(psd as FileElement, null, null)
+    checkChildren(psd as unknown as FileElement, null, null)
     // console.log(psd)
   }, [psd])
 
@@ -133,7 +133,7 @@ export const FileInput = () => {
     })
   }, [])
 
-  const handleFile = psd => {
+  const handleFile = (psd: Psd) => {
     setPsd(psd)
   }
 
