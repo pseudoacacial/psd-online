@@ -57,7 +57,7 @@ export const FileInput = () => {
           add({
             id: object.id,
             artboardId: object.id,
-            IdPath: [],
+            idPath: [],
             name: object.name,
             type: "artboard",
             rect: { ...object.artboard.rect },
@@ -65,8 +65,7 @@ export const FileInput = () => {
           }),
         )
       } else {
-        if (parentPath) {
-          console.log("adding child")
+        if (parentPath.length > 0) {
           dispatch(
             addChild({
               object: {
@@ -74,7 +73,7 @@ export const FileInput = () => {
                 type: isLayer ? "layer" : "group",
                 id: object.id,
                 artboardId: artboardId,
-                IdPath: [...parentPath],
+                idPath: [...parentPath],
                 rect: isLayer
                   ? {
                       left: object.left,
@@ -98,7 +97,7 @@ export const FileInput = () => {
             add({
               id: object.id,
               artboardId: null,
-              IdPath: [],
+              idPath: [],
               name: object.name,
               type: isLayer ? "layer" : "group",
               rect: isLayer
@@ -125,7 +124,7 @@ export const FileInput = () => {
     } else {
       object.children.forEach(child => {
         if (object.artboard) {
-          checkChildren(child, [...parentPath, object.id], null)
+          checkChildren(child, [...parentPath, object.id], object.id)
         } else {
           checkChildren(child, [...parentPath, object.id], artboardId)
         }
@@ -136,7 +135,12 @@ export const FileInput = () => {
   useEffect(() => {
     if (psd === null) return
     dispatch(reset())
-    checkChildren(psd as unknown as FileElement, [], null)
+    if (psd.children === undefined) {
+      throw new Error("PSD file has no children. Is it a valid psd document?")
+    }
+    psd.children.forEach(element => {
+      checkChildren(element as FileElement, [], null)
+    })
     // console.log(psd)
   }, [psd])
 

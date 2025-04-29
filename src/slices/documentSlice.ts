@@ -4,7 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 export interface PsdObject {
   id: number
   artboardId: number | null
-  IdPath: number[]
+  idPath: number[]
   name: string
   type?: "artboard" | "group" | "layer"
   rect:
@@ -80,6 +80,7 @@ export const documentSlice = createSlice({
       )
     },
     addChild: (state, action: PayloadAction<PsdObjectChild>) => {
+      //TODO: add children based on path instead of iterating and looking for the correct id
       let copy = state.elements
 
       function formatData(
