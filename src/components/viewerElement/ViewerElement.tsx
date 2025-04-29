@@ -40,7 +40,7 @@ export const ViewerElement = ({
       {/* {element.name} */}
       {element.children?.map(child => (
         <ViewerElement
-          key={element.id + element.name}
+          key={child.id + child.name}
           element={child}
           offsetRect={{ top: element.rect.top || 0, left: element.rect.left }}
         ></ViewerElement>

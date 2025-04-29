@@ -12,7 +12,9 @@ export const Matches = () => {
     <div>
       Matches:
       {matches.map(element => (
-        <div className="">{element.documentId}</div>
+        <div className="" key={`${element.selectorId}-${element.documentId}`}>
+          {element.documentId}
+        </div>
       ))}
     </div>
   )
