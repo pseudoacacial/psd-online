@@ -39,7 +39,7 @@ export const FileInput = () => {
   const checkChildren = (
     object: FileElement,
     parentId: number | null,
-    artboardId: number | null,
+    artboardId: number | null
   ) => {
     // don't do this part if it's the start of the file
     if (object.id) {
@@ -60,16 +60,42 @@ export const FileInput = () => {
             type: "artboard",
             rect: { ...object.artboard.rect },
             children: [],
-          }),
+          })
         )
       } else {
-        dispatch(
-          addChild({
-            object: {
+        if (parentId) {
+          dispatch(
+            addChild({
+              object: {
+                name: object.name,
+                type: isLayer ? "layer" : "group",
+                id: object.id,
+                artboardId: artboardId,
+                rect: isLayer
+                  ? {
+                      left: object.left,
+                      right: object.right,
+                      top: object.top,
+                      bottom: object.bottom,
+                    }
+                  : {
+                      left: undefined,
+                      right: undefined,
+                      top: undefined,
+                      bottom: undefined,
+                    },
+                children: [],
+              },
+              parentId: parentId,
+            })
+          )
+        } else {
+          dispatch(
+            add({
+              id: object.id,
+              artboardId: null,
               name: object.name,
               type: isLayer ? "layer" : "group",
-              id: object.id,
-              artboardId: artboardId,
               rect: isLayer
                 ? {
                     left: object.left,
@@ -84,16 +110,15 @@ export const FileInput = () => {
                     bottom: undefined,
                   },
               children: [],
-            },
-            parentId: parentId,
-          }),
-        )
+            })
+          )
+        }
       }
     }
 
     if (object.children === undefined) {
     } else {
-      object.children.forEach(child => {
+      object.children.forEach((child) => {
         if (object.artboard) {
           checkChildren(child, object.id, object.id)
         } else {
@@ -110,7 +135,7 @@ export const FileInput = () => {
   }, [psd])
 
   useEffect(() => {
-    document.querySelector(".input")?.addEventListener("change", event => {
+    document.querySelector(".input")?.addEventListener("change", (event) => {
       const file = event.target?.files[0] // Get the selected file
       if (file) {
         const reader = new FileReader()
