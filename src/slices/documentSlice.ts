@@ -9,7 +9,7 @@ export interface PsdObject {
   name: string
   type?: "artboard" | "group" | "layer"
   canvas?: string
-  //clipping:true means that the element should be clipiped to the next sibling (in photoshop layers) - or, what ends up happening in dom - to the previous sibling
+  //clipping:true means that the element should be clipped to the next sibling (in photoshop layers) - or, what ends up happening in dom - to the previous sibling
   clipping?: boolean
   rect: {
     top: number | undefined
@@ -110,7 +110,15 @@ export const documentSlice = createSlice({
           bottom: rectToStretch.bottom,
           left: rectToStretch.left,
         }
-        // assert(typeof rectCopy === "object")
+
+        //if there's no child rectangle to fit, return original
+        if (
+          fitRect.top === undefined ||
+          fitRect.right === undefined ||
+          fitRect.left === undefined ||
+          fitRect.bottom === undefined
+        )
+          return rectToStretch
 
         //if group has no size yet, set the size to this child
         if (
@@ -125,6 +133,7 @@ export const documentSlice = createSlice({
           rectCopy.left = fitRect.left
           return rectCopy
         }
+
         //if group's size is smaller than the child, stretch!
         if (rectToStretch.top > fitRect.top) rectCopy.top = fitRect.top
         if (rectToStretch.right < fitRect.right) rectCopy.right = fitRect.right
