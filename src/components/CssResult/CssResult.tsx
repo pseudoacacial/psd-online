@@ -15,32 +15,39 @@ export const CssResult = () => {
   const groupNameRegex = /(\d+x\d+)/
 
   const getMatchCss = (match: Match) => {
-    let matchCss = ""
     const query = queries.find(query => query.id === match.selectorId)
     const psdElement = elements.find(element => element.id === match.documentId)
     const artboard = artboards.find(
       artboard => artboard.id === psdElement?.artboardId,
     )
 
-    const result = {
-      left:
+    let style: React.CSSProperties = {}
+
+    //only add styles if CSS name is specified
+    if (query?.cssSelector) {
+      style.left =
         artboard !== undefined
           ? psdElement.rect.left - artboard.rect.left
-          : psdElement.rect.left,
-      top:
+          : psdElement.rect.left
+      style.top =
         artboard !== undefined
           ? psdElement.rect.top - artboard.rect.top
-          : psdElement.rect.top,
+          : psdElement.rect.top
     }
 
-    //add css name
-    matchCss +=
-      `${query?.cssSelector}` +
-      " {\n" +
-      `left: ${result.left}px;\n` +
-      `top: ${result.top}px;\n` +
-      "}\n"
+    const regex = new RegExp(/[A-Z]/g)
+    const kebabCase = (str: string) =>
+      str.replace(regex, v => `-${v.toLowerCase()}`)
 
+    const matchCss =
+      `\u0020\u0020${query?.cssSelector}` +
+      " {\n" +
+      Object.keys(style).reduce((accumulator, key) => {
+        const cssKey = kebabCase(key)
+        const cssValue = style[key as keyof typeof style]
+        return `${accumulator}\u0020\u0020\u0020\u0020${cssKey}:${cssValue};\n`
+      }, "") +
+      "\u0020\u0020}\n"
     return matchCss
   }
 
@@ -71,7 +78,7 @@ export const CssResult = () => {
     let cssResult = ""
     for (const [key, value] of Object.entries(groupMatchesByArtboard())) {
       cssResult +=
-        `${key} {\n` + value.map(match => getMatchCss(match)).join("\n") + "}\n"
+        `${key} {\n` + value.map(match => getMatchCss(match)).join("") + "}\n"
     }
     setCssResult(cssResult)
     // artboards.map(),

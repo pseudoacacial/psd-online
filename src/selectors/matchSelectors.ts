@@ -17,7 +17,6 @@ export const selectMatches = createSelector(
       elements.forEach(element => {
         //if query is a path, search in path
         if (selector.psdSelector.includes(">")) {
-          console.log(element.namePath.join(">"))
           if (element.namePath.join(">").match(selector.psdSelector)) {
             matches.push({
               selectorId: selector.id,
