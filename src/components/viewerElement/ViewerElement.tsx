@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import {
   add,
   remove,
@@ -18,6 +19,13 @@ export const ViewerElement = ({
   element,
   offsetRect = { top: 0, left: 0 },
 }: ViewerElementProps) => {
+  // const container = useRef(null)
+  // useEffect(() => {
+  //   if (element.canvas) {
+  //     container.current.innerHtml = ""
+  //     container.current.append(element.canvas)
+  //   }
+  // }, [container])
   return (
     <div
       className={`element${element.type ? " " + element.type : ""}`}
@@ -37,6 +45,12 @@ export const ViewerElement = ({
         }
       }
     >
+      {/* <div
+        className="canvas"
+        style={{ backgroundImage: `url("${element.canvas}")` }}
+      ></div> */}
+      <img src={element.canvas}></img>
+
       {/* {element.name} */}
       {element.children?.map(child => (
         <ViewerElement

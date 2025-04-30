@@ -7,6 +7,7 @@ export interface PsdObject {
   idPath: number[]
   name: string
   type?: "artboard" | "group" | "layer"
+  canvas?: string
   rect:
     | {
         top: number

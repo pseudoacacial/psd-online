@@ -24,6 +24,7 @@ export type FileElement = {
     }
   }
   children?: FileElement[]
+  canvas?: HTMLCanvasElement
   placedLayer?: object
   text?: object
   id: number
@@ -74,6 +75,7 @@ export const FileInput = () => {
                 id: object.id,
                 artboardId: artboardId,
                 idPath: [...parentPath],
+                canvas: object.canvas?.toDataURL(),
                 rect: isLayer
                   ? {
                       left: object.left,
