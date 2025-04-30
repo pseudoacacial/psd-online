@@ -1,4 +1,4 @@
-import { Psd, readPsd } from "ag-psd"
+import { Layer, Psd, readPsd } from "ag-psd"
 import { useEffect, useState } from "react"
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
@@ -14,25 +14,10 @@ import {
   PsdObject,
 } from "../../slices/documentSlice"
 
-export type FileElement = {
-  artboard?: {
-    rect: {
-      top: number
-      left: number
-      bottom: number
-      right: number
-    }
-  }
-  children?: FileElement[]
-  canvas?: HTMLCanvasElement
-  placedLayer?: object
-  text?: object
-  id: number
+export interface FileElement extends Layer {
   name: string
-  left: number
-  right: number
-  top: number
-  bottom: number
+  id: number
+  children: FileElement[]
 }
 
 export const FileInput = () => {
@@ -61,7 +46,7 @@ export const FileInput = () => {
             artboardId: object.id,
             idPath: [],
             namePath: [],
-            name: object.name,
+            name: object.name || "",
             type: "artboard",
             rect: { ...object.artboard.rect },
             children: [],
@@ -87,9 +72,9 @@ export const FileInput = () => {
                       bottom: object.bottom,
                     }
                   : {
+                      top: undefined,
                       left: undefined,
                       right: undefined,
-                      top: undefined,
                       bottom: undefined,
                     },
                 children: [],
@@ -105,7 +90,7 @@ export const FileInput = () => {
               artboardId: null,
               idPath: [],
               namePath: [],
-              name: object.name,
+              name: object.name || "",
               type: isLayer ? "layer" : "group",
               rect: isLayer
                 ? {
@@ -115,9 +100,9 @@ export const FileInput = () => {
                     bottom: object.bottom,
                   }
                 : {
+                    top: undefined,
                     left: undefined,
                     right: undefined,
-                    top: undefined,
                     bottom: undefined,
                   },
               children: [],

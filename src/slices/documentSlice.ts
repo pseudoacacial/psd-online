@@ -11,19 +11,12 @@ export interface PsdObject {
   canvas?: string
   //clipping:true means that the element should be clipiped to the next sibling (in photoshop layers) - or, what ends up happening in dom - to the previous sibling
   clipping?: boolean
-  rect:
-    | {
-        top: number
-        left: number
-        bottom: number
-        right: number
-      }
-    | {
-        top: undefined
-        left: undefined
-        bottom: undefined
-        right: undefined
-      }
+  rect: {
+    top: number | undefined
+    left: number | undefined
+    bottom: number | undefined
+    right: number | undefined
+  }
   children: PsdObject[]
 }
 
