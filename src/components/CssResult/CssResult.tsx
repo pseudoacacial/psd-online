@@ -17,6 +17,10 @@ export const CssResult = () => {
   const getMatchCss = (match: Match) => {
     const query = queries.find(query => query.id === match.selectorId)
     const psdElement = elements.find(element => element.id === match.documentId)
+    if (psdElement === undefined)
+      throw new Error(
+        "the psd element for the match doesn't exist in store. Matches and document out of sync?",
+      )
     const artboard = artboards.find(
       artboard => artboard.id === psdElement?.artboardId,
     )
@@ -52,11 +56,12 @@ export const CssResult = () => {
   }
 
   const groupMatchesByArtboard = () => {
-    const matchesByArtboard = {}
+    const matchesByArtboard: { [key: number]: Match[] } = {}
     artboards.forEach(artboard => {
-      if (artboard.name.match(groupNameRegex)) {
+      const artboardMatch = artboard.name.match(groupNameRegex)
+      if (artboardMatch) {
         // matchesByArtboard[artboard.id] = []
-        matchesByArtboard[artboard.name.match(groupNameRegex)[1]] = []
+        matchesByArtboard[parseInt(artboardMatch[1])] = []
       }
     })
 
@@ -68,8 +73,8 @@ export const CssResult = () => {
         artboard => artboard.id === psdElement?.artboardId,
       )
 
-      psdElement &&
-        matchesByArtboard[artboard.name.match(groupNameRegex)[1]].push(match)
+      const artboardMatch = artboard && artboard.name.match(groupNameRegex)
+      artboardMatch && matchesByArtboard[parseInt(artboardMatch[1])].push(match)
     })
     return matchesByArtboard
   }
