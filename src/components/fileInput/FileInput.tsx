@@ -40,7 +40,8 @@ export const FileInput = () => {
   const dispatch = useAppDispatch()
   const checkChildren = (
     object: FileElement,
-    parentPath: number[],
+    parentIdPath: number[],
+    parentNamePath: string[],
     artboardId: number | null,
   ) => {
     // don't do this part if it's the start of the file
@@ -59,6 +60,7 @@ export const FileInput = () => {
             id: object.id,
             artboardId: object.id,
             idPath: [],
+            namePath: [],
             name: object.name,
             type: "artboard",
             rect: { ...object.artboard.rect },
@@ -66,7 +68,7 @@ export const FileInput = () => {
           }),
         )
       } else {
-        if (parentPath.length > 0) {
+        if (parentIdPath.length > 0) {
           dispatch(
             addChild({
               object: {
@@ -74,7 +76,8 @@ export const FileInput = () => {
                 type: isLayer ? "layer" : "group",
                 id: object.id,
                 artboardId: artboardId,
-                idPath: [...parentPath],
+                idPath: [...parentIdPath],
+                namePath: [...parentNamePath, object.name],
                 canvas: object.canvas?.toDataURL(),
                 rect: isLayer
                   ? {
@@ -91,7 +94,8 @@ export const FileInput = () => {
                     },
                 children: [],
               },
-              parentPath: parentPath,
+              parentIdPath: parentIdPath,
+              parentNamePath: parentNamePath,
             }),
           )
         } else {
@@ -100,6 +104,7 @@ export const FileInput = () => {
               id: object.id,
               artboardId: null,
               idPath: [],
+              namePath: [],
               name: object.name,
               type: isLayer ? "layer" : "group",
               rect: isLayer
@@ -126,9 +131,19 @@ export const FileInput = () => {
     } else {
       object.children.forEach(child => {
         if (object.artboard) {
-          checkChildren(child, [...parentPath, object.id], object.id)
+          checkChildren(
+            child,
+            [...parentIdPath, object.id],
+            [...parentNamePath, object.name],
+            object.id,
+          )
         } else {
-          checkChildren(child, [...parentPath, object.id], artboardId)
+          checkChildren(
+            child,
+            [...parentIdPath, object.id],
+            [...parentNamePath, object.name],
+            artboardId,
+          )
         }
       })
     }
@@ -141,7 +156,7 @@ export const FileInput = () => {
       throw new Error("PSD file has no children. Is it a valid psd document?")
     }
     psd.children.forEach(element => {
-      checkChildren(element as FileElement, [], null)
+      checkChildren(element as FileElement, [], [], null)
     })
     // console.log(psd)
   }, [psd])

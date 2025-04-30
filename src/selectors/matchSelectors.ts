@@ -15,11 +15,23 @@ export const selectMatches = createSelector(
       let matches: Match[] = []
 
       elements.forEach(element => {
-        if (element.name.match(selector.psdSelector)) {
-          matches.push({
-            selectorId: selector.id,
-            documentId: element.id,
-          })
+        //if query is a path, search in path
+        if (selector.psdSelector.includes(">")) {
+          console.log(element.namePath.join(">"))
+          if (element.namePath.join(">").match(selector.psdSelector)) {
+            matches.push({
+              selectorId: selector.id,
+              documentId: element.id,
+            })
+          }
+        } else {
+          //search in name
+          if (element.name.match(selector.psdSelector)) {
+            matches.push({
+              selectorId: selector.id,
+              documentId: element.id,
+            })
+          }
         }
       })
 

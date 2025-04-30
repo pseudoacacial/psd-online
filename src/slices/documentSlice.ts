@@ -5,9 +5,12 @@ export interface PsdObject {
   id: number
   artboardId: number | null
   idPath: number[]
+  namePath: string[]
   name: string
   type?: "artboard" | "group" | "layer"
   canvas?: string
+  //clipping:true means that the element should be clipiped to the next sibling (in photoshop layers) - or, what ends up happening in dom - to the previous sibling
+  clipping?: boolean
   rect:
     | {
         top: number
@@ -27,7 +30,8 @@ export interface PsdObject {
 export interface PsdObjectChild {
   object: PsdObject
   // array of IDs of elements that are the elements ancestors
-  parentPath: number[]
+  parentIdPath: number[]
+  parentNamePath: string[]
 }
 // Define the TS type for the counter slice's state
 export interface DocumentSliceState {
@@ -156,7 +160,7 @@ export const documentSlice = createSlice({
 
       formatDataWithResize(
         copy,
-        action.payload.parentPath[action.payload.parentPath.length - 1],
+        action.payload.parentIdPath[action.payload.parentIdPath.length - 1],
         action.payload.object,
       )
 
