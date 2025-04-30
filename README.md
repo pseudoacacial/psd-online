@@ -1,27 +1,15 @@
-# vite-template-redux
+react + redux app to view the structure of a psd file and copy css from it. Made using [ag-psd](https://github.com/Agamnentzar/ag-psd).
 
-Uses [Vite](https://vitejs.dev/), [Vitest](https://vitest.dev/), and [React Testing Library](https://github.com/testing-library/react-testing-library) to create a modern [React](https://react.dev/) app compatible with [Create React App](https://create-react-app.dev/)
-
-```sh
-npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
+Meant mostly for a situation in which styles from multiple arboards have to be extracted, in a format like this:
 ```
-
-## Goals
-
-- Easy migration from Create React App or Vite
-- As beginner friendly as Create React App
-- Optimized performance compared to Create React App
-- Customizable without ejecting
-
-## Scripts
-
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
-
-## Inspiration
-
-- [Create React App](https://github.com/facebook/create-react-app/tree/main/packages/cra-template)
-- [Vite](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react)
-- [Vitest](https://github.com/vitest-dev/vitest/tree/main/examples/react-testing-lib)
+.b300x600 {
+  .logo {
+    //left, top, with, height, font-size, etc.
+  }
+  .offer {}
+}
+.b300x250 {
+  .logo {}
+  .offer {}
+}
+```
