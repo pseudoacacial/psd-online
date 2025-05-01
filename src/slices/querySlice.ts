@@ -18,6 +18,7 @@ export class QueryClass implements Query {
   constructor(id: string) {
     this.id = id
     this.psdSelector = ""
+    this.cssSelector = ""
   }
 }
 

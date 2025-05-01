@@ -15,20 +15,15 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   //state is only used if freeze==true; Otherwise, each change dispatches a modify action
   const [newQuery, setNewQuery] = useState(query)
 
-  const handlePsdNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const changeQueryValue = (key: keyof Query, value: Query[keyof Query]) => {
     if (freeze) {
-      setNewQuery({ ...newQuery, psdSelector: event.target.value })
+      setNewQuery({ ...newQuery, [key]: value })
     } else {
-      dispatch(modify({ ...query, psdSelector: event.target.value }))
+      dispatch(modify({ ...query, [key]: value }))
     }
   }
-  const handleCssNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (freeze) {
-      setNewQuery({ ...newQuery, cssSelector: event.target.value })
-    } else {
-      dispatch(modify({ ...query, cssSelector: event.target.value }))
-    }
-  }
+
+  const readQuery = freeze ? newQuery : query
 
   const handleAddClick = () => {
     if (newQuery === null) throw new Error("trying to a null query")
@@ -55,8 +50,10 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
           type="text"
           className="grow shrink min-w-0"
           role="form"
-          onChange={handleCssNameChange}
-          value={freeze ? newQuery?.cssSelector : query.cssSelector}
+          onChange={event => {
+            changeQueryValue("cssSelector", event?.target.value)
+          }}
+          value={readQuery.cssSelector}
           placeholder="css name"
           aria-label="css name"
         ></input>
@@ -64,8 +61,10 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
           type="text"
           className="grow shrink min-w-0"
           role="form"
-          onChange={handlePsdNameChange}
-          value={freeze ? newQuery?.psdSelector : query.psdSelector}
+          onChange={event => {
+            changeQueryValue("psdSelector", event?.target.value)
+          }}
+          value={readQuery.psdSelector}
           placeholder="psd name"
           aria-label="psd name"
         ></input>
@@ -81,7 +80,30 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
         )}
       </div>
       <div className="hidden justify-evenly group-focus-within:flex">
-        more options
+        <div className="flex justify-start">
+          <div>
+            <input
+              type="checkbox"
+              id="size"
+              checked={readQuery.showSize}
+              onChange={event => {
+                changeQueryValue("showSize", event.target.checked)
+              }}
+            ></input>
+            <label htmlFor="size">Size</label>
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="position"
+              checked={readQuery.showPosition}
+              onChange={event => {
+                changeQueryValue("showPosition", event.target.checked)
+              }}
+            ></input>
+            <label htmlFor="position">Position</label>
+          </div>
+        </div>
       </div>
     </div>
   )
