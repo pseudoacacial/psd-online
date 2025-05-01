@@ -29,14 +29,25 @@ export const CssResult = () => {
 
     //only add styles if CSS name is specified
     if (query?.cssSelector) {
-      style.left =
-        artboard !== undefined
-          ? psdElement.rect.left - artboard.rect.left
-          : psdElement.rect.left
-      style.top =
-        artboard !== undefined
-          ? psdElement.rect.top - artboard.rect.top
-          : psdElement.rect.top
+      if (query.showPosition && psdElement.rect.left && psdElement.rect.top) {
+        if (artboard !== undefined && artboard.rect.left && artboard.rect.top) {
+          style.left = psdElement.rect.left - artboard.rect.left
+          style.top = psdElement.rect.top - artboard.rect.top
+        } else {
+          style.left = psdElement.rect.left
+          style.top = psdElement.rect.top
+        }
+      }
+      if (
+        query.showSize &&
+        psdElement.rect.right &&
+        psdElement.rect.left &&
+        psdElement.rect.bottom &&
+        psdElement.rect.top
+      ) {
+        style.width = psdElement.rect.right - psdElement.rect.left
+        style.height = psdElement.rect.bottom - psdElement.rect.top
+      }
     }
 
     const regex = new RegExp(/[A-Z]/g)
