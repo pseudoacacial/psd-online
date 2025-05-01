@@ -103,6 +103,17 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             ></input>
             <label htmlFor="position">Position</label>
           </div>
+          <div>
+            <input
+              type="checkbox"
+              id="size"
+              checked={readQuery.showFontSize}
+              onChange={event => {
+                changeQueryValue("showFontSize", event.target.checked)
+              }}
+            ></input>
+            <label htmlFor="size">font-size</label>
+          </div>
         </div>
       </div>
     </div>

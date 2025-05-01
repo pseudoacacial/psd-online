@@ -48,6 +48,9 @@ export const CssResult = () => {
         style.width = psdElement.rect.right - psdElement.rect.left
         style.height = psdElement.rect.bottom - psdElement.rect.top
       }
+      if (query.showFontSize && psdElement.text?.style?.fontSize) {
+        style.fontSize = psdElement.text?.style?.fontSize
+      }
     }
 
     const regex = new RegExp(/[A-Z]/g)

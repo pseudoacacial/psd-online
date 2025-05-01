@@ -63,6 +63,7 @@ export const FileInput = () => {
                 artboardId: artboardId,
                 idPath: [...parentIdPath],
                 namePath: [...parentNamePath, object.name],
+                text: object.text,
                 canvas: object.canvas?.toDataURL(),
                 rect: isLayer
                   ? {
@@ -90,6 +91,7 @@ export const FileInput = () => {
               artboardId: null,
               idPath: [],
               namePath: [],
+              text: object.text,
               name: object.name || "",
               type: isLayer ? "layer" : "group",
               rect: isLayer
@@ -143,7 +145,7 @@ export const FileInput = () => {
     psd.children.forEach(element => {
       checkChildren(element as FileElement, [], [], null)
     })
-    console.log(psd)
+    // console.log(psd)
   }, [psd])
 
   useEffect(() => {
