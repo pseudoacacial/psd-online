@@ -61,6 +61,9 @@ export const QuerySlice = createSlice({
         x.id === action.payload.id ? action.payload : x,
       )
     },
+    reset: (state, action: PayloadAction<void>) => {
+      state.queries = []
+    },
   },
   selectors: {
     selectQueries: queries => queries.queries,
@@ -68,7 +71,7 @@ export const QuerySlice = createSlice({
 })
 
 // Export the generated action creators for use in components
-export const { add, remove, modify } = QuerySlice.actions
+export const { add, remove, modify, reset } = QuerySlice.actions
 
 export const { selectQueries: selectQueries } = QuerySlice.selectors
 
