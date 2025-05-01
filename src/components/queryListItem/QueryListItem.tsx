@@ -66,29 +66,34 @@ export const QueryListItem = ({ query }: QueryListItemProps) => {
   }
   return (
     <div
-      className="flex border justify-between"
+      className="group flex flex-col border justify-between"
       key={query.id}
       data-key={query.id}
     >
-      <input
-        type="text"
-        className="grow shrink min-w-0"
-        role="form"
-        onChange={handleCssNameChange}
-        value={cssName}
-        placeholder="css name"
-        aria-label="css name"
-      ></input>
-      <input
-        type="text"
-        className="grow shrink min-w-0"
-        role="form"
-        onChange={handlePsdNameChange}
-        value={psdName}
-        placeholder="psd name"
-        aria-label="psd name"
-      ></input>
-      <button onClick={handleRemoveClick}>remove</button>
+      <div className="flex justify-between">
+        <input
+          type="text"
+          className="grow shrink min-w-0"
+          role="form"
+          onChange={handleCssNameChange}
+          value={cssName}
+          placeholder="css name"
+          aria-label="css name"
+        ></input>
+        <input
+          type="text"
+          className="grow shrink min-w-0"
+          role="form"
+          onChange={handlePsdNameChange}
+          value={psdName}
+          placeholder="psd name"
+          aria-label="psd name"
+        ></input>
+        <button onClick={handleRemoveClick}>remove</button>
+      </div>
+      <div className="hidden justify-evenly group-focus-within:flex">
+        more options
+      </div>
     </div>
   )
 }
