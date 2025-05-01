@@ -90,7 +90,13 @@ export const CssResult = () => {
       )
 
       const artboardMatch = artboard && artboard.name.match(groupNameRegex)
-      artboardMatch && matchesByArtboard[artboardMatch[1]].push(match)
+
+      artboardMatch &&
+        //if match for this selector already exists in this artboard - don't add more
+        !matchesByArtboard[artboardMatch[1]].find(
+          e => e.selectorId === match.selectorId,
+        ) &&
+        matchesByArtboard[artboardMatch[1]].push(match)
     })
     return matchesByArtboard
   }

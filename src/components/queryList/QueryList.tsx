@@ -34,18 +34,20 @@ export const QueryList = () => {
 
   return (
     <div>
-      <button
-        className="border rounded"
-        onClick={handleImportQueriesfromClipboard}
-      >
-        import from clipboard
-      </button>
-      <button
-        className="border rounded"
-        onClick={handleExportQueriesToClipboard}
-      >
-        export to clipboard
-      </button>
+      <div className="flex justify-center">
+        <button
+          className="border rounded mx-1 mb-2 px-1 max-w-28 leading-tight"
+          onClick={handleImportQueriesfromClipboard}
+        >
+          import from clipboard
+        </button>
+        <button
+          className="border rounded mx-1 mb-2 px-1 max-w-28 leading-tight"
+          onClick={handleExportQueriesToClipboard}
+        >
+          export to clipboard
+        </button>
+      </div>
       <div className="queryList flex-column w-80">
         {selectors.map(element => (
           <QueryListItem key={element.id} query={element}></QueryListItem>
