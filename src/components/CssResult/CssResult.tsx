@@ -14,6 +14,8 @@ export const CssResult = () => {
 
   const groupNameRegex = /(\d+x\d+)/
 
+  const prefix = ".b"
+
   const getMatchCss = (match: Match) => {
     const query = queries.find(query => query.id === match.selectorId)
     const psdElement = elements.find(element => element.id === match.documentId)
@@ -97,7 +99,9 @@ export const CssResult = () => {
     let cssResult = ""
     for (const [key, value] of Object.entries(groupMatchesByArtboard())) {
       cssResult +=
-        `${key} {\n` + value.map(match => getMatchCss(match)).join("") + "}\n"
+        `${prefix}${key} {\n` +
+        value.map(match => getMatchCss(match)).join("") +
+        "}\n"
     }
     setCssResult(cssResult)
     // artboards.map(),
@@ -105,8 +109,8 @@ export const CssResult = () => {
     // setCssResult(matches.map(match => getMatchCss(match)).join("\n"))
   }, [matches])
   return (
-    <div className="CssResult">
-      <textarea className="border" value={CssResult}></textarea>
+    <div className="CssResult my-2">
+      <textarea className="border w-full h-80" value={CssResult}></textarea>
     </div>
   )
 }

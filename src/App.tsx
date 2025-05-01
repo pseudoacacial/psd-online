@@ -16,7 +16,6 @@ const App = () => {
       <div className="w-full flex overflow-hidden gap-2 p-2">
         <div className="flex-column">
           <QueryList></QueryList>
-          <Matches></Matches>
           <CssResult></CssResult>
         </div>
 
