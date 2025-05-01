@@ -5,6 +5,20 @@ export interface Query {
   id: string
   cssSelector?: string
   psdSelector: string
+  showPosition?: boolean
+  showSize?: boolean
+}
+
+export class QueryClass implements Query {
+  id: string
+  cssSelector?: string
+  psdSelector: string
+  showPosition?: boolean
+  showSize?: boolean
+  constructor(id: string) {
+    this.id = id
+    this.psdSelector = ""
+  }
 }
 
 // Define the TS type for the counter slice's state

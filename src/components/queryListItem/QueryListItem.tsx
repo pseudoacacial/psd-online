@@ -2,62 +2,41 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
 import { useState, useEffect, useRef } from "react"
 
-import {
-  add,
-  remove,
-  modify,
-  selectQueries,
-  Query,
-} from "../../slices/querySlice"
+import { add, remove, modify, Query, QueryClass } from "../../slices/querySlice"
 
 export interface QueryListItemProps {
   query: Query
+  freeze?: boolean
 }
 
-export const QueryListItem = ({ query }: QueryListItemProps) => {
+export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const dispatch = useAppDispatch()
 
-  const [cssName, setCssName] = useState<string | undefined>("")
-  const [psdName, setPsdName] = useState("")
-
-  useEffect(() => {
-    setCssName(query.cssSelector)
-    setPsdName(query.psdSelector)
-  }, [])
+  //state is only used if freeze==true; Otherwise, each change dispatches a modify action
+  const [newQuery, setNewQuery] = useState(query)
 
   const handlePsdNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPsdName(event.target.value)
-    dispatch(
-      modify({
-        id: query.id,
-        psdSelector: event.target.value,
-        cssSelector: cssName,
-      }),
-    )
+    if (freeze) {
+      setNewQuery({ ...newQuery, psdSelector: event.target.value })
+    } else {
+      dispatch(modify({ ...query, psdSelector: event.target.value }))
+    }
   }
   const handleCssNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCssName(event.target.value)
-    dispatch(
-      modify({
-        id: query.id,
-        psdSelector: psdName,
-        cssSelector: event.target.value,
-      }),
-    )
+    if (freeze) {
+      setNewQuery({ ...newQuery, cssSelector: event.target.value })
+    } else {
+      dispatch(modify({ ...query, cssSelector: event.target.value }))
+    }
   }
 
   const handleAddClick = () => {
-    dispatch(
-      add({
-        id: self.crypto.randomUUID(),
-        psdSelector: psdName,
-        cssSelector: cssName,
-      }),
-    )
-    setCssName("")
+    if (newQuery === null) throw new Error("trying to a null query")
+    dispatch(add(newQuery))
+    setNewQuery(new QueryClass(self.crypto.randomUUID()))
   }
   const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
+    if (freeze && event.key === "Enter") {
       handleAddClick()
     }
   }
@@ -69,6 +48,7 @@ export const QueryListItem = ({ query }: QueryListItemProps) => {
       className="group flex flex-col border justify-between"
       key={query.id}
       data-key={query.id}
+      onKeyDown={handleKeyPress}
     >
       <div className="flex justify-between">
         <input
@@ -76,7 +56,7 @@ export const QueryListItem = ({ query }: QueryListItemProps) => {
           className="grow shrink min-w-0"
           role="form"
           onChange={handleCssNameChange}
-          value={cssName}
+          value={freeze ? newQuery?.cssSelector : query.cssSelector}
           placeholder="css name"
           aria-label="css name"
         ></input>
@@ -85,11 +65,20 @@ export const QueryListItem = ({ query }: QueryListItemProps) => {
           className="grow shrink min-w-0"
           role="form"
           onChange={handlePsdNameChange}
-          value={psdName}
+          value={freeze ? newQuery?.psdSelector : query.psdSelector}
           placeholder="psd name"
           aria-label="psd name"
         ></input>
-        <button onClick={handleRemoveClick}>remove</button>
+        {freeze ? (
+          <button
+            onClick={handleAddClick}
+            className="whitespace-nowrap border rounded"
+          >
+            add new
+          </button>
+        ) : (
+          <button onClick={handleRemoveClick}>remove</button>
+        )}
       </div>
       <div className="hidden justify-evenly group-focus-within:flex">
         more options

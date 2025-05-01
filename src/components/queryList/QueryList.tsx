@@ -8,76 +8,23 @@ import {
   modify,
   selectQueries,
   Query,
+  QueryClass,
 } from "../../slices/querySlice"
 import { QueryListItem } from "../queryListItem/QueryListItem"
 
 export const QueryList = () => {
-  const dispatch = useAppDispatch()
   const selectors = useAppSelector(selectQueries)
 
-  const [cssName, setCssName] = useState("")
-  const [psdName, setPsdName] = useState("")
-
-  const handlePsdNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPsdName(event.target.value)
-  }
-  const handleCssNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCssName(event.target.value)
-  }
-  const handleAddClick = () => {
-    dispatch(
-      add({
-        id: self.crypto.randomUUID(),
-        psdSelector: psdName,
-        cssSelector: cssName,
-      }),
-    )
-    setCssName("")
-    setPsdName("")
-  }
-  const handleKeyPress = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
-      handleAddClick()
-    }
-  }
-  const handleRemoveClick = (e: React.BaseSyntheticEvent) => {
-    dispatch(remove(e.target.dataset.key))
-  }
   return (
     <div className="queryList flex-column w-80">
       {selectors.map(element => (
         <QueryListItem key={element.id} query={element}></QueryListItem>
       ))}
 
-      <div
-        className="flex border justify-between gap-2"
-        onKeyDown={handleKeyPress}
-      >
-        <input
-          type="text"
-          className="grow shrink min-w-0"
-          role="form"
-          onChange={handleCssNameChange}
-          value={cssName}
-          placeholder="css name"
-          aria-label="css name"
-        ></input>
-        <input
-          type="text"
-          className="grow shrink min-w-0"
-          role="form"
-          onChange={handlePsdNameChange}
-          value={psdName}
-          placeholder="psd name"
-          aria-label="psd name"
-        ></input>
-        <button
-          onClick={handleAddClick}
-          className="whitespace-nowrap border rounded"
-        >
-          add new
-        </button>
-      </div>
+      <QueryListItem
+        query={new QueryClass(self.crypto.randomUUID())}
+        freeze={true}
+      ></QueryListItem>
     </div>
   )
 }
