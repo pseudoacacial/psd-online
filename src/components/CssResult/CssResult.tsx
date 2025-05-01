@@ -67,12 +67,12 @@ export const CssResult = () => {
   }
 
   const groupMatchesByArtboard = () => {
-    const matchesByArtboard: { [key: number]: Match[] } = {}
+    const matchesByArtboard: { [key: string]: Match[] } = {}
     artboards.forEach(artboard => {
       const artboardMatch = artboard.name.match(groupNameRegex)
       if (artboardMatch) {
         // matchesByArtboard[artboard.id] = []
-        matchesByArtboard[parseInt(artboardMatch[1])] = []
+        matchesByArtboard[artboardMatch[1]] = []
       }
     })
 
@@ -85,7 +85,7 @@ export const CssResult = () => {
       )
 
       const artboardMatch = artboard && artboard.name.match(groupNameRegex)
-      artboardMatch && matchesByArtboard[parseInt(artboardMatch[1])].push(match)
+      artboardMatch && matchesByArtboard[artboardMatch[1]].push(match)
     })
     return matchesByArtboard
   }
