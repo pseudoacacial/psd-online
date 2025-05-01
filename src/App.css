@@ -26,6 +26,7 @@
 .artboard {
   /* position: static; */
   outline: none;
+  overflow: hidden;
 }
 .artboard::after {
   position: absolute;

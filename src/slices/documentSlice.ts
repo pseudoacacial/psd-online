@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
+import { Layer } from "ag-psd"
 
 export interface PsdObject {
   id: number
@@ -11,6 +12,7 @@ export interface PsdObject {
   canvas?: string
   //clipping:true means that the element should be clipped to the next sibling (in photoshop layers) - or, what ends up happening in dom - to the previous sibling
   clipping?: boolean
+  text?: Layer["text"]
   rect: {
     top: number | undefined
     left: number | undefined
@@ -151,8 +153,10 @@ export const documentSlice = createSlice({
       ) {
         arr.forEach(i => {
           if (i.id === Id) {
+            if (i.type !== "artboard")
+              i.rect = { ...stretch(i.rect, objectToAdd.rect) }
             //stretch the group when you add child to it
-            i.rect = { ...stretch(i.rect, objectToAdd.rect) }
+
             i.children = [...i.children, objectToAdd]
           } else {
             formatDataWithResize(i.children, Id, objectToAdd)

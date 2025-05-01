@@ -143,7 +143,7 @@ export const FileInput = () => {
     psd.children.forEach(element => {
       checkChildren(element as FileElement, [], [], null)
     })
-    // console.log(psd)
+    console.log(psd)
   }, [psd])
 
   useEffect(() => {
