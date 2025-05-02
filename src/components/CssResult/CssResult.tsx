@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react"
 import { useAppSelector } from "../../app/hooks"
-import { selectMatches, Match } from "../../selectors/matchSelectors"
+import {
+  selectMatches,
+  selectMatchesByArtboard,
+  Match,
+} from "../../selectors/matchSelectors"
 import { selectArtboards, selectElementsFlat } from "../../slices/documentSlice"
 import { selectQueries } from "../../slices/querySlice"
 
 export const CssResult = () => {
   const matches = useAppSelector(selectMatches)
+  const matchesByArtboard = useAppSelector(selectMatchesByArtboard)
   const elements = useAppSelector(selectElementsFlat)
   const artboards = useAppSelector(selectArtboards)
   const queries = useAppSelector(selectQueries)
 
   const [CssResult, setCssResult] = useState("")
-
-  const groupNameRegex = /(\d+x\d+)/
 
   const prefix = ".b"
 
@@ -71,39 +74,10 @@ export const CssResult = () => {
     return matchCss
   }
 
-  const groupMatchesByArtboard = () => {
-    const matchesByArtboard: { [key: string]: Match[] } = {}
-    artboards.forEach(artboard => {
-      const artboardMatch = artboard.name.match(groupNameRegex)
-      if (artboardMatch) {
-        // matchesByArtboard[artboard.id] = []
-        matchesByArtboard[artboardMatch[1]] = []
-      }
-    })
-
-    matches.forEach(match => {
-      const psdElement = elements.find(
-        element => element.id === match.documentId,
-      )
-      const artboard = artboards.find(
-        artboard => artboard.id === psdElement?.artboardId,
-      )
-
-      const artboardMatch = artboard && artboard.name.match(groupNameRegex)
-
-      artboardMatch &&
-        //if match for this selector already exists in this artboard - don't add more
-        !matchesByArtboard[artboardMatch[1]].find(
-          e => e.selectorId === match.selectorId,
-        ) &&
-        matchesByArtboard[artboardMatch[1]].push(match)
-    })
-    return matchesByArtboard
-  }
   useEffect(() => {
     // setCssResult()
     let cssResult = ""
-    for (const [key, value] of Object.entries(groupMatchesByArtboard())) {
+    for (const [key, value] of Object.entries(matchesByArtboard)) {
       cssResult +=
         `${prefix}${key} {\n` +
         value.map(match => getMatchCss(match)).join("") +

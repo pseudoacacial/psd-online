@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { useState, useEffect, useRef } from "react"
 
 import { add, remove, modify, Query, QueryClass } from "../../slices/querySlice"
-
+import { selectMatches } from "../../selectors/matchSelectors"
 export interface QueryListItemProps {
   query: Query
   freeze?: boolean
@@ -11,6 +11,8 @@ export interface QueryListItemProps {
 
 export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const dispatch = useAppDispatch()
+
+  const matches = useAppSelector(selectMatches)
 
   //state is only used if freeze==true; Otherwise, each change dispatches a modify action
   const [newQuery, setNewQuery] = useState(query)
@@ -114,6 +116,9 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
               }}
             ></input>
             <label htmlFor="size">font-size</label>
+          </div>
+          <div data-testid="match number" id="match-number">
+            {matches.filter(match => match.selectorId === query.id).length}
           </div>
         </div>
       </div>

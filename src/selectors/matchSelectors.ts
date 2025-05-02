@@ -1,6 +1,10 @@
 import { createSelector } from "@reduxjs/toolkit"
 
-import { selectDocument, selectElementsFlat } from "../slices/documentSlice"
+import {
+  selectArtboards,
+  selectDocument,
+  selectElementsFlat,
+} from "../slices/documentSlice"
 import { selectQueries, Query } from "../slices/querySlice"
 
 export interface Match {
@@ -39,5 +43,40 @@ export const selectMatches = createSelector(
     // Example logic: filter queries that match the current document ID
 
     return selectors.flatMap(selector => getMatches(selector))
+  },
+)
+
+const groupNameRegex = /(\d+x\d+)/
+
+export const selectMatchesByArtboard = createSelector(
+  [selectMatches, selectArtboards, selectElementsFlat],
+  (matches, artboards, elements) => {
+    const matchesByArtboard: { [key: string]: Match[] } = {}
+    artboards.forEach(artboard => {
+      const artboardMatch = artboard.name.match(groupNameRegex)
+      if (artboardMatch) {
+        // matchesByArtboard[artboard.id] = []
+        matchesByArtboard[artboardMatch[1]] = []
+      }
+    })
+
+    matches.forEach(match => {
+      const psdElement = elements.find(
+        element => element.id === match.documentId,
+      )
+      const artboard = artboards.find(
+        artboard => artboard.id === psdElement?.artboardId,
+      )
+
+      const artboardMatch = artboard && artboard.name.match(groupNameRegex)
+
+      artboardMatch &&
+        //if match for this selector already exists in this artboard - don't add more
+        !matchesByArtboard[artboardMatch[1]].find(
+          e => e.selectorId === match.selectorId,
+        ) &&
+        matchesByArtboard[artboardMatch[1]].push(match)
+    })
+    return matchesByArtboard
   },
 )
