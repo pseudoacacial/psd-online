@@ -158,7 +158,6 @@ export const FileInput = () => {
         reader.onload = function (e) {
           const arrayBuffer = e.target?.result // This is the ArrayBuffer
           const psd = readPsd(arrayBuffer as ArrayBuffer, {
-            skipLayerImageData: true,
             skipThumbnail: true,
           }) // Output the ArrayBuffer
           // You can now use the arrayBuffer as needed

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useState } from "react"
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
@@ -21,6 +21,7 @@ export const Viewer = () => {
   const elements = useAppSelector(selectElements)
 
   const [disabledLayers, setDisabledLayers] = useState<HTMLElement[]>([])
+  const [zoom, setZoom] = useState(1)
 
   const handleDigThroughLayers = (event: React.MouseEvent) => {
     const element = event.target as HTMLElement
@@ -36,12 +37,41 @@ export const Viewer = () => {
       setDisabledLayers(disabledLayers.slice(0, -1))
     }
   }
+  const handleWheel = (event: React.WheelEvent) => {
+    if (event.ctrlKey) {
+      if (event.deltaY < 0) {
+        setZoom(zoom + 0.1)
+      }
+      if (event.deltaY > 0) {
+        setZoom(zoom - 0.1)
+      }
+    }
+  }
+  const viewerRef = useRef(null)
+
+  //"React binds all events at the root element (not the document), and the wheel event is binded internally using true option, and I quote MDN:
+  //A Boolean that, if true, indicates that the function specified by listener will never call preventDefault()."
+  useEffect(() => {
+    viewerRef.current?.addEventListener("wheel", event => {
+      event.ctrlKey && event.preventDefault()
+    })
+    return () => {
+      viewerRef.current?.removeEventListener("wheel", event => {
+        event.ctrlKey && event.preventDefault()
+      })
+    }
+  }, [])
 
   return (
-    <div className="viewer relative overflow-scroll">
+    <div
+      className="viewer relative overflow-scroll"
+      onClick={handleUnhideLayers}
+      ref={viewerRef}
+      onWheel={handleWheel}
+    >
       <div
         className="canvas m-1 relative size-full"
-        onClick={handleUnhideLayers}
+        style={{ transform: `scale(${zoom})` }}
       >
         {elements.map((element, index) => {
           return (
