@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { Layer } from "ag-psd"
-
+import { createSelector } from "@reduxjs/toolkit"
 export interface PsdObject {
   id: number
   artboardId: number | null
@@ -201,34 +201,30 @@ export const documentSlice = createSlice({
     selectDocument: document => document,
     selectElements: document => document.elements,
     selectArtboards: document => document.artboards,
-    selectElementsFlat: document => {
-      let elementsFlat: PsdObject[] = []
-      const flattenElement = (element: PsdObject) => {
-        let flatList: PsdObject[] = []
-        element.children.forEach((child: PsdObject) => {
-          flatList = flatList.concat(flattenElement(child))
-        })
-
-        flatList = flatList.concat({ ...element, children: [] })
-        return flatList
-      }
-      document.elements.forEach(element => {
-        elementsFlat = elementsFlat.concat(flattenElement(element))
-      })
-      return elementsFlat
-    },
   },
 })
 
 // Export the generated action creators for use in components
 export const { add, remove, modify, addChild, reset } = documentSlice.actions
 
-export const {
-  selectDocument,
-  selectElements,
-  selectElementsFlat,
-  selectArtboards,
-} = documentSlice.selectors
+export const { selectDocument, selectElements, selectArtboards } =
+  documentSlice.selectors
 
+export const selectElementsFlat = createSelector([selectDocument], document => {
+  let elementsFlat: PsdObject[] = []
+  const flattenElement = (element: PsdObject) => {
+    let flatList: PsdObject[] = []
+    element.children.forEach((child: PsdObject) => {
+      flatList = flatList.concat(flattenElement(child))
+    })
+
+    flatList = flatList.concat({ ...element, children: [] })
+    return flatList
+  }
+  document.elements.forEach(element => {
+    elementsFlat = elementsFlat.concat(flattenElement(element))
+  })
+  return elementsFlat
+})
 // Export the slice reducer for use in the store configuration
 export default documentSlice.reducer
