@@ -177,5 +177,10 @@ export const FileInput = () => {
     setPsd(psd)
   }
 
-  return <input className="input" type="file"></input>
+  return (
+    <div>
+      <label htmlFor="fileInput">File: </label>
+      <input id="fileInput" className="input" type="file"></input>
+    </div>
+  )
 }

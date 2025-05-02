@@ -20,7 +20,7 @@ export const QueryList = () => {
   const handleExportQueriesToClipboard = () => {
     navigator.clipboard.writeText(JSON.stringify(selectors))
   }
-  const handleImportQueriesfromClipboard = () => {
+  const handleImportQueriesFromClipboard = () => {
     dispatch(reset())
     navigator.clipboard
       .readText()
@@ -37,7 +37,7 @@ export const QueryList = () => {
       <div className="flex justify-center">
         <button
           className="border rounded mx-1 mb-2 px-1 max-w-28 leading-tight"
-          onClick={handleImportQueriesfromClipboard}
+          onClick={handleImportQueriesFromClipboard}
         >
           import from clipboard
         </button>

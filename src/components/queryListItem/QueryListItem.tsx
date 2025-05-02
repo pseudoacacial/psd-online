@@ -44,6 +44,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
       key={query.id}
       data-key={query.id}
       onKeyDown={handleKeyPress}
+      data-testid="queryListItem"
     >
       <div className="flex justify-between">
         <input
