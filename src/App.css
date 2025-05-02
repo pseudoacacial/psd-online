@@ -23,6 +23,15 @@
 .element.group {
   outline: 1px dashed slategray;
 }
+.viewer {
+  .group {
+    pointer-events: none;
+  }
+  .layer {
+    pointer-events: all;
+  }
+}
+
 .artboard {
   /* position: static; */
   outline: none;
@@ -37,6 +46,9 @@
   left: 0;
   outline: 1px solid tomato;
   pointer-events: none;
+}
+.element:hover {
+  outline: 2px solid tomato;
 }
 .viewer {
   width: 1000px;

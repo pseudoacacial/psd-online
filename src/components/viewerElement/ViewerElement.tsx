@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   add,
   remove,
@@ -13,11 +13,13 @@ export type ViewerElementProps = {
     top: number
     left: number
   }
+  digThroughLayers: Function
 }
 
 export const ViewerElement = ({
   element,
   offsetRect = { top: 0, left: 0 },
+  digThroughLayers,
 }: ViewerElementProps) => {
   // const container = useRef(null)
   // useEffect(() => {
@@ -26,8 +28,10 @@ export const ViewerElement = ({
   //     container.current.append(element.canvas)
   //   }
   // }, [container])
+
   return (
     <div
+      onClick={digThroughLayers}
       className={`element${element.type ? " " + element.type : ""}`}
       data-name={element.name}
       style={
@@ -42,6 +46,7 @@ export const ViewerElement = ({
             element.rect.bottom !== null &&
             element.rect.top !== null &&
             element.rect.bottom - element.rect.top,
+          backgroundImage: `url("${element.canvas}")`,
         }
       }
     >
@@ -49,7 +54,7 @@ export const ViewerElement = ({
         className="canvas"
         style={{ backgroundImage: `url("${element.canvas}")` }}
       ></div> */}
-      <img src={element.canvas}></img>
+      {/* <img src={element.canvas}></img> */}
 
       {/* {element.name} */}
       {element.children?.map(child => (
@@ -57,6 +62,7 @@ export const ViewerElement = ({
           key={child.id + child.name}
           element={child}
           offsetRect={{ top: element.rect.top || 0, left: element.rect.left }}
+          digThroughLayers={digThroughLayers}
         ></ViewerElement>
       ))}
     </div>
