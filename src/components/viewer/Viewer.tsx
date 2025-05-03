@@ -43,7 +43,7 @@ export const Viewer = () => {
         setZoom(zoom + 0.1)
       }
       if (event.deltaY > 0) {
-        setZoom(zoom - 0.1)
+        setZoom(Math.max(zoom - 0.1, 0.1))
       }
     }
   }
@@ -70,7 +70,7 @@ export const Viewer = () => {
       onWheel={handleWheel}
     >
       <div
-        className="canvas m-1 relative size-full"
+        className="canvas m-1 relative size-full transition-transform"
         style={{ transform: `scale(${zoom})` }}
       >
         {elements.map((element, index) => {

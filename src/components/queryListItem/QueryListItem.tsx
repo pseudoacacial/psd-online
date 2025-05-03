@@ -3,7 +3,11 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { useState, useEffect, useRef } from "react"
 
 import { add, remove, modify, Query, QueryClass } from "../../slices/querySlice"
-import { selectMatches } from "../../selectors/matchSelectors"
+import {
+  selectMatches,
+  selectMatchesByArtboard,
+} from "../../selectors/matchSelectors"
+import { selectElementsFlat } from "../../slices/documentSlice"
 export interface QueryListItemProps {
   query: Query
   freeze?: boolean
@@ -12,7 +16,9 @@ export interface QueryListItemProps {
 export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const dispatch = useAppDispatch()
 
-  const matches = useAppSelector(selectMatches)
+  const matches = useAppSelector(selectMatchesByArtboard)
+
+  const elements = useAppSelector(selectElementsFlat)
 
   //state is only used if freeze==true; Otherwise, each change dispatches a modify action
   const [newQuery, setNewQuery] = useState(query)
@@ -40,6 +46,48 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const handleRemoveClick = (e: React.BaseSyntheticEvent) => {
     dispatch(remove(query.id))
   }
+
+  const objectFilter = <T extends object>(
+    obj: T,
+    predicate: <K extends keyof T>(value: T[K], key: K) => boolean,
+  ) => {
+    const result: { [K in keyof T]?: T[K] } = {}
+    ;(Object.keys(obj) as Array<keyof T>).forEach(name => {
+      if (predicate(obj[name], name)) {
+        result[name] = obj[name]
+      }
+    })
+    return result
+  }
+
+  //can you believe this is how i retrieve the matched psd element id? wow. not using flat matches to not because the deduplication is in selectMatchesByArtboard
+
+  const matchedGroups = objectFilter(
+    matches,
+    group => !!group.find(match => match.selectorId === query.id),
+  )
+
+  const matchedDocumentIdsWithGroup = Object.keys(matchedGroups)
+    .map((groupName: keyof typeof matchedGroups) => ({
+      groupName: groupName,
+      documentId: matchedGroups[groupName]?.find(
+        match => match.selectorId === query.id,
+      )?.documentId,
+    }))
+    .filter(x => x !== undefined)
+
+  // const psdElement = elements.find(
+  //   element => element.id === matchedDocumentIdsWithGroup[0].documentId,
+  // )
+  const matchedImagesWithGroup = matchedDocumentIdsWithGroup
+    .map((matchedDocumentIdWithGroup, id) => ({
+      image: elements.find(
+        element => element.id === matchedDocumentIdWithGroup.documentId,
+      )?.canvas,
+      groupName: matchedDocumentIdWithGroup.groupName,
+    }))
+    .filter(x => x !== undefined)
+  console.log(matchedGroups)
   return (
     <div
       className="group flex flex-col border justify-between"
@@ -83,8 +131,8 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
         )}
       </div>
       <div className="hidden justify-evenly group-focus-within:flex">
-        <div className="flex justify-start">
-          <div>
+        <div className="flex justify-start w-full">
+          <div className="mx-1">
             <input
               type="checkbox"
               id="size"
@@ -95,7 +143,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             ></input>
             <label htmlFor="size">Size</label>
           </div>
-          <div>
+          <div className="mx-1">
             <input
               type="checkbox"
               id="position"
@@ -106,7 +154,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             ></input>
             <label htmlFor="position">Position</label>
           </div>
-          <div>
+          <div className="mx-1">
             <input
               type="checkbox"
               id="size"
@@ -117,8 +165,28 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             ></input>
             <label htmlFor="size">font-size</label>
           </div>
-          <div data-testid="match number" id="match-number">
-            {matches.filter(match => match.selectorId === query.id).length}
+          <div className="mx-1">
+            <label htmlFor="match-number">found:</label>
+            <span data-testid="match number" id="match-number">
+              {Object.keys(matchedGroups).length}
+            </span>
+            {Object.keys(matches).map(groupName => (
+              <div className="flex">
+                <div>{groupName}</div>
+                {matchedGroups[groupName] ? "✅" : "❌"}
+              </div>
+            ))}
+          </div>
+
+          <div className="mx-1">
+            {matchedImagesWithGroup.map(data => {
+              console.log(data)
+              return (
+                <a download={`${data.groupName}.webp`} href={data.image}>
+                  Download
+                </a>
+              )
+            })}
           </div>
         </div>
       </div>

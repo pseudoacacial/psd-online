@@ -64,7 +64,7 @@ export const FileInput = () => {
                 idPath: [...parentIdPath],
                 namePath: [...parentNamePath, object.name],
                 text: object.text,
-                canvas: object.canvas?.toDataURL(),
+                canvas: object.canvas?.toDataURL("image/webp"),
                 rect: isLayer
                   ? {
                       left: object.left,
