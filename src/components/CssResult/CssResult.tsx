@@ -33,42 +33,41 @@ export const CssResult = () => {
     let style: React.CSSProperties = {}
 
     //only add styles if CSS name is specified
-    if (query?.cssSelector) {
+    if (!query?.cssSelector) return
+    if (
+      query.showPosition &&
+      psdElement.rect.left !== undefined &&
+      psdElement.rect.top !== undefined
+    ) {
       if (
-        query.showPosition &&
-        psdElement.rect.left !== undefined &&
-        psdElement.rect.top !== undefined
+        artboard !== undefined &&
+        artboard.rect.left !== undefined &&
+        artboard.rect.top !== undefined
       ) {
-        if (
-          artboard !== undefined &&
-          artboard.rect.left !== undefined &&
-          artboard.rect.top !== undefined
-        ) {
-          style.left = psdElement.rect.left - artboard.rect.left + "px"
-          style.top = psdElement.rect.top - artboard.rect.top + "px"
-        } else {
-          style.left = psdElement.rect.left + "px"
-          style.top = psdElement.rect.top + "px"
-        }
+        style.left = psdElement.rect.left - artboard.rect.left + "px"
+        style.top = psdElement.rect.top - artboard.rect.top + "px"
+      } else {
+        style.left = psdElement.rect.left + "px"
+        style.top = psdElement.rect.top + "px"
       }
-      if (
-        query.showSize &&
-        psdElement.rect.right &&
-        psdElement.rect.left &&
-        psdElement.rect.bottom &&
-        psdElement.rect.top
-      ) {
-        style.width = psdElement.rect.right - psdElement.rect.left + "px"
-        style.height = psdElement.rect.bottom - psdElement.rect.top + "px"
-      }
-      if (query.showFontSize && psdElement.text?.style?.fontSize) {
-        style.fontSize =
-          (
-            psdElement.text?.style?.fontSize *
-            ((psdElement.text.transform && psdElement.text.transform[3]) || 1)
-          ).toFixed(2) + "px"
-        console.log(psdElement.text)
-      }
+    }
+    if (
+      query.showSize &&
+      psdElement.rect.right &&
+      psdElement.rect.left &&
+      psdElement.rect.bottom &&
+      psdElement.rect.top
+    ) {
+      style.width = psdElement.rect.right - psdElement.rect.left + "px"
+      style.height = psdElement.rect.bottom - psdElement.rect.top + "px"
+    }
+    if (query.showFontSize && psdElement.text?.style?.fontSize) {
+      style.fontSize =
+        (
+          psdElement.text?.style?.fontSize *
+          ((psdElement.text.transform && psdElement.text.transform[3]) || 1)
+        ).toFixed(2) + "px"
+      console.log(psdElement.text)
     }
 
     const regex = new RegExp(/[A-Z]/g)
