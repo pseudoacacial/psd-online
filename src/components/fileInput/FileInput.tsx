@@ -23,6 +23,7 @@ export interface FileElement extends Layer {
 export const FileInput = () => {
   const [psd, setPsd] = useState<Psd | null>(null)
   const dispatch = useAppDispatch()
+
   const checkChildren = (
     object: FileElement,
     parentIdPath: number[],
@@ -148,32 +149,30 @@ export const FileInput = () => {
     // console.log(psd)
   }, [psd])
 
-  useEffect(() => {
-    document.querySelector(".input")?.addEventListener("change", event => {
-      const files = (event.target as HTMLInputElement).files // Get the selected file
-      if (files) {
-        const file = files[0]
-        const reader = new FileReader()
+  const handleFileChange = (event: React.ChangeEvent) => {
+    const files = (event.target as HTMLInputElement).files // Get the selected file
+    if (files) {
+      const file = files[0]
+      const reader = new FileReader()
 
-        reader.onload = function (e) {
-          const arrayBuffer = e.target?.result // This is the ArrayBuffer
-          const psd = readPsd(arrayBuffer as ArrayBuffer, {
-            skipThumbnail: true,
-          }) // Output the ArrayBuffer
-          // You can now use the arrayBuffer as needed
-          handleFile(psd)
-        }
-
-        reader.onerror = function (e) {
-          console.error("Error reading file", e)
-        }
-
-        reader.readAsArrayBuffer(file) // Read the file as an ArrayBuffer
-      } else {
-        console.log("No file selected")
+      reader.onload = function (e) {
+        const arrayBuffer = e.target?.result // This is the ArrayBuffer
+        const psd = readPsd(arrayBuffer as ArrayBuffer, {
+          skipThumbnail: true,
+        }) // Output the ArrayBuffer
+        // You can now use the arrayBuffer as needed
+        handleFile(psd)
       }
-    })
-  }, [])
+
+      reader.onerror = function (e) {
+        console.error("Error reading file", e)
+      }
+
+      reader.readAsArrayBuffer(file) // Read the file as an ArrayBuffer
+    } else {
+      console.log("No file selected")
+    }
+  }
 
   const handleFile = (psd: Psd) => {
     setPsd(psd)
@@ -182,7 +181,12 @@ export const FileInput = () => {
   return (
     <div>
       <label htmlFor="fileInput">File: </label>
-      <input id="fileInput" className="input" type="file"></input>
+      <input
+        onChange={handleFileChange}
+        id="fileInput"
+        className="input"
+        type="file"
+      ></input>
     </div>
   )
 }
