@@ -62,7 +62,12 @@ export const CssResult = () => {
         style.height = psdElement.rect.bottom - psdElement.rect.top + "px"
       }
       if (query.showFontSize && psdElement.text?.style?.fontSize) {
-        style.fontSize = psdElement.text?.style?.fontSize + "px"
+        style.fontSize =
+          (
+            psdElement.text?.style?.fontSize *
+            ((psdElement.text.transform && psdElement.text.transform[3]) || 1)
+          ).toFixed(2) + "px"
+        console.log(psdElement.text)
       }
     }
 
