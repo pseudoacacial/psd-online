@@ -32,12 +32,14 @@ export interface PsdObjectChild {
 export interface DocumentSliceState {
   artboards: Array<PsdObject> | []
   elements: Array<PsdObject> | []
+  thumbnail: string
 }
 
 // Define the initial value for the slice state
 const initialState: DocumentSliceState = {
   artboards: [],
   elements: [],
+  thumbnail: "",
 }
 
 // Slices contain Redux reducer logic for updating state, and
@@ -192,6 +194,9 @@ export const documentSlice = createSlice({
       //     : x,
       // )
     },
+    setThumbnail: (state, action: PayloadAction<string>) => {
+      state.thumbnail = action.payload
+    },
     reset: (state, action: PayloadAction<void>) => {
       state.elements = []
       state.artboards = []
@@ -201,14 +206,20 @@ export const documentSlice = createSlice({
     selectDocument: document => document,
     selectElements: document => document.elements,
     selectArtboards: document => document.artboards,
+    selectThumbnail: document => document.thumbnail,
   },
 })
 
 // Export the generated action creators for use in components
-export const { add, remove, modify, addChild, reset } = documentSlice.actions
+export const { add, remove, modify, addChild, setThumbnail, reset } =
+  documentSlice.actions
 
-export const { selectDocument, selectElements, selectArtboards } =
-  documentSlice.selectors
+export const {
+  selectDocument,
+  selectElements,
+  selectArtboards,
+  selectThumbnail,
+} = documentSlice.selectors
 
 export const selectElementsFlat = createSelector([selectDocument], document => {
   let elementsFlat: PsdObject[] = []

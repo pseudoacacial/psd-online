@@ -12,6 +12,7 @@ import {
   selectDocument,
   selectElements,
   selectElementsFlat,
+  selectThumbnail,
   PsdObject,
 } from "../../slices/documentSlice"
 
@@ -22,6 +23,7 @@ import { ViewerElement } from "../viewerElement/ViewerElement"
 export const Viewer = () => {
   const document = useAppSelector(selectDocument)
   const elements = useAppSelector(selectElements)
+  const thumbnail = useAppSelector(selectThumbnail)
   const dispatch = useAppDispatch()
 
   const [disabledLayers, setDisabledLayers] = useState<HTMLElement[]>([])
@@ -99,8 +101,12 @@ export const Viewer = () => {
       <div className="relative size-full overflow-scroll">
         <div
           className="canvas m-1 relative size-0 transition-transform"
-          style={{ transform: `scale(${zoom})` }}
+          style={{
+            transform: `scale(${zoom})`,
+            // backgroundImage: `url("${thumbnail}")`,
+          }}
         >
+          <img src={thumbnail} className="max-w-none" />
           {elements.map((element, index) => {
             return (
               <ViewerElement

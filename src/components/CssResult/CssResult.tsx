@@ -67,7 +67,6 @@ export const CssResult = () => {
           psdElement.text?.style?.fontSize *
           ((psdElement.text.transform && psdElement.text.transform[3]) || 1)
         ).toFixed(2) + "px"
-      console.log(psdElement.text)
     }
 
     const regex = new RegExp(/[A-Z]/g)

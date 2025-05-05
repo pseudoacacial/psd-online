@@ -1,4 +1,4 @@
-import { Layer, Psd, readPsd } from "ag-psd"
+import { byteArrayToBase64, Layer, Psd, readPsd } from "ag-psd"
 import { useEffect, useState } from "react"
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
@@ -12,6 +12,7 @@ import {
   selectDocument,
   selectElementsFlat,
   PsdObject,
+  setThumbnail,
 } from "../../slices/documentSlice"
 
 export interface FileElement extends Layer {
@@ -30,71 +31,40 @@ export const FileInput = () => {
     parentNamePath: string[],
     artboardId: number | null,
   ) => {
-    // don't do this part if it's the start of the file
-    if (object.id) {
-      //is layer if
-      const isLayer =
-        //has no children
-        !object.children ||
-        object.children.length < 1 ||
-        //or is a text or raster
-        object.text ||
-        object.placedLayer
-      if (object.artboard !== undefined) {
+    //is layer if
+    const isLayer =
+      //has no children
+      !object.children ||
+      object.children.length < 1 ||
+      //or is a text or raster
+      object.text ||
+      object.placedLayer
+    if (object.artboard !== undefined) {
+      dispatch(
+        add({
+          id: object.id,
+          artboardId: object.id,
+          idPath: [],
+          namePath: [],
+          name: object.name || "",
+          type: "artboard",
+          rect: { ...object.artboard.rect },
+          children: [],
+        }),
+      )
+    } else {
+      if (parentIdPath.length > 0) {
         dispatch(
-          add({
-            id: object.id,
-            artboardId: object.id,
-            idPath: [],
-            namePath: [],
-            name: object.name || "",
-            type: "artboard",
-            rect: { ...object.artboard.rect },
-            children: [],
-          }),
-        )
-      } else {
-        if (parentIdPath.length > 0) {
-          dispatch(
-            addChild({
-              object: {
-                name: object.name,
-                type: isLayer ? "layer" : "group",
-                id: object.id,
-                artboardId: artboardId,
-                idPath: [...parentIdPath],
-                namePath: [...parentNamePath, object.name],
-                text: object.text,
-                canvas: object.canvas?.toDataURL("image/webp"),
-                rect: isLayer
-                  ? {
-                      left: object.left,
-                      right: object.right,
-                      top: object.top,
-                      bottom: object.bottom,
-                    }
-                  : {
-                      top: undefined,
-                      left: undefined,
-                      right: undefined,
-                      bottom: undefined,
-                    },
-                children: [],
-              },
-              parentIdPath: parentIdPath,
-              parentNamePath: parentNamePath,
-            }),
-          )
-        } else {
-          dispatch(
-            add({
-              id: object.id,
-              artboardId: null,
-              idPath: [],
-              namePath: [],
-              text: object.text,
-              name: object.name || "",
+          addChild({
+            object: {
+              name: object.name,
               type: isLayer ? "layer" : "group",
+              id: object.id,
+              artboardId: artboardId,
+              idPath: [...parentIdPath],
+              namePath: [...parentNamePath, object.name],
+              text: object.text,
+              canvas: object.canvas?.toDataURL("image/webp"),
               rect: isLayer
                 ? {
                     left: object.left,
@@ -109,9 +79,37 @@ export const FileInput = () => {
                     bottom: undefined,
                   },
               children: [],
-            }),
-          )
-        }
+            },
+            parentIdPath: parentIdPath,
+            parentNamePath: parentNamePath,
+          }),
+        )
+      } else {
+        dispatch(
+          add({
+            id: object.id,
+            artboardId: null,
+            idPath: [],
+            namePath: [],
+            text: object.text,
+            name: object.name || "",
+            type: isLayer ? "layer" : "group",
+            rect: isLayer
+              ? {
+                  left: object.left,
+                  right: object.right,
+                  top: object.top,
+                  bottom: object.bottom,
+                }
+              : {
+                  top: undefined,
+                  left: undefined,
+                  right: undefined,
+                  bottom: undefined,
+                },
+            children: [],
+          }),
+        )
       }
     }
 
@@ -143,6 +141,11 @@ export const FileInput = () => {
     if (psd.children === undefined) {
       throw new Error("PSD file has no children. Is it a valid psd document?")
     }
+
+    const thumbnail = psd.canvas?.toDataURL("image/webp")
+
+    dispatch(setThumbnail(thumbnail))
+
     psd.children.forEach(element => {
       checkChildren(element as FileElement, [], [], null)
     })
@@ -157,9 +160,12 @@ export const FileInput = () => {
 
       reader.onload = function (e) {
         const arrayBuffer = e.target?.result // This is the ArrayBuffer
-        const psd = readPsd(arrayBuffer as ArrayBuffer, {
-          skipThumbnail: true,
-        }) // Output the ArrayBuffer
+
+        const compositeOnly = false
+        const options = compositeOnly
+          ? { skipLayerImageData: true }
+          : { skipCompositeImageData: true }
+        const psd = readPsd(arrayBuffer as ArrayBuffer, options) // Output the ArrayBuffer
         // You can now use the arrayBuffer as needed
         handleFile(psd)
       }
