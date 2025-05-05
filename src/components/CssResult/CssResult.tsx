@@ -34,8 +34,16 @@ export const CssResult = () => {
 
     //only add styles if CSS name is specified
     if (query?.cssSelector) {
-      if (query.showPosition && psdElement.rect.left && psdElement.rect.top) {
-        if (artboard !== undefined && artboard.rect.left && artboard.rect.top) {
+      if (
+        query.showPosition &&
+        psdElement.rect.left !== undefined &&
+        psdElement.rect.top !== undefined
+      ) {
+        if (
+          artboard !== undefined &&
+          artboard.rect.left !== undefined &&
+          artboard.rect.top !== undefined
+        ) {
           style.left = psdElement.rect.left - artboard.rect.left + "px"
           style.top = psdElement.rect.top - artboard.rect.top + "px"
         } else {
