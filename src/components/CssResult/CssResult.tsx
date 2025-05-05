@@ -102,7 +102,11 @@ export const CssResult = () => {
   }, [matches])
   return (
     <div className="CssResult my-2">
-      <textarea className="border w-full h-80" value={CssResult}></textarea>
+      <textarea
+        readOnly
+        className="border w-full h-80"
+        value={CssResult}
+      ></textarea>
     </div>
   )
 }

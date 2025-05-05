@@ -154,7 +154,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
               {Object.keys(matchedGroups).length}
             </span>
             {Object.keys(matches).map(groupName => (
-              <div className="flex">
+              <div className="flex" key={groupName}>
                 <div>{groupName}</div>
                 {matchedGroups[groupName] ? "✅" : "❌"}
               </div>

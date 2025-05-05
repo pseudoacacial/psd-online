@@ -92,13 +92,13 @@ export const Viewer = () => {
     >
       <style>
         {`.viewer .group {
-        pointer-events:${selectGroups ? "none" : "all"};
+        pointer-events:${selectGroups ? "all" : "none"};
       }`}
       </style>
 
       <div className="relative size-full overflow-scroll">
         <div
-          className="canvas m-1 relative size-full transition-transform"
+          className="canvas m-1 relative size-0 transition-transform"
           style={{ transform: `scale(${zoom})` }}
         >
           {elements.map((element, index) => {
@@ -128,10 +128,10 @@ export const Viewer = () => {
             className={`rounded-full bg-main h-4/5 aspect-square border-slate-80 top-1/2 absolute transition-all duration-500  -translate-y-1/2 left-[2px] ${selectGroups && "left-[calc(100%-2px)] -translate-x-full"}`}
           ></div> */}
           <FaObjectGroup
-            className={`absolute transition-all text-main mt-px ${selectGroups ? "opacity-0" : "opacity-100"}`}
+            className={`absolute transition-all text-main mt-px ${selectGroups ? "opacity-100" : "opacity-0"}`}
           />
           <FaObjectUngroup
-            className={`absolute transition-all text-main ${selectGroups ? "opacity-100" : "opacity-0"}`}
+            className={`absolute transition-all text-main ${selectGroups ? "opacity-0" : "opacity-100"}`}
           />
         </button>
       </div>
