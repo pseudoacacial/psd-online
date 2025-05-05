@@ -148,18 +148,20 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             ></input>
             <label htmlFor="size">font-size</label>
           </div>
-          <div className="mx-1">
-            <label htmlFor="match-number">found:</label>
-            <span data-testid="match number" id="match-number">
-              {Object.keys(matchedGroups).length}
-            </span>
-            {Object.keys(matches).map(groupName => (
-              <div className="flex" key={groupName}>
-                <div>{groupName}</div>
-                {matchedGroups[groupName] ? "✅" : "❌"}
-              </div>
-            ))}
-          </div>
+          {freeze || (
+            <div className="mx-1">
+              <label htmlFor="match-number">found:</label>
+              <span data-testid="match number" id="match-number">
+                {Object.keys(matchedGroups).length}
+              </span>
+              {Object.keys(matches).map(groupName => (
+                <div className="flex" key={groupName}>
+                  <div>{groupName}</div>
+                  {matchedGroups[groupName] ? "✅" : "❌"}
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="mx-1"></div>
         </div>
