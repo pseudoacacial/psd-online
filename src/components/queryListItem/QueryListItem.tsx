@@ -113,8 +113,8 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
           <button onClick={handleRemoveClick}>remove</button>
         )}
       </div>
-      <div className="hidden justify-evenly group-focus-within:flex">
-        <div className="flex justify-start w-full">
+      <div className="hidden justify-evenly group-focus-within:flex ">
+        <div className="flex justify-start w-full flex-wrap">
           <div className="mx-1">
             <input
               type="checkbox"
@@ -148,18 +148,31 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             ></input>
             <label htmlFor="size">font-size</label>
           </div>
+          <div className="mx-1">
+            <input
+              type="checkbox"
+              id="export"
+              checked={readQuery.export}
+              onChange={event => {
+                changeQueryValue("export", event.target.checked)
+              }}
+            ></input>
+            <label htmlFor="export">export</label>
+          </div>
           {freeze || (
-            <div className="mx-1">
+            <div className="mx-1 text-right">
               <label htmlFor="match-number">found:</label>
               <span data-testid="match number" id="match-number">
                 {Object.keys(matchedGroups).length}
               </span>
-              {Object.keys(matches).map(groupName => (
-                <div className="flex" key={groupName}>
-                  <div>{groupName}</div>
-                  {matchedGroups[groupName] ? "✅" : "❌"}
-                </div>
-              ))}
+              <div className="flex flex-wrap justify-end">
+                {Object.keys(matches).map(groupName => (
+                  <div className="flex basis-1/3 justify-end" key={groupName}>
+                    <div>{groupName}</div>
+                    {matchedGroups[groupName] ? "✅" : "❌"}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

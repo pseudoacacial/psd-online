@@ -14,32 +14,34 @@ export const Export = () => {
 
   const queries = useAppSelector(selectQueries)
 
-  const exportTable = queries.map(query => {
-    const matchedGroups = objectFilter(
-      matches,
-      group => !!group.find(match => match.selectorId === query.id),
-    )
+  const exportTable = queries
+    .filter(query => query.export)
+    .map(query => {
+      const matchedGroups = objectFilter(
+        matches,
+        group => !!group.find(match => match.selectorId === query.id),
+      )
 
-    const matchedDocumentIdsWithGroup = Object.keys(matchedGroups)
-      .map((groupName: keyof typeof matchedGroups) => ({
-        groupName: groupName,
-        documentId: matchedGroups[groupName]?.find(
-          match => match.selectorId === query.id,
-        )?.documentId,
-      }))
-      .filter(x => x !== undefined)
+      const matchedDocumentIdsWithGroup = Object.keys(matchedGroups)
+        .map((groupName: keyof typeof matchedGroups) => ({
+          groupName: groupName,
+          documentId: matchedGroups[groupName]?.find(
+            match => match.selectorId === query.id,
+          )?.documentId,
+        }))
+        .filter(x => x !== undefined)
 
-    const matchedImagesWithName = matchedDocumentIdsWithGroup
-      .map((matchedDocumentIdWithGroup, id) => ({
-        image: elements.find(
-          element => element.id === matchedDocumentIdWithGroup.documentId,
-        )?.canvas,
-        name: matchedDocumentIdWithGroup.groupName,
-      }))
-      .filter(x => x !== undefined)
+      const matchedImagesWithName = matchedDocumentIdsWithGroup
+        .map((matchedDocumentIdWithGroup, id) => ({
+          image: elements.find(
+            element => element.id === matchedDocumentIdWithGroup.documentId,
+          )?.canvas,
+          name: matchedDocumentIdWithGroup.groupName,
+        }))
+        .filter(x => x !== undefined)
 
-    return matchedImagesWithName
-  })
+      return matchedImagesWithName
+    })
 
   return (
     <div>
