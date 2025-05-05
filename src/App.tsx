@@ -9,7 +9,7 @@ import { CssResult } from "./components/CssResult/CssResult"
 import { Export } from "./components/export/Export"
 const App = () => {
   return (
-    <div className="App">
+    <div className="bg-bg text-main border-main">
       <FileInput />
 
       <div className="w-full flex overflow-hidden gap-2 p-2">

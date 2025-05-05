@@ -10,9 +10,35 @@
   /* position: relative; */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@layer base {
+  body {
+    @apply bg-rose-100 dark:bg-slate-800;
+    color-scheme: light;
+  }
+  :root {
+    --bg: theme(colors.rose.100);
+    --main: theme(colors.slate.800);
+  }
+  .dark {
+    --bg: theme(colors.slate.800);
+    --main: theme(colors.rose.100);
+    color-scheme: dark;
+  }
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .element {
@@ -24,8 +50,12 @@
   outline: 1px dashed slategray;
 }
 .viewer {
-  .group {
+  .artboard {
     pointer-events: none;
+  }
+  .group {
+    /* assigned by state in viewer component */
+    /* pointer-events: none; */
   }
   .layer {
     pointer-events: all;
