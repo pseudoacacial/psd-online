@@ -9,6 +9,7 @@ export interface Query {
   showSize?: boolean
   showFontSize?: boolean
   export?: boolean
+  exportName?: string
 }
 
 export class QueryClass implements Query {
@@ -19,6 +20,7 @@ export class QueryClass implements Query {
   showSize?: boolean
   showFontSize?: boolean
   export?: boolean
+  exportName?: string
   constructor(id: string) {
     this.id = id
     this.psdSelector = ""

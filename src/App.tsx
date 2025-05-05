@@ -6,6 +6,7 @@ import { Viewer, ViewerProps } from "./components/viewer/Viewer"
 import { QueryList } from "./components/queryList/QueryList"
 import { Matches } from "./components/matches/Matches"
 import { CssResult } from "./components/CssResult/CssResult"
+import { Export } from "./components/export/Export"
 const App = () => {
   return (
     <div className="App">
@@ -14,6 +15,7 @@ const App = () => {
       <div className="w-full flex overflow-hidden gap-2 p-2">
         <div className="flex-column">
           <QueryList></QueryList>
+          <Export></Export>
           <CssResult></CssResult>
         </div>
 

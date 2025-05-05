@@ -36,11 +36,11 @@ export const CssResult = () => {
     if (query?.cssSelector) {
       if (query.showPosition && psdElement.rect.left && psdElement.rect.top) {
         if (artboard !== undefined && artboard.rect.left && artboard.rect.top) {
-          style.left = psdElement.rect.left - artboard.rect.left
-          style.top = psdElement.rect.top - artboard.rect.top
+          style.left = psdElement.rect.left - artboard.rect.left + "px"
+          style.top = psdElement.rect.top - artboard.rect.top + "px"
         } else {
-          style.left = psdElement.rect.left
-          style.top = psdElement.rect.top
+          style.left = psdElement.rect.left + "px"
+          style.top = psdElement.rect.top + "px"
         }
       }
       if (
@@ -50,11 +50,11 @@ export const CssResult = () => {
         psdElement.rect.bottom &&
         psdElement.rect.top
       ) {
-        style.width = psdElement.rect.right - psdElement.rect.left
-        style.height = psdElement.rect.bottom - psdElement.rect.top
+        style.width = psdElement.rect.right - psdElement.rect.left + "px"
+        style.height = psdElement.rect.bottom - psdElement.rect.top + "px"
       }
       if (query.showFontSize && psdElement.text?.style?.fontSize) {
-        style.fontSize = psdElement.text?.style?.fontSize
+        style.fontSize = psdElement.text?.style?.fontSize + "px"
       }
     }
 

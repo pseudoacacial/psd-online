@@ -1,4 +1,5 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { objectFilter } from "../../utils/functions"
 
 import { useState, useEffect, useRef } from "react"
 
@@ -60,34 +61,10 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
     return result
   }
 
-  //can you believe this is how i retrieve the matched psd element id? wow. not using flat matches to not because the deduplication is in selectMatchesByArtboard
-
   const matchedGroups = objectFilter(
     matches,
     group => !!group.find(match => match.selectorId === query.id),
   )
-
-  const matchedDocumentIdsWithGroup = Object.keys(matchedGroups)
-    .map((groupName: keyof typeof matchedGroups) => ({
-      groupName: groupName,
-      documentId: matchedGroups[groupName]?.find(
-        match => match.selectorId === query.id,
-      )?.documentId,
-    }))
-    .filter(x => x !== undefined)
-
-  // const psdElement = elements.find(
-  //   element => element.id === matchedDocumentIdsWithGroup[0].documentId,
-  // )
-  const matchedImagesWithGroup = matchedDocumentIdsWithGroup
-    .map((matchedDocumentIdWithGroup, id) => ({
-      image: elements.find(
-        element => element.id === matchedDocumentIdWithGroup.documentId,
-      )?.canvas,
-      groupName: matchedDocumentIdWithGroup.groupName,
-    }))
-    .filter(x => x !== undefined)
-  console.log(matchedGroups)
   return (
     <div
       className="group flex flex-col border justify-between"
@@ -178,16 +155,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             ))}
           </div>
 
-          <div className="mx-1">
-            {matchedImagesWithGroup.map(data => {
-              console.log(data)
-              return (
-                <a download={`${data.groupName}.webp`} href={data.image}>
-                  Download
-                </a>
-              )
-            })}
-          </div>
+          <div className="mx-1"></div>
         </div>
       </div>
     </div>
