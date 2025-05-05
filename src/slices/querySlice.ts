@@ -49,7 +49,7 @@ export const QuerySlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    add: (state, action: PayloadAction<Query>) => {
+    addQuery: (state, action: PayloadAction<Query>) => {
       state.queries = [
         ...state.queries
           //remove object with same id
@@ -76,7 +76,7 @@ export const QuerySlice = createSlice({
 })
 
 // Export the generated action creators for use in components
-export const { add, remove, modify, reset } = QuerySlice.actions
+export const { addQuery, remove, modify, reset } = QuerySlice.actions
 
 export const { selectQueries: selectQueries } = QuerySlice.selectors
 

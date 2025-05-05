@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { useState, useEffect } from "react"
 
 import {
-  add,
+  addQuery,
   remove,
   modify,
   reset,
@@ -27,7 +27,7 @@ export const QueryList = () => {
       .then(res => JSON.parse(res))
       .then((res: Query[]) => {
         res.forEach(query => {
-          dispatch(add(query))
+          dispatch(addQuery(query))
         })
       })
   }

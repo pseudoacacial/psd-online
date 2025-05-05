@@ -47,7 +47,6 @@ export const Export = () => {
       {exportTable.map(matchedImagesWithGroup => (
         <div>
           {matchedImagesWithGroup.map(data => {
-            console.log(data)
             return (
               <a
                 className="border rounded p-1 m-1"

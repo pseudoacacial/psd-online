@@ -3,7 +3,13 @@ import { objectFilter } from "../../utils/functions"
 
 import { useState, useEffect, useRef } from "react"
 
-import { add, remove, modify, Query, QueryClass } from "../../slices/querySlice"
+import {
+  addQuery,
+  remove,
+  modify,
+  Query,
+  QueryClass,
+} from "../../slices/querySlice"
 import {
   selectMatches,
   selectMatchesByArtboard,
@@ -36,7 +42,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
 
   const handleAddClick = () => {
     if (newQuery === null) throw new Error("trying to a null query")
-    dispatch(add(newQuery))
+    dispatch(addQuery(newQuery))
     setNewQuery(new QueryClass(self.crypto.randomUUID()))
   }
   const handleKeyPress = (event: React.KeyboardEvent) => {

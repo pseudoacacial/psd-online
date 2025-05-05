@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { MouseEventHandler, useEffect, useRef, useState } from "react"
 import {
   add,
   remove,
@@ -13,13 +13,13 @@ export type ViewerElementProps = {
     top: number
     left: number
   }
-  digThroughLayers: Function
+  handleClick: MouseEventHandler
 }
 
 export const ViewerElement = ({
   element,
   offsetRect = { top: 0, left: 0 },
-  digThroughLayers,
+  handleClick: handleClick,
 }: ViewerElementProps) => {
   // const container = useRef(null)
   // useEffect(() => {
@@ -31,7 +31,7 @@ export const ViewerElement = ({
 
   return (
     <div
-      onClick={digThroughLayers}
+      onClick={handleClick}
       className={`element${element.type ? " " + element.type : ""}`}
       data-name={element.name}
       style={
@@ -62,7 +62,7 @@ export const ViewerElement = ({
           key={child.id + child.name}
           element={child}
           offsetRect={{ top: element.rect.top || 0, left: element.rect.left }}
-          digThroughLayers={digThroughLayers}
+          handleClick={handleClick}
         ></ViewerElement>
       ))}
     </div>

@@ -14,29 +14,44 @@ import {
   PsdObject,
 } from "../../slices/documentSlice"
 
+import { addQuery, QueryClass } from "../../slices/querySlice"
+
 import { ViewerElement } from "../viewerElement/ViewerElement"
 
 export const Viewer = () => {
   const document = useAppSelector(selectDocument)
   const elements = useAppSelector(selectElements)
+  const dispatch = useAppDispatch()
 
   const [disabledLayers, setDisabledLayers] = useState<HTMLElement[]>([])
   const [zoom, setZoom] = useState(1)
 
-  const handleDigThroughLayers = (event: React.MouseEvent) => {
+  const handleClick = (event: React.MouseEvent) => {
     const element = event.target as HTMLElement
+    //dig through layers on ctrl click
     if (event.ctrlKey) {
       setDisabledLayers([...disabledLayers, element])
       element.style.pointerEvents = "none"
+      //unhide layers on shift click
+    } else if (event.shiftKey) {
+      if (disabledLayers.length > 0) {
+        disabledLayers.slice(-1)[0].style.pointerEvents = ""
+        setDisabledLayers(disabledLayers.slice(0, -1))
+      }
+      //add a new query on normal click
+    } else {
+      const newQuery = { ...new QueryClass(self.crypto.randomUUID()) }
+      if (event.target instanceof HTMLElement && event.target.dataset.name)
+        dispatch(
+          addQuery({
+            ...newQuery,
+            psdSelector: `^${event.target.dataset.name}$`,
+          }),
+        )
+      event.stopPropagation()
     }
   }
 
-  const handleUnhideLayers = (event: React.MouseEvent) => {
-    if (event.shiftKey && disabledLayers.length > 0) {
-      disabledLayers.slice(-1)[0].style.pointerEvents = ""
-      setDisabledLayers(disabledLayers.slice(0, -1))
-    }
-  }
   const handleWheel = (event: React.WheelEvent) => {
     if (event.ctrlKey) {
       if (event.deltaY < 0) {
@@ -47,7 +62,7 @@ export const Viewer = () => {
       }
     }
   }
-  const viewerRef = useRef(null)
+  const viewerRef = useRef<HTMLElement>(null)
 
   //"React binds all events at the root element (not the document), and the wheel event is binded internally using true option, and I quote MDN:
   //A Boolean that, if true, indicates that the function specified by listener will never call preventDefault()."
@@ -65,7 +80,6 @@ export const Viewer = () => {
   return (
     <div
       className="viewer relative overflow-scroll"
-      onClick={handleUnhideLayers}
       ref={viewerRef}
       onWheel={handleWheel}
     >
@@ -78,7 +92,7 @@ export const Viewer = () => {
             <ViewerElement
               key={element.id}
               element={element}
-              digThroughLayers={handleDigThroughLayers}
+              handleClick={handleClick}
             ></ViewerElement>
           )
         })}
