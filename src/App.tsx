@@ -13,7 +13,7 @@ const App = () => {
       <FileInput />
 
       <div className="w-full flex overflow-hidden gap-2 p-2">
-        <div className="flex-column">
+        <div className="flex-column w-[400px]">
           <QueryList></QueryList>
           <Export></Export>
           <CssResult></CssResult>

@@ -31,6 +31,13 @@ export const Viewer = () => {
   const [selectGroups, setSelectGroups] = useState(false)
 
   const handleClick = (event: React.MouseEvent) => {
+    const escapeRegex = (query: QueryClass[keyof QueryClass]) => {
+      const REGEXP_SPECIAL_CHAR = /[\(\)]/g
+
+      return typeof query === "string"
+        ? query.replace(REGEXP_SPECIAL_CHAR, String.fromCharCode(92) + "$&")
+        : query
+    }
     const element = event.target as HTMLElement
     //dig through layers on ctrl click
     if (event.ctrlKey) {
@@ -49,7 +56,7 @@ export const Viewer = () => {
         dispatch(
           addQuery({
             ...newQuery,
-            psdSelector: `^${event.target.dataset.name}$`,
+            psdSelector: `^${escapeRegex(event.target.dataset.name)}$`,
           }),
         )
       event.stopPropagation()
