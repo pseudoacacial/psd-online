@@ -12,23 +12,18 @@ export interface Query {
   exportName?: string
 }
 
-export class QueryClass implements Query {
-  id: string
-  cssSelector?: string
-  psdSelector: string
-  showPosition?: boolean
-  showSize?: boolean
-  showFontSize?: boolean
-  export?: boolean
-  exportName?: string
-  constructor(id: string) {
-    this.id = id
-    this.psdSelector = ""
-    this.cssSelector = ""
-    this.showPosition = true
-    this.showSize = true
-    this.showFontSize = true
-    this.export = false
+export class QueryClass {
+  query: Query
+  constructor(id?: string) {
+    this.query = {
+      id: id || self.crypto.randomUUID().toString(),
+      psdSelector: "",
+      cssSelector: "",
+      showPosition: true,
+      showSize: true,
+      showFontSize: true,
+      export: false,
+    }
   }
 }
 

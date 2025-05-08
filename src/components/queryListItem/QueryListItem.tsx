@@ -61,7 +61,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const handleAddClick = () => {
     if (newQuery === null) throw new Error("trying to a null query")
     dispatch(addQuery(newQuery))
-    setNewQuery(new QueryClass(self.crypto.randomUUID()))
+    setNewQuery(new QueryClass().query)
   }
   const handleKeyPress = (event: React.KeyboardEvent) => {
     if (freeze && event.key === "Enter") {

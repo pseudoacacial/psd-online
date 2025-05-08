@@ -54,7 +54,7 @@ export const QueryList = () => {
         ))}
 
         <QueryListItem
-          query={new QueryClass(self.crypto.randomUUID())}
+          query={new QueryClass().query}
           freeze={true}
         ></QueryListItem>
       </div>

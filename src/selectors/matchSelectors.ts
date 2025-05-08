@@ -6,6 +6,8 @@ import {
   selectElementsFlat,
 } from "../slices/documentSlice"
 import { selectQueries, Query } from "../slices/querySlice"
+import { useAppSelector } from "../app/hooks"
+import { selectSettings } from "../slices/settingsSlice"
 
 export interface Match {
   selectorId: string
@@ -46,12 +48,12 @@ export const selectMatches = createSelector(
   },
 )
 
-const groupNameRegex = /(\d+x\d+)/
-
 export const selectMatchesByArtboard = createSelector(
-  [selectMatches, selectArtboards, selectElementsFlat],
-  (matches, artboards, elements) => {
+  [selectMatches, selectArtboards, selectElementsFlat, selectSettings],
+  (matches, artboards, elements, settings) => {
     const matchesByArtboard: { [key: string]: Match[] } = {}
+
+    const groupNameRegex = settings.groupNameRegex
     artboards.forEach(artboard => {
       const artboardMatch = artboard.name.match(groupNameRegex)
       if (artboardMatch) {

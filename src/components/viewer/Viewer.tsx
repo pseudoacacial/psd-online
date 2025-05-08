@@ -51,7 +51,7 @@ export const Viewer = () => {
       }
       //add a new query on normal click
     } else {
-      const newQuery = { ...new QueryClass(self.crypto.randomUUID()) }
+      const newQuery = new QueryClass().query
       if (event.target instanceof HTMLElement && event.target.dataset.name)
         dispatch(
           addQuery({

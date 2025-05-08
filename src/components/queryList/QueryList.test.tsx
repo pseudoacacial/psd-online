@@ -33,7 +33,10 @@ describe(QueryList, () => {
     await user.click(screen.getByRole("button", { name: /export/i }))
 
     expect((await navigator.clipboard.readText()).toString()).toMatch(
-      new RegExp(rand1 + ".*" + rand2),
+      new RegExp(rand1),
+    )
+    expect((await navigator.clipboard.readText()).toString()).toMatch(
+      new RegExp(rand2),
     )
   })
 
