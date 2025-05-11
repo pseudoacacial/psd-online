@@ -105,7 +105,7 @@ export const CssResult = () => {
     <div className="CssResult my-2">
       <textarea
         readOnly
-        className="border w-full h-80"
+        className="border border-main w-full h-80"
         value={CssResult}
       ></textarea>
     </div>

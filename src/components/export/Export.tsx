@@ -51,7 +51,7 @@ export const Export = () => {
           {matchedImagesWithGroup.map(data => {
             return (
               <a
-                className="border rounded p-1 m-1"
+                className="border border-main rounded p-1 m-1"
                 download={`${data.name}.webp`}
                 href={data.image}
               >

@@ -32,7 +32,7 @@ export interface PsdObjectChild {
 export interface DocumentSliceState {
   artboards: Array<PsdObject> | []
   elements: Array<PsdObject> | []
-  thumbnail: string
+  thumbnail: string | undefined
 }
 
 // Define the initial value for the slice state
@@ -194,7 +194,7 @@ export const documentSlice = createSlice({
       //     : x,
       // )
     },
-    setThumbnail: (state, action: PayloadAction<string>) => {
+    setThumbnail: (state, action: PayloadAction<string | undefined>) => {
       state.thumbnail = action.payload
     },
     reset: (state, action: PayloadAction<void>) => {

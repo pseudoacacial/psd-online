@@ -91,7 +91,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   )
   return (
     <div
-      className="group flex flex-col border justify-between"
+      className="group flex flex-col border border-main rounded justify-between"
       key={query.id}
       data-key={query.id}
       onKeyDown={handleKeyPress}
@@ -100,7 +100,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
       <div className="flex justify-between">
         <input
           type="text"
-          className="grow shrink min-w-0"
+          className="grow shrink min-w-0 rounded-l"
           role="form"
           onChange={event => {
             changeQueryValue("cssSelector", event?.target.value)
@@ -123,7 +123,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
         {freeze ? (
           <button
             onClick={handleAddClick}
-            className="whitespace-nowrap border rounded"
+            className="whitespace-nowrap px-1 hover:bg-bg1 transition-colors rounded-r"
           >
             add new
           </button>

@@ -6,6 +6,7 @@ export default {
     extend: {
       colors: {
         bg: "var(--bg)",
+        bg1: "var(--bg1)",
         main: "var(--main)",
       },
     },

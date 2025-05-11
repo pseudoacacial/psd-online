@@ -33,24 +33,36 @@ export const SettingsEditor = () => {
   }
 
   return (
-    <div>
-      <div className="flex">
+    <div className="flex flex-col gap-1 py-1">
+      <div className="flex border border-main rounded justify-start">
         <input
+          className="rounded-l"
           id="groupNameRegex"
           value={groupNameRegex.toString()}
           onChange={handleChange}
           onBlur={handleGroupNameRegexBlur}
         ></input>
-        <label htmlFor="groupNameRegex">Group name regex</label>
+        <label
+          className="whitespace-nowrap px-1 rounded-r text-left"
+          htmlFor="groupNameRegex"
+        >
+          Group name regex
+        </label>
       </div>
-      <div className="flex">
+      <div className="flex border border-main rounded justify-start">
         <input
+          className="rounded-l"
           id="prefix"
           value={prefix}
           onChange={handlePrefixChange}
           onBlur={handlePrefixBlur}
         ></input>
-        <label htmlFor="prefix">prefix</label>
+        <label
+          className="whitespace-nowrap px-1 rounded-r text-left"
+          htmlFor="prefix"
+        >
+          prefix
+        </label>
       </div>
     </div>
   )
