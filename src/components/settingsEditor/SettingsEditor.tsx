@@ -36,7 +36,7 @@ export const SettingsEditor = () => {
     <div className="flex flex-col gap-1 py-1">
       <div className="flex border border-main rounded justify-start">
         <input
-          className="rounded-l"
+          className="rounded-l pl-1"
           id="groupNameRegex"
           value={groupNameRegex.toString()}
           onChange={handleChange}
@@ -51,7 +51,7 @@ export const SettingsEditor = () => {
       </div>
       <div className="flex border border-main rounded justify-start">
         <input
-          className="rounded-l"
+          className="rounded-l  pl-1"
           id="prefix"
           value={prefix}
           onChange={handlePrefixChange}

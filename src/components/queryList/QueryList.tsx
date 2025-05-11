@@ -36,13 +36,13 @@ export const QueryList = () => {
     <div>
       <div className="flex justify-center">
         <button
-          className="border hover:bg-bg1 transition-colors border-main rounded mx-1 mb-1 px-1 max-w-28 leading-tight"
+          className="border hover:bg-bg1 transition-colors border-main rounded mx-1 px-1 max-w-28 leading-tight"
           onClick={handleImportQueriesFromClipboard}
         >
           import from clipboard
         </button>
         <button
-          className="border hover:bg-bg1 transition-colors border-main rounded mx-1 mb-1 px-1 max-w-28 leading-tight"
+          className="border hover:bg-bg1 transition-colors border-main rounded mx- px-1 max-w-28 leading-tight"
           onClick={handleExportQueriesToClipboard}
         >
           export to clipboard
