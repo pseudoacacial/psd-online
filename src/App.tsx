@@ -8,10 +8,14 @@ import { Matches } from "./components/matches/Matches"
 import { CssResult } from "./components/CssResult/CssResult"
 import { Export } from "./components/export/Export"
 import { SettingsEditor } from "./components/settingsEditor/SettingsEditor"
+import { DarkModeButton } from "./components/darkModeButton/DarkModeButton"
 const App = () => {
   return (
     <div className="bg-bg text-main border-main">
-      <FileInput />
+      <div className="w-full flex justify-between p-2">
+        <FileInput />
+        <DarkModeButton />
+      </div>
 
       <div className="w-full flex overflow-hidden gap-2 p-2">
         <div className="flex-column w-[400px]">
