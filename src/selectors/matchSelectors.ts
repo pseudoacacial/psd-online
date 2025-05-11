@@ -53,32 +53,42 @@ export const selectMatchesByArtboard = createSelector(
   (matches, artboards, elements, settings) => {
     const matchesByArtboard: { [key: string]: Match[] } = {}
 
-    const groupNameRegex = settings.groupNameRegex
-    artboards.forEach(artboard => {
-      const artboardMatch = artboard.name.match(groupNameRegex)
-      if (artboardMatch) {
-        // matchesByArtboard[artboard.id] = []
-        matchesByArtboard[artboardMatch[1]] = []
+    try {
+      const groupNameRegex = new RegExp(settings.groupNameRegex)
+
+      artboards.forEach(artboard => {
+        const artboardMatch = artboard.name.match(groupNameRegex)
+        if (artboardMatch) {
+          // matchesByArtboard[artboard.id] = []
+          matchesByArtboard[artboardMatch[1]] = []
+        }
+      })
+
+      matches.forEach(match => {
+        const psdElement = elements.find(
+          element => element.id === match.documentId,
+        )
+        const artboard = artboards.find(
+          artboard => artboard.id === psdElement?.artboardId,
+        )
+
+        const artboardMatch = artboard && artboard.name.match(groupNameRegex)
+
+        artboardMatch &&
+          //if match for this selector already exists in this artboard - don't add more
+          !matchesByArtboard[artboardMatch[1]].find(
+            e => e.selectorId === match.selectorId,
+          ) &&
+          matchesByArtboard[artboardMatch[1]].push(match)
+      })
+      return matchesByArtboard
+    } catch (e) {
+      if (e instanceof Error) {
+        console.log("Problem with the group name regex:", e.message)
+      } else {
+        console.log(e)
       }
-    })
-
-    matches.forEach(match => {
-      const psdElement = elements.find(
-        element => element.id === match.documentId,
-      )
-      const artboard = artboards.find(
-        artboard => artboard.id === psdElement?.artboardId,
-      )
-
-      const artboardMatch = artboard && artboard.name.match(groupNameRegex)
-
-      artboardMatch &&
-        //if match for this selector already exists in this artboard - don't add more
-        !matchesByArtboard[artboardMatch[1]].find(
-          e => e.selectorId === match.selectorId,
-        ) &&
-        matchesByArtboard[artboardMatch[1]].push(match)
-    })
-    return matchesByArtboard
+      return matchesByArtboard
+    }
   },
 )

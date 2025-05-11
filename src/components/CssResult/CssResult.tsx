@@ -7,6 +7,7 @@ import {
 } from "../../selectors/matchSelectors"
 import { selectArtboards, selectElementsFlat } from "../../slices/documentSlice"
 import { selectQueries } from "../../slices/querySlice"
+import { selectSettings } from "../../slices/settingsSlice"
 
 export const CssResult = () => {
   const matches = useAppSelector(selectMatches)
@@ -14,10 +15,11 @@ export const CssResult = () => {
   const elements = useAppSelector(selectElementsFlat)
   const artboards = useAppSelector(selectArtboards)
   const queries = useAppSelector(selectQueries)
+  const settings = useAppSelector(selectSettings)
 
   const [CssResult, setCssResult] = useState("")
 
-  const prefix = ".b"
+  const prefix = settings.prefix
 
   const getMatchCss = (match: Match) => {
     const query = queries.find(query => query.id === match.selectorId)

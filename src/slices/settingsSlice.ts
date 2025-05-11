@@ -4,10 +4,12 @@ import { createSelector } from "@reduxjs/toolkit"
 
 export interface SettingsSliceState {
   groupNameRegex: RegExp["source"]
+  prefix: string
 }
 
 const initialState: SettingsSliceState = {
   groupNameRegex: "(\\d+x\\d+)",
+  prefix: ".b",
 }
 
 export const settingsSlice = createSlice({
