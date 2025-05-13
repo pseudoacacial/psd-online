@@ -20,11 +20,13 @@ body {
   :root {
     --bg: theme(colors.fuchsia.100);
     --bg1: theme(colors.fuchsia.200);
+    --bg-1: theme(colors.fuchsia.50);
     --main: theme(colors.slate.800);
   }
   .dark {
     --bg: theme(colors.slate.800);
     --bg1: theme(colors.slate.900);
+    --bg-1: theme(colors.slate.700);
     --main: theme(colors.rose.100);
     color-scheme: dark;
   }
@@ -81,8 +83,4 @@ body {
 }
 .element:hover {
   outline: 2px solid tomato;
-}
-.viewer {
-  width: 1000px;
-  height: 1000px;
 }

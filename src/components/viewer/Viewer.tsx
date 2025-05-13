@@ -95,7 +95,7 @@ export const Viewer = () => {
 
   return (
     <div
-      className="viewer relative overflow-hidden"
+      className="viewer relative overflow-hidden bg-bg-1 size-full min-h-[1000px]"
       ref={viewerRef}
       onWheel={handleWheel}
     >
