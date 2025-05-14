@@ -36,7 +36,9 @@ export const Export = () => {
           image: elements.find(
             element => element.id === matchedDocumentIdWithGroup.documentId,
           )?.canvas,
-          name: matchedDocumentIdWithGroup.groupName,
+          name:
+            (query.exportName ? query.exportName + "_" : "") +
+            matchedDocumentIdWithGroup.groupName,
         }))
         .filter(x => x !== undefined)
 
