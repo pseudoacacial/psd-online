@@ -3,64 +3,107 @@ import {
   selectMatchesByArtboard,
 } from "../../selectors/matchSelectors"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { objectFilter } from "../../utils/functions"
+import { cropBase64Image, objectFilter } from "../../utils/functions"
 import { selectElementsFlat } from "../../slices/documentSlice"
+import { selectArtboards } from "../../slices/documentSlice"
 import { selectQueries } from "../../slices/querySlice"
+import { useEffect, useState } from "react"
 
 export const Export = () => {
   const matches = useAppSelector(selectMatchesByArtboard)
-
   const elements = useAppSelector(selectElementsFlat)
-
   const queries = useAppSelector(selectQueries)
+  const artboards = useAppSelector(selectArtboards)
 
-  const exportTable = queries
-    .filter(query => query.export)
-    .map(query => {
-      const matchedGroups = objectFilter(
-        matches,
-        group => !!group.find(match => match.selectorId === query.id),
+  const [exportTable, setExportTable] = useState<
+    { image: string; name: string }[][]
+  >([])
+
+  useEffect(() => {
+    const processExports = async () => {
+      const allExports = await Promise.all(
+        queries
+          .filter(query => query.export)
+          .map(async query => {
+            const matchedGroups = objectFilter(
+              matches,
+              group => !!group.find(match => match.selectorId === query.id),
+            )
+
+            const matchedDocumentIdsWithGroup = Object.keys(matchedGroups)
+              .map(groupName => ({
+                groupName,
+                documentId: matchedGroups[groupName]?.find(
+                  match => match.selectorId === query.id,
+                )?.documentId,
+              }))
+              .filter(x => x?.documentId)
+
+            const processedImages = await Promise.all(
+              matchedDocumentIdsWithGroup.map(
+                async ({ documentId, groupName }) => {
+                  const element = elements.find(e => e.id === documentId)
+                  const artboard = artboards.find(
+                    ab => ab.id === element?.artboardId,
+                  )
+
+                  if (!element?.canvas || !artboard) return undefined
+
+                  let image = element.canvas
+
+                  if (query.exportCrop === true && artboard.rect) {
+                    const { top, left, right, bottom } = artboard.rect
+                    if (
+                      top !== undefined &&
+                      left !== undefined &&
+                      right !== undefined &&
+                      bottom !== undefined
+                    ) {
+                      const cropped = await cropBase64Image(image, {
+                        top,
+                        left,
+                        width: right - left,
+                        height: bottom - top,
+                      })
+                      image = cropped
+                    }
+                  }
+
+                  return {
+                    image,
+                    name: `${query.exportName ? query.exportName + "_" : ""}${groupName}`,
+                  }
+                },
+              ),
+            )
+
+            return processedImages.filter(Boolean) as {
+              image: string
+              name: string
+            }[]
+          }),
       )
+      setExportTable(allExports)
+    }
 
-      const matchedDocumentIdsWithGroup = Object.keys(matchedGroups)
-        .map((groupName: keyof typeof matchedGroups) => ({
-          groupName: groupName,
-          documentId: matchedGroups[groupName]?.find(
-            match => match.selectorId === query.id,
-          )?.documentId,
-        }))
-        .filter(x => x !== undefined)
-
-      const matchedImagesWithName = matchedDocumentIdsWithGroup
-        .map((matchedDocumentIdWithGroup, id) => ({
-          image: elements.find(
-            element => element.id === matchedDocumentIdWithGroup.documentId,
-          )?.canvas,
-          name:
-            (query.exportName ? query.exportName + "_" : "") +
-            matchedDocumentIdWithGroup.groupName,
-        }))
-        .filter(x => x !== undefined)
-
-      return matchedImagesWithName
-    })
+    processExports()
+  }, [queries, matches, elements, artboards])
 
   return (
     <div>
       Exports:
-      {exportTable.map(matchedImagesWithGroup => (
-        <div>
-          {matchedImagesWithGroup.map(data => {
-            return (
-              <a
-                className="border border-main rounded p-1 m-1"
-                download={`${data.name}.webp`}
-                href={data.image}
-              >
-                X
-              </a>
-            )
-          })}
+      {exportTable.map((matchedImagesWithGroup, i) => (
+        <div key={i}>
+          {matchedImagesWithGroup.map((data, j) => (
+            <a
+              key={j}
+              className="border border-main rounded p-1 m-1"
+              download={`${data.name}.webp`}
+              href={data.image}
+            >
+              {data.name}
+            </a>
+          ))}
         </div>
       ))}
     </div>
