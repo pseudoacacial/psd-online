@@ -60,8 +60,8 @@ export const Export = () => {
                       bottom !== undefined
                     ) {
                       const cropped = await cropBase64Image(image, {
-                        top,
-                        left,
+                        top: top - element.rect.top,
+                        left: left - element.rect.left,
                         width: right - left,
                         height: bottom - top,
                       })
