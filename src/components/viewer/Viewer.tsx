@@ -99,6 +99,8 @@ export const Viewer = () => {
       ref={viewerRef}
       onWheel={handleWheel}
     >
+      {/* show state as JSON, for development only */}
+      {/* <textarea value={JSON.stringify(document)}></textarea> */}
       <style>
         {`.viewer .group {
         pointer-events:${selectGroups ? "all" : "none"};

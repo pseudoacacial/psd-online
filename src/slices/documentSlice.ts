@@ -2,6 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 import { Layer } from "ag-psd"
 import { createSelector } from "@reduxjs/toolkit"
+
+import { exampleDocument } from "../utils/exampleDocument"
 export interface PsdObject {
   id: number
   artboardId: number | null
@@ -37,9 +39,10 @@ export interface DocumentSliceState {
 
 // Define the initial value for the slice state
 const initialState: DocumentSliceState = {
-  artboards: [],
-  elements: [],
-  thumbnail: "",
+  ...exampleDocument,
+  // artboards: [],
+  // elements: [],
+  // thumbnail: "",
 }
 
 // Slices contain Redux reducer logic for updating state, and
