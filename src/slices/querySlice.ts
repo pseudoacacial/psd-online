@@ -10,6 +10,7 @@ export interface Query {
   showFontSize?: boolean
   export?: boolean
   exportName?: string
+  exportCrop?: boolean
 }
 
 export class QueryClass {

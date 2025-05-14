@@ -131,7 +131,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
           <button onClick={handleRemoveClick}>remove</button>
         )}
       </div>
-      <div className="hidden justify-evenly group-focus-within:flex ">
+      <div className="hidden justify-evenly group-focus-within:flex flex-col ">
         <div className="flex justify-start w-full flex-wrap">
           <div className="mx-1">
             <input

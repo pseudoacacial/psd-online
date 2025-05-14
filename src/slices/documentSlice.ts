@@ -201,6 +201,9 @@ export const documentSlice = createSlice({
       state.elements = []
       state.artboards = []
     },
+    setDocument: (state, action: PayloadAction<DocumentSliceState>) => {
+      Object.assign(state, action.payload)
+    },
   },
   selectors: {
     selectDocument: document => document,
@@ -211,8 +214,15 @@ export const documentSlice = createSlice({
 })
 
 // Export the generated action creators for use in components
-export const { add, remove, modify, addChild, setThumbnail, reset } =
-  documentSlice.actions
+export const {
+  add,
+  remove,
+  modify,
+  addChild,
+  setThumbnail,
+  reset,
+  setDocument,
+} = documentSlice.actions
 
 export const {
   selectDocument,
