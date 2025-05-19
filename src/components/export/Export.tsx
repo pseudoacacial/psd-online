@@ -93,7 +93,7 @@ export const Export = () => {
     <div>
       Exports:
       {exportTable.map((matchedImagesWithGroup, i) => (
-        <div key={i}>
+        <div className="flex flex-wrap" key={i}>
           {matchedImagesWithGroup.map((data, j) => (
             <a
               key={j}
