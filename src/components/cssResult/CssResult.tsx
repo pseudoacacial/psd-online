@@ -28,9 +28,9 @@ export const CssResult = () => {
       throw new Error(
         "the psd element for the match doesn't exist in store. Matches and document out of sync?",
       )
-    const artboard = artboards.find(
-      artboard => artboard.id === psdElement?.artboardId,
-    )
+    const artboard = match.frameId
+      ? elements.find(element => element.id === match.frameId)
+      : artboards.find(artboard => artboard.id === psdElement?.artboardId)
 
     let style: React.CSSProperties = {}
 

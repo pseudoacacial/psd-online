@@ -11,6 +11,8 @@ export interface Query {
   export?: boolean
   exportName?: string
   exportCrop?: boolean
+  frame?: boolean
+  framePsdSelector?: string
 }
 
 export class QueryClass {
@@ -24,6 +26,7 @@ export class QueryClass {
       showSize: true,
       showFontSize: true,
       export: false,
+      frame: false,
     }
   }
 }

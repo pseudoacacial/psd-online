@@ -8,10 +8,12 @@ import {
 import { selectQueries, Query } from "../slices/querySlice"
 import { useAppSelector } from "../app/hooks"
 import { selectSettings } from "../slices/settingsSlice"
+import { match } from "assert"
 
 export interface Match {
   selectorId: string
   documentId: number
+  frameId?: number
 }
 
 export const selectMatches = createSelector(
@@ -42,9 +44,35 @@ export const selectMatches = createSelector(
 
       return matches
     }
-    // Example logic: filter queries that match the current document ID
 
-    return selectors.flatMap(selector => getMatches(selector))
+    const matchesWithoutFrames = selectors.flatMap(selector =>
+      getMatches(selector),
+    )
+
+    const matchesWithFrames = matchesWithoutFrames.map(match => {
+      const query = selectors.find(query => query.id === match.selectorId)
+      const element = elements.find(element => element.id === match.documentId)
+
+      if (query && query.frame && query.framePsdSelector) {
+        return {
+          ...match,
+          frameId: getMatches({
+            ...query,
+            psdSelector: query.framePsdSelector,
+          }).filter(match => {
+            const frameElement = elements.find(
+              element => element.id === match.documentId,
+            )
+
+            return element?.artboardId === frameElement?.artboardId
+          })[0].documentId,
+        }
+      } else {
+        return match
+      }
+    })
+
+    return matchesWithFrames
   },
 )
 

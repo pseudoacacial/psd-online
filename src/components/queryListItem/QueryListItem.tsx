@@ -177,6 +177,17 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             ></input>
             <label htmlFor="export">export</label>
           </div>
+          <div className="mx-1">
+            <input
+              type="checkbox"
+              id="frame"
+              checked={readQuery.frame}
+              onChange={event => {
+                changeQueryValue("frame", event.target.checked)
+              }}
+            ></input>
+            <label htmlFor="frame">frame</label>
+          </div>
           {freeze || (
             <div className="mx-1 text-right">
               <label htmlFor="match-number">found:</label>
@@ -193,30 +204,19 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
               </div>
             </div>
           )}
-          {readQuery.export && (
+          {readQuery.frame && (
             <div className="flex justify-between">
               <input
                 type="text"
                 className="grow shrink min-w-0 rounded-l pl-1"
                 role="form"
                 onChange={event => {
-                  changeQueryValue("exportName", event?.target.value)
+                  changeQueryValue("framePsdSelector", event?.target.value)
                 }}
-                value={readQuery.exportName}
-                placeholder="export name"
-                aria-label="export name"
+                value={readQuery.framePsdSelector}
+                placeholder="frame psd name"
+                aria-label="frame psd name"
               ></input>
-              <div className="mx-1">
-                <input
-                  type="checkbox"
-                  id="exportCrop"
-                  checked={readQuery.exportCrop}
-                  onChange={event => {
-                    changeQueryValue("exportCrop", event.target.checked)
-                  }}
-                ></input>
-                <label htmlFor="exportCrop">crop</label>
-              </div>
             </div>
           )}
 
