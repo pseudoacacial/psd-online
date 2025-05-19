@@ -34,6 +34,7 @@ export const ViewerElement = ({
       onClick={handleClick}
       className={`element${element.type ? " " + element.type : ""}`}
       data-name={element.name}
+      data-id={element.id}
       style={
         element.rect && {
           top:

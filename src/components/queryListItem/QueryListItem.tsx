@@ -15,6 +15,7 @@ import {
   selectMatchesByArtboard,
 } from "../../selectors/matchSelectors"
 import { selectElementsFlat } from "../../slices/documentSlice"
+import { match } from "assert"
 export interface QueryListItemProps {
   query: Query
   freeze?: boolean
@@ -29,6 +30,8 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
 
   //state is only used if freeze==true; Otherwise, each change dispatches a modify action
   const [newQuery, setNewQuery] = useState(query)
+
+  const [open, setOpen] = useState(false)
 
   const changeQueryValue = (key: keyof Query, value: Query[keyof Query]) => {
     const escapeRegex = (query: Query[keyof Query]) => {
@@ -71,6 +74,12 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const handleRemoveClick = (e: React.BaseSyntheticEvent) => {
     dispatch(remove(query.id))
   }
+  const handleFocus = () => {
+    setOpen(true)
+  }
+  const handleBlur = () => {
+    setOpen(false)
+  }
 
   const objectFilter = <T extends object>(
     obj: T,
@@ -89,12 +98,19 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
     matches,
     group => !!group.find(match => match.selectorId === query.id),
   )
+  const matchedElementIds = Object.keys(matchedGroups).flatMap(key =>
+    matchedGroups[key]
+      ?.filter(match => match.selectorId === readQuery.id)
+      .map(match => match.documentId),
+  )
   return (
     <div
-      className="group flex flex-col border border-main rounded justify-between my-1"
+      className="flex flex-col border border-main rounded justify-between my-1"
       key={query.id}
       data-key={query.id}
       onKeyDown={handleKeyPress}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
       data-testid="queryListItem"
     >
       <div className="flex justify-between">
@@ -131,98 +147,110 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
           <button onClick={handleRemoveClick}>remove</button>
         )}
       </div>
-      <div className="hidden justify-evenly group-focus-within:flex flex-col ">
-        <div className="flex justify-start w-full flex-wrap">
-          <div className="mx-1">
-            <input
-              type="checkbox"
-              id="size"
-              checked={readQuery.showSize}
-              onChange={event => {
-                changeQueryValue("showSize", event.target.checked)
-              }}
-            ></input>
-            <label htmlFor="size">Size</label>
-          </div>
-          <div className="mx-1">
-            <input
-              type="checkbox"
-              id="position"
-              checked={readQuery.showPosition}
-              onChange={event => {
-                changeQueryValue("showPosition", event.target.checked)
-              }}
-            ></input>
-            <label htmlFor="position">Position</label>
-          </div>
-          <div className="mx-1">
-            <input
-              type="checkbox"
-              id="size"
-              checked={readQuery.showFontSize}
-              onChange={event => {
-                changeQueryValue("showFontSize", event.target.checked)
-              }}
-            ></input>
-            <label htmlFor="size">font-size</label>
-          </div>
-          <div className="mx-1">
-            <input
-              type="checkbox"
-              id="export"
-              checked={readQuery.export}
-              onChange={event => {
-                changeQueryValue("export", event.target.checked)
-              }}
-            ></input>
-            <label htmlFor="export">export</label>
-          </div>
-          <div className="mx-1">
-            <input
-              type="checkbox"
-              id="frame"
-              checked={readQuery.frame}
-              onChange={event => {
-                changeQueryValue("frame", event.target.checked)
-              }}
-            ></input>
-            <label htmlFor="frame">frame</label>
-          </div>
-          {freeze || (
-            <div className="mx-1 text-right">
-              <label htmlFor="match-number">found:</label>
-              <span data-testid="match number" id="match-number">
-                {Object.keys(matchedGroups).length}
-              </span>
-              <div className="flex flex-wrap justify-end">
-                {Object.keys(matches).map(groupName => (
-                  <div className="flex basis-1/3 justify-end" key={groupName}>
-                    <div>{groupName}</div>
-                    {matchedGroups[groupName] ? "✅" : "❌"}
-                  </div>
-                ))}
-              </div>
-            </div>
+      {open ? (
+        <div className="justify-evenly flex flex-col ">
+          {freeze ?? (
+            <style>
+              {matchedElementIds.map(
+                id =>
+                  `.element[data-id="${id}"] {outline: 2px solid rebeccapurple; background: rgba(0,0,0,0.5)}`,
+              )}
+            </style>
           )}
-          {readQuery.frame && (
-            <div className="flex justify-between">
+          <div className="flex justify-start w-full flex-wrap">
+            <div className="mx-1">
               <input
-                type="text"
-                className="grow shrink min-w-0 rounded-l pl-1"
-                role="form"
+                type="checkbox"
+                id="size"
+                checked={readQuery.showSize}
                 onChange={event => {
-                  changeQueryValue("framePsdSelector", event?.target.value)
+                  changeQueryValue("showSize", event.target.checked)
                 }}
-                value={readQuery.framePsdSelector}
-                placeholder="frame psd name"
-                aria-label="frame psd name"
               ></input>
+              <label htmlFor="size">Size</label>
             </div>
-          )}
+            <div className="mx-1">
+              <input
+                type="checkbox"
+                id="position"
+                checked={readQuery.showPosition}
+                onChange={event => {
+                  changeQueryValue("showPosition", event.target.checked)
+                }}
+              ></input>
+              <label htmlFor="position">Position</label>
+            </div>
+            <div className="mx-1">
+              <input
+                type="checkbox"
+                id="size"
+                checked={readQuery.showFontSize}
+                onChange={event => {
+                  changeQueryValue("showFontSize", event.target.checked)
+                }}
+              ></input>
+              <label htmlFor="size">font-size</label>
+            </div>
+            <div className="mx-1">
+              <input
+                type="checkbox"
+                id="export"
+                checked={readQuery.export}
+                onChange={event => {
+                  changeQueryValue("export", event.target.checked)
+                }}
+              ></input>
+              <label htmlFor="export">export</label>
+            </div>
+            <div className="mx-1">
+              <input
+                type="checkbox"
+                id="frame"
+                checked={readQuery.frame}
+                onChange={event => {
+                  changeQueryValue("frame", event.target.checked)
+                }}
+              ></input>
+              <label htmlFor="frame">frame</label>
+            </div>
+            {freeze || (
+              <div className="mx-1 text-right">
+                <label htmlFor="match-number">found:</label>
+                <span data-testid="match number" id="match-number">
+                  {Object.keys(matchedGroups).length}
+                </span>
+                <div className="flex flex-wrap justify-end">
+                  {Object.keys(matches).map(groupName => (
+                    <div className="flex basis-1/3 justify-end" key={groupName}>
+                      <div>{groupName}</div>
+                      {matchedGroups[groupName] ? "✅" : "❌"}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {readQuery.frame && (
+              <div className="flex justify-between">
+                <input
+                  type="text"
+                  className="grow shrink min-w-0 rounded-l pl-1"
+                  role="form"
+                  onChange={event => {
+                    changeQueryValue("framePsdSelector", event?.target.value)
+                  }}
+                  value={readQuery.framePsdSelector}
+                  placeholder="frame psd name"
+                  aria-label="frame psd name"
+                ></input>
+              </div>
+            )}
 
-          <div className="mx-1"></div>
+            <div className="mx-1"></div>
+          </div>
         </div>
-      </div>
+      ) : (
+        ""
+      )}
     </div>
   )
 }
