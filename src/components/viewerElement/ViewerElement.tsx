@@ -9,16 +9,16 @@ import {
 
 export type ViewerElementProps = {
   element: PsdObject
-  offsetRect?: {
-    top: number
-    left: number
+  offsetRect: {
+    top: number | undefined
+    left: number | undefined
   }
   handleClick: MouseEventHandler
 }
 
 export const ViewerElement = ({
   element,
-  offsetRect = { top: 0, left: 0 },
+  offsetRect,
   handleClick: handleClick,
 }: ViewerElementProps) => {
   // const container = useRef(null)
@@ -36,15 +36,18 @@ export const ViewerElement = ({
       data-name={element.name}
       style={
         element.rect && {
-          top: element.rect.top - offsetRect.top,
-          left: element.rect.left - offsetRect.left,
+          top:
+            element.rect.top !== undefined && element.rect.top - offsetRect.top,
+          left:
+            element.rect.left !== undefined &&
+            element.rect.left - offsetRect.left,
           width:
-            element.rect.right !== null &&
-            element.rect.left !== null &&
+            element.rect.right !== undefined &&
+            element.rect.left !== undefined &&
             element.rect.right - element.rect.left,
           height:
-            element.rect.bottom !== null &&
-            element.rect.top !== null &&
+            element.rect.bottom !== undefined &&
+            element.rect.top !== undefined &&
             element.rect.bottom - element.rect.top,
           backgroundImage: `url("${element.canvas}")`,
         }
@@ -61,7 +64,16 @@ export const ViewerElement = ({
         <ViewerElement
           key={child.id + child.name}
           element={child}
-          offsetRect={{ top: element.rect.top || 0, left: element.rect.left }}
+          offsetRect={{
+            top:
+              element.rect.top === undefined
+                ? offsetRect.top
+                : element.rect.top,
+            left:
+              element.rect.left === undefined
+                ? offsetRect.left
+                : element.rect.left,
+          }}
           handleClick={handleClick}
         ></ViewerElement>
       ))}

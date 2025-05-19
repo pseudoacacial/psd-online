@@ -213,6 +213,8 @@ export const documentSlice = createSlice({
     selectElements: document => document.elements,
     selectArtboards: document => document.artboards,
     selectThumbnail: document => document.thumbnail,
+    selectArtboardById: (document, id: number) =>
+      document.artboards.find(artboard => artboard.id === id),
   },
 })
 
@@ -232,6 +234,7 @@ export const {
   selectElements,
   selectArtboards,
   selectThumbnail,
+  selectArtboardById,
 } = documentSlice.selectors
 
 export const selectElementsFlat = createSelector([selectDocument], document => {

@@ -121,6 +121,7 @@ export const Viewer = () => {
               <ViewerElement
                 key={element.id}
                 element={element}
+                offsetRect={{ top: 0, left: 0 }}
                 handleClick={handleClick}
               ></ViewerElement>
             )
