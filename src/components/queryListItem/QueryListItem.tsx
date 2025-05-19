@@ -87,28 +87,22 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
     setOpen(false)
   }
 
-  const objectFilter = <T extends object>(
-    obj: T,
-    predicate: <K extends keyof T>(value: T[K], key: K) => boolean,
-  ) => {
-    const result: { [K in keyof T]?: T[K] } = {}
-    ;(Object.keys(obj) as Array<keyof T>).forEach(name => {
-      if (predicate(obj[name], name)) {
-        result[name] = obj[name]
-      }
-    })
-    return result
-  }
-
   const matchedGroups = objectFilter(
     matches,
     group => !!group.find(match => match.selectorId === query.id),
   )
-  const matchedElementIds = Object.keys(matchedGroups).flatMap(key =>
-    matchedGroups[key]
-      ?.filter(match => match.selectorId === readQuery.id)
-      .map(match => match.documentId),
-  )
+  const matchedElementIds = Object.keys(matchedGroups).flatMap(key => {
+    const matchedElements = matchedGroups[key]?.filter(
+      match => match.selectorId === readQuery.id,
+    )
+    if (matchedElements === undefined) return
+    if (
+      readQuery.matchIndex > 0 &&
+      matchedElements.length > readQuery.matchIndex
+    )
+      return matchedElements[readQuery.matchIndex].documentId
+    return matchedElements[0].documentId
+  })
   return (
     <div
       className="flex flex-col border border-main rounded justify-between my-1"
@@ -219,6 +213,19 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
               ></input>
               <label htmlFor="frame">frame</label>
             </div>
+            <div className="mx-1">
+              <input
+                type="number"
+                className="grow shrink min-w-0 w-8 rounded-l pl-1"
+                role="form"
+                onChange={event => {
+                  changeQueryValue("matchIndex", event?.target.value)
+                }}
+                value={readQuery.matchIndex}
+                placeholder="match index"
+                aria-label="match index"
+              ></input>
+            </div>
             {freeze || (
               <div className="mx-1 text-right">
                 <label htmlFor="match-number">found:</label>
@@ -276,8 +283,6 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
                 </div>
               </div>
             )}
-
-            <div className="mx-1"></div>
           </div>
         </div>
       ) : (

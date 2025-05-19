@@ -9,6 +9,7 @@ import { selectQueries, Query } from "../slices/querySlice"
 import { useAppSelector } from "../app/hooks"
 import { selectSettings } from "../slices/settingsSlice"
 import { match } from "assert"
+import { group } from "console"
 
 export interface Match {
   selectorId: string
@@ -104,11 +105,12 @@ export const selectMatchesByArtboard = createSelector(
 
         artboardMatch &&
           //if match for this selector already exists in this artboard - don't add more
-          !matchesByArtboard[artboardMatch[1]].find(
-            e => e.selectorId === match.selectorId,
-          ) &&
+          // !matchesByArtboard[artboardMatch[1]].find(
+          //   e => e.selectorId === match.selectorId,
+          // ) &&
           matchesByArtboard[artboardMatch[1]].push(match)
       })
+      // console.table(matchesByArtboard)
       return matchesByArtboard
     } catch (e) {
       if (e instanceof Error) {
@@ -118,5 +120,34 @@ export const selectMatchesByArtboard = createSelector(
       }
       return matchesByArtboard
     }
+  },
+)
+
+export const selectMatchesByArtboardAndQuery = createSelector(
+  [selectMatchesByArtboard, selectQueries],
+  (groups, queries) => {
+    const matchesByArtboardAndQuery: {
+      [key: string]: { [key: string]: Match }
+    } = {}
+
+    const groupNames = Object.keys(groups)
+
+    const array = Object.entries(groups)
+
+    //make groups
+    groupNames.forEach(groupName => {
+      matchesByArtboardAndQuery[groupName] = {}
+      queries.forEach(query => {
+        const matchesForTheQuery = groups[groupName].filter(
+          match => match.selectorId === query.id,
+        )
+
+        matchesByArtboardAndQuery[groupName][query.id] =
+          query.matchIndex > 0 && matchesForTheQuery.length > query.matchIndex
+            ? matchesForTheQuery[query.matchIndex]
+            : matchesForTheQuery[0]
+      })
+    })
+    return matchesByArtboardAndQuery
   },
 )

@@ -13,6 +13,7 @@ export interface Query {
   exportCrop?: boolean
   frame?: boolean
   framePsdSelector?: string
+  matchIndex: number
 }
 
 export class QueryClass {
@@ -27,6 +28,7 @@ export class QueryClass {
       showFontSize: true,
       export: false,
       frame: false,
+      matchIndex: 0,
     }
   }
 }

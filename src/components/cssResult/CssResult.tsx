@@ -3,6 +3,7 @@ import { useAppSelector } from "../../app/hooks"
 import {
   selectMatches,
   selectMatchesByArtboard,
+  selectMatchesByArtboardAndQuery,
   Match,
 } from "../../selectors/matchSelectors"
 import { selectArtboards, selectElementsFlat } from "../../slices/documentSlice"
@@ -12,6 +13,9 @@ import { selectSettings } from "../../slices/settingsSlice"
 export const CssResult = () => {
   const matches = useAppSelector(selectMatches)
   const matchesByArtboard = useAppSelector(selectMatchesByArtboard)
+  const matchesByArtboardAndQuery = useAppSelector(
+    selectMatchesByArtboardAndQuery,
+  )
   const elements = useAppSelector(selectElementsFlat)
   const artboards = useAppSelector(selectArtboards)
   const queries = useAppSelector(selectQueries)
@@ -23,7 +27,9 @@ export const CssResult = () => {
 
   const getMatchCss = (match: Match) => {
     const query = queries.find(query => query.id === match.selectorId)
-    const psdElement = elements.find(element => element.id === match.documentId)
+    const psdElement = elements.filter(
+      element => element.id === match.documentId,
+    )[0]
     if (psdElement === undefined)
       throw new Error(
         "the psd element for the match doesn't exist in store. Matches and document out of sync?",
@@ -90,12 +96,22 @@ export const CssResult = () => {
   useEffect(() => {
     // setCssResult()
     let cssResult = ""
-    for (const [key, value] of Object.entries(matchesByArtboard)) {
+    // for (const [key, value] of Object.entries(matchesByArtboard)) {
+    //   cssResult +=
+    //     `${prefix}${key} {\n` +
+    //     value.map(match => getMatchCss(match)).join("") +
+    //     "}\n"
+    // }
+
+    for (const [key, value] of Object.entries(matchesByArtboardAndQuery)) {
       cssResult +=
         `${prefix}${key} {\n` +
-        value.map(match => getMatchCss(match)).join("") +
+        Object.values(value)
+          .map(match => getMatchCss(match))
+          .join("") +
         "}\n"
     }
+
     setCssResult(cssResult)
     // artboards.map(),
     // matches.map(match => getMatchCss(match)).join("\n")
