@@ -77,8 +77,9 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const handleFocus = () => {
     setOpen(true)
   }
-  const handleBlur = () => {
-    setOpen(false)
+  const handleBlur = (event: React.FocusEvent) => {
+    //only blur if focus goes to somewhere outside of the element
+    if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false)
   }
 
   const objectFilter = <T extends object>(
