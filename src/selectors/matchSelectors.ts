@@ -127,7 +127,7 @@ export const selectMatchesByArtboardAndQuery = createSelector(
   [selectMatchesByArtboard, selectQueries],
   (groups, queries) => {
     const matchesByArtboardAndQuery: {
-      [key: string]: { [key: string]: Match }
+      [artboardId: string]: { [queryId: string]: Match }
     } = {}
 
     const groupNames = Object.keys(groups)

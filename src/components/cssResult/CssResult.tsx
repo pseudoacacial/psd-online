@@ -105,11 +105,10 @@ export const CssResult = () => {
 
     for (const [key, value] of Object.entries(matchesByArtboardAndQuery)) {
       cssResult +=
-        `${prefix}${key} {\n` +
+        `${prefix}${key} {\n` + value &&
         Object.values(value)
-          .map(match => getMatchCss(match))
-          .join("") +
-        "}\n"
+          .map(match => match && getMatchCss(match))
+          .join("") + "}\n"
     }
 
     setCssResult(cssResult)
