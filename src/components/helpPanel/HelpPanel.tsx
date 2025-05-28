@@ -19,6 +19,8 @@ export const HelpPanel = () => {
         <h2>tips:</h2>
         <ul>
           <li>- left click to add a query for the hovered layer</li>
+          <li>- click on the query on the list (left) to show more options</li>
+          <li>- css name needs to be filled in for the query to show up in resulting SCSS</li>
           <li>- ctrl click to dig through layers</li>
           <li>- shift click to undig</li>
         </ul>

@@ -33,9 +33,9 @@ export const Export = () => {
             const matchedDocumentIdsWithGroup = Object.keys(matchedGroups)
               .map(groupName => ({
                 groupName,
-                documentId: matchedGroups[groupName]?.find(
+                documentId: matchedGroups[groupName]?.filter(
                   match => match.selectorId === query.id,
-                )?.documentId,
+                )[query.matchIndex]?.documentId,
               }))
               .filter(x => x?.documentId)
 
