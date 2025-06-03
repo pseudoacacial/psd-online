@@ -1,15 +1,12 @@
 import "./App.css"
-import { FileInput } from "./components/fileInput/FileInput"
-import logo from "./logo.svg"
-import { useState } from "react"
-import { Viewer, ViewerProps } from "./components/viewer/Viewer"
-import { QueryList } from "./components/queryList/QueryList"
-import { Matches } from "./components/matches/Matches"
 import { CssResult } from "./components/cssResult/CssResult"
-import { Export } from "./components/export/Export"
-import { SettingsEditor } from "./components/settingsEditor/SettingsEditor"
 import { DarkModeButton } from "./components/darkModeButton/DarkModeButton"
+import { Export } from "./components/export/Export"
+import { FileInput } from "./components/fileInput/FileInput"
 import { HelpPanel } from "./components/helpPanel/HelpPanel"
+import { QueryList } from "./components/queryList/QueryList"
+import { SettingsEditor } from "./components/settingsEditor/SettingsEditor"
+import { Viewer } from "./components/viewer/Viewer"
 const App = () => {
   return (
     <div className="bg-bg text-main border-main">

@@ -1,19 +1,10 @@
-import { byteArrayToBase64, Layer, Psd, readPsd } from "ag-psd"
+import type { Layer, Psd } from "ag-psd"
+import { readPsd } from "ag-psd"
 import { useEffect, useState } from "react"
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { useAppDispatch } from "../../app/hooks"
 
-import {
-  add,
-  remove,
-  modify,
-  addChild,
-  reset,
-  selectDocument,
-  selectElementsFlat,
-  PsdObject,
-  setThumbnail,
-} from "../../slices/documentSlice"
+import { add, addChild, reset, setThumbnail } from "../../slices/documentSlice"
 
 export interface FileElement extends Layer {
   name: string
@@ -113,8 +104,7 @@ export const FileInput = () => {
       }
     }
 
-    if (object.children === undefined) {
-    } else {
+    if (object.children !== undefined) {
       object.children.forEach(child => {
         if (object.artboard) {
           checkChildren(
@@ -149,7 +139,7 @@ export const FileInput = () => {
     psd.children.forEach(element => {
       checkChildren(element as FileElement, [], [], null)
     })
-    // console.log(psd)
+    console.log(psd)
   }, [psd])
 
   const handleFileChange = (event: React.ChangeEvent) => {

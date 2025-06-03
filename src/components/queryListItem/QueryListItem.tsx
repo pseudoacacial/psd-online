@@ -1,21 +1,22 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { objectFilter } from "../../utils/functions"
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { objectFilter } from "../../utils/functions";
 
-import { useState, useEffect, useRef } from "react"
+import { useState } from "react";
 
+import {
+  selectMatchesByArtboard
+} from "../../selectors/matchSelectors";
+import { selectElementsFlat } from "../../slices/documentSlice";
+import type {
+  Query
+} from "../../slices/querySlice";
 import {
   addQuery,
-  remove,
   modify,
-  Query,
   QueryClass,
-} from "../../slices/querySlice"
-import {
-  selectMatches,
-  selectMatchesByArtboard,
-} from "../../selectors/matchSelectors"
-import { selectElementsFlat } from "../../slices/documentSlice"
-import { match } from "assert"
+  remove,
+} from "../../slices/querySlice";
+import { QueryListItemToggle } from "../queryListItemToggle/QueryListItemToggle";
 export interface QueryListItemProps {
   query: Query
   freeze?: boolean
@@ -158,61 +159,11 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             </style>
           )}
           <div className="flex justify-start w-full flex-wrap">
-            <div className="mx-1">
-              <input
-                type="checkbox"
-                id="size"
-                checked={readQuery.showSize}
-                onChange={event => {
-                  changeQueryValue("showSize", event.target.checked)
-                }}
-              ></input>
-              <label htmlFor="size">Size</label>
-            </div>
-            <div className="mx-1">
-              <input
-                type="checkbox"
-                id="position"
-                checked={readQuery.showPosition}
-                onChange={event => {
-                  changeQueryValue("showPosition", event.target.checked)
-                }}
-              ></input>
-              <label htmlFor="position">Position</label>
-            </div>
-            <div className="mx-1">
-              <input
-                type="checkbox"
-                id="size"
-                checked={readQuery.showFontSize}
-                onChange={event => {
-                  changeQueryValue("showFontSize", event.target.checked)
-                }}
-              ></input>
-              <label htmlFor="size">font-size</label>
-            </div>
-            <div className="mx-1">
-              <input
-                type="checkbox"
-                id="export"
-                checked={readQuery.export}
-                onChange={event => {
-                  changeQueryValue("export", event.target.checked)
-                }}
-              ></input>
-              <label htmlFor="export">export</label>
-            </div>
-            <div className="mx-1">
-              <input
-                type="checkbox"
-                id="frame"
-                checked={readQuery.frame}
-                onChange={event => {
-                  changeQueryValue("frame", event.target.checked)
-                }}
-              ></input>
-              <label htmlFor="frame">frame</label>
-            </div>
+            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="Size" queryKey="showSize" />
+            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="Position" queryKey="showPosition" />
+            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="font-size" queryKey="showFontSize" />
+            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="export" queryKey="export" />
+            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="frame" queryKey="frame" />
             <div className="mx-1">
               <input
                 type="number"
