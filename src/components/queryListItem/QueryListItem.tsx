@@ -6,7 +6,6 @@ import { useState } from "react";
 import {
   selectMatchesByArtboard
 } from "../../selectors/matchSelectors";
-import { selectElementsFlat } from "../../slices/documentSlice";
 import type {
   Query
 } from "../../slices/querySlice";
@@ -28,8 +27,6 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const dispatch = useAppDispatch()
 
   const matches = useAppSelector(selectMatchesByArtboard)
-
-  const elements = useAppSelector(selectElementsFlat)
 
   //state is only used if freeze==true; Otherwise, each change dispatches a modify action
   const [newQuery, setNewQuery] = useState(query)

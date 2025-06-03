@@ -21,7 +21,10 @@ export const cropBase64Image = async (
       const canvas = document.createElement("canvas")
       canvas.width = rect.width
       canvas.height = rect.height
-      const ctx = canvas.getContext("2d")!
+      const ctx = canvas.getContext("2d")
+      if (ctx === null) {
+        throw new Error("Failed to get 2D context")
+      }
       ctx.drawImage(
         img,
         rect.left,
@@ -33,7 +36,9 @@ export const cropBase64Image = async (
         rect.width,
         rect.height,
       )
-      resolve(canvas.toDataURL("image/webp"))
+      const dataUrl = canvas.toDataURL("image/webp")      
+      canvas.remove()
+      resolve(dataUrl)
     }
     img.src = base64
   })
