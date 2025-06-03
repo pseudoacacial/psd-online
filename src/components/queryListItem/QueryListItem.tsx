@@ -16,7 +16,9 @@ import {
   QueryClass,
   remove,
 } from "../../slices/querySlice";
+import { QueryListItemInput } from "../queryListItemInput/QueryListItemInput";
 import { QueryListItemToggle } from "../queryListItemToggle/QueryListItemToggle";
+
 export interface QueryListItemProps {
   query: Query
   freeze?: boolean
@@ -115,28 +117,20 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
       data-testid="queryListItem"
     >
       <div className="flex justify-between">
-        <input
-          type="text"
-          className="grow shrink min-w-0 rounded-l pl-1"
-          role="form"
-          onChange={event => {
-            changeQueryValue("cssSelector", event?.target.value)
-          }}
-          value={readQuery.cssSelector}
+        <QueryListItemInput
+          readQuery={readQuery}
+          changeQueryValue={changeQueryValue}
+          queryKey="cssSelector"
           placeholder="css name"
-          aria-label="css name"
-        ></input>
-        <input
-          type="text"
-          className="grow shrink min-w-0 pl-1"
-          role="form"
-          onChange={event => {
-            changeQueryValue("psdSelector", event?.target.value)
-          }}
-          value={unescapeRegex(readQuery.psdSelector)}
+          className="grow shrink min-w-0 rounded-l pl-1"
+        />
+        <QueryListItemInput
+          readQuery={readQuery}
+          changeQueryValue={changeQueryValue}
+          queryKey="psdSelector"
           placeholder="psd name"
-          aria-label="psd name"
-        ></input>
+          transform={unescapeRegex}
+        />
         {freeze ? (
           <button
             onClick={handleAddClick}
@@ -165,17 +159,14 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="export" queryKey="export" />
             <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="frame" queryKey="frame" />
             <div className="mx-1">
-              <input
+              <QueryListItemInput
+                readQuery={readQuery}
+                changeQueryValue={changeQueryValue}
+                queryKey="matchIndex"
+                placeholder="match index"
                 type="number"
                 className="grow shrink min-w-0 w-8 rounded-l pl-1"
-                role="form"
-                onChange={event => {
-                  changeQueryValue("matchIndex", event?.target.value)
-                }}
-                value={readQuery.matchIndex}
-                placeholder="match index"
-                aria-label="match index"
-              ></input>
+              />
             </div>
             {freeze || (
               <div className="mx-1 text-right">
@@ -195,17 +186,13 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             )}
             {readQuery.frame && (
               <div className="flex justify-between">
-                <input
-                  type="text"
-                  className="grow shrink min-w-0 rounded-l pl-1"
-                  role="form"
-                  onChange={event => {
-                    changeQueryValue("framePsdSelector", event?.target.value)
-                  }}
-                  value={readQuery.framePsdSelector}
+                <QueryListItemInput
+                  readQuery={readQuery}
+                  changeQueryValue={changeQueryValue}
+                  queryKey="framePsdSelector"
                   placeholder="frame psd name"
-                  aria-label="frame psd name"
-                ></input>
+                  className="grow shrink min-w-0 rounded-l pl-1"
+                />
               </div>
             )}
             {readQuery.export && (
