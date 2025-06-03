@@ -194,28 +194,14 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             )}
             {readQuery.export && (
               <div className="flex justify-between">
-                <input
-                  type="text"
-                  className="grow shrink min-w-0 rounded-l pl-1"
-                  role="form"
-                  onChange={event => {
-                    changeQueryValue("exportName", event?.target.value)
-                  }}
-                  value={readQuery.exportName}
+                <QueryListItemInput
+                  readQuery={readQuery}
+                  changeQueryValue={changeQueryValue}
+                  queryKey="exportName"
                   placeholder="export name"
-                  aria-label="export name"
-                ></input>
-                <div className="mx-1">
-                  <input
-                    type="checkbox"
-                    id="exportCrop"
-                    checked={readQuery.exportCrop}
-                    onChange={event => {
-                      changeQueryValue("exportCrop", event.target.checked)
-                    }}
-                  ></input>
-                  <label htmlFor="exportCrop">crop</label>
-                </div>
+                  className="grow shrink min-w-0 rounded-l pl-1"
+                />  
+                <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="crop" queryKey="exportCrop" />
               </div>
             )}
           </div>
