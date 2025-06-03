@@ -1,15 +1,12 @@
-import { createSelector } from "@reduxjs/toolkit"
+import { createSelector } from "@reduxjs/toolkit";
 
 import {
   selectArtboards,
-  selectDocument,
-  selectElementsFlat,
-} from "../slices/documentSlice"
-import { selectQueries, Query } from "../slices/querySlice"
-import { useAppSelector } from "../app/hooks"
-import { selectSettings } from "../slices/settingsSlice"
-import { match } from "assert"
-import { group } from "console"
+  selectElementsFlat
+} from "../slices/documentSlice";
+import type { Query } from "../slices/querySlice";
+import { selectQueries } from "../slices/querySlice";
+import { selectSettings } from "../slices/settingsSlice";
 
 export interface Match {
   selectorId: string
@@ -54,23 +51,24 @@ export const selectMatches = createSelector(
       const query = selectors.find(query => query.id === match.selectorId)
       const element = elements.find(element => element.id === match.documentId)
 
-      if (query && query.frame && query.framePsdSelector) {
-        return {
-          ...match,
-          frameId: getMatches({
+      if (!query || !query.frame || !query.framePsdSelector) return match        
+      const frameMatches = getMatches({
             ...query,
             psdSelector: query.framePsdSelector,
-          }).filter(match => {
-            const frameElement = elements.find(
-              element => element.id === match.documentId,
-            )
+          })
 
-            return element?.artboardId === frameElement?.artboardId
-          })[0].documentId,
-        }
-      } else {
-        return match
-      }
+      const frame = frameMatches.filter(match => {
+        const frameElement = elements.find(
+          element => element.id === match.documentId,
+        )
+        return element?.artboardId === frameElement?.artboardId
+      })[0]
+
+        return frame ?{
+          ...match,
+            frameId: frame.documentId,
+          }
+        : match
     })
 
     return matchesWithFrames
@@ -131,8 +129,6 @@ export const selectMatchesByArtboardAndQuery = createSelector(
     } = {}
 
     const groupNames = Object.keys(groups)
-
-    const array = Object.entries(groups)
 
     //make groups
     groupNames.forEach(groupName => {
