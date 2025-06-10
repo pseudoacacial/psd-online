@@ -1,13 +1,13 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { modifySettings } from "../../slices/settingsSlice"
-import { selectSettings } from "../../slices/settingsSlice"
+import { modifySettings, selectSettings } from "../../slices/settingsSlice"
+import { SettingsEditorInput } from "../settingsEditorInput/SettingsEditorInput"
 export const SettingsEditor = () => {
   const settings = useAppSelector(selectSettings)
   const dispatch = useAppDispatch()
   const [groupNameRegex, setGroupNameRegex] = useState(settings.groupNameRegex)
   const [prefix, setPrefix] = useState(settings.prefix)
-
+  const [scale, setScale] = useState(settings.scale)
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGroupNameRegex(event.target.value)
   }
@@ -16,11 +16,16 @@ export const SettingsEditor = () => {
     setPrefix(event.target.value)
   }
 
-  const handleGroupNameRegexBlur = (
+  const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("handleScaleChange", event.target.value)
+    setScale(Number(event.target.value))
+  }
+
+  const handleSettingsBlur = (
     event: React.FocusEvent<HTMLInputElement>,
   ) => {
     dispatch(
-      modifySettings({ groupNameRegex: event.target.value, prefix: prefix }),
+      modifySettings({ groupNameRegex: groupNameRegex, prefix: prefix, scale: scale }),
     )
   }
   const handlePrefixBlur = (event: React.FocusEvent<HTMLInputElement>) => {
@@ -28,42 +33,32 @@ export const SettingsEditor = () => {
       modifySettings({
         groupNameRegex: groupNameRegex,
         prefix: event.target.value,
+        scale: scale,
       }),
     )
   }
 
   return (
     <div className="flex flex-col gap-1 py-1">
-      <div className="flex border border-main rounded justify-start">
-        <input
-          className="rounded-l pl-1"
-          id="groupNameRegex"
-          value={groupNameRegex.toString()}
-          onChange={handleChange}
-          onBlur={handleGroupNameRegexBlur}
-        ></input>
-        <label
-          className="whitespace-nowrap px-1 rounded-r text-left"
-          htmlFor="groupNameRegex"
-        >
-          Group name regex
-        </label>
-      </div>
-      <div className="flex border border-main rounded justify-start">
-        <input
-          className="rounded-l  pl-1"
-          id="prefix"
-          value={prefix}
-          onChange={handlePrefixChange}
-          onBlur={handlePrefixBlur}
-        ></input>
-        <label
-          className="whitespace-nowrap px-1 rounded-r text-left"
-          htmlFor="prefix"
-        >
-          prefix
-        </label>
-      </div>
+      <SettingsEditorInput
+        value={groupNameRegex}
+        onChange={handleChange}
+        onBlur={handleSettingsBlur}
+        label="Group name regex"
+      />
+      <SettingsEditorInput
+        value={prefix}
+        onChange={handlePrefixChange}
+        onBlur={handlePrefixBlur}
+        label="Prefix"
+      />
+      <SettingsEditorInput
+        value={scale.toString()}
+        onChange={handleScaleChange}
+        onBlur={handleSettingsBlur}
+        label="Scale"
+        type="number"
+      />
     </div>
   )
 }

@@ -1,15 +1,16 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import { createSelector } from "@reduxjs/toolkit"
+import { createSlice } from "@reduxjs/toolkit"
 
 export interface SettingsSliceState {
   groupNameRegex: RegExp["source"]
   prefix: string
+  scale: number
 }
 
 const initialState: SettingsSliceState = {
   groupNameRegex: "(\\d+x\\d+)",
   prefix: ".b",
+  scale: 0.5,
 }
 
 export const settingsSlice = createSlice({

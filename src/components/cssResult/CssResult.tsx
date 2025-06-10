@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react"
-import { useAppSelector } from "../../app/hooks"
+import { useEffect, useState } from "react";
+import { useAppSelector } from "../../app/hooks";
+import type {
+  Match
+} from "../../selectors/matchSelectors";
 import {
   selectMatches,
-  selectMatchesByArtboard,
-  selectMatchesByArtboardAndQuery,
-  Match,
-} from "../../selectors/matchSelectors"
-import { selectArtboards, selectElementsFlat } from "../../slices/documentSlice"
-import { selectQueries } from "../../slices/querySlice"
-import { selectSettings } from "../../slices/settingsSlice"
+  selectMatchesByArtboardAndQuery
+} from "../../selectors/matchSelectors";
+import { selectArtboards, selectElementsFlat } from "../../slices/documentSlice";
+import { selectQueries } from "../../slices/querySlice";
+import { selectSettings } from "../../slices/settingsSlice";
 
 export const CssResult = () => {
   const matches = useAppSelector(selectMatches)
-  const matchesByArtboard = useAppSelector(selectMatchesByArtboard)
   const matchesByArtboardAndQuery = useAppSelector(
     selectMatchesByArtboardAndQuery,
   )
@@ -25,7 +25,7 @@ export const CssResult = () => {
 
   const prefix = settings.prefix
 
-  const getMatchCss = (match: Match) => {
+  const getMatchCss = (match: Match, scale: number) => {
     const query = queries.find(query => query.id === match.selectorId)
     const psdElement = elements.filter(
       element => element.id === match.documentId,
@@ -52,11 +52,11 @@ export const CssResult = () => {
         artboard.rect.left !== undefined &&
         artboard.rect.top !== undefined
       ) {
-        style.left = psdElement.rect.left - artboard.rect.left + "px"
-        style.top = psdElement.rect.top - artboard.rect.top + "px"
+        style.left = (psdElement.rect.left - artboard.rect.left) * scale + "px"
+        style.top = (psdElement.rect.top - artboard.rect.top) * scale + "px"
       } else {
-        style.left = psdElement.rect.left + "px"
-        style.top = psdElement.rect.top + "px"
+        style.left = psdElement.rect.left * scale + "px"
+        style.top = psdElement.rect.top * scale + "px"
       }
     }
     if (
@@ -66,8 +66,8 @@ export const CssResult = () => {
       psdElement.rect.bottom &&
       psdElement.rect.top
     ) {
-      style.width = psdElement.rect.right - psdElement.rect.left + "px"
-      style.height = psdElement.rect.bottom - psdElement.rect.top + "px"
+      style.width = (psdElement.rect.right - psdElement.rect.left) * scale + "px"
+      style.height = (psdElement.rect.bottom - psdElement.rect.top) * scale + "px"
     }
     if (query.showFontSize && psdElement.text?.style?.fontSize) {
       style.fontSize =
@@ -107,7 +107,7 @@ export const CssResult = () => {
       cssResult +=
         `${prefix}${key} {\n` +
         Object.values(value)
-          .map(match => match && getMatchCss(match))
+          .map(match => match && getMatchCss(match, settings.scale))
           .join("") +
         "}\n"
     }
@@ -116,7 +116,7 @@ export const CssResult = () => {
     // artboards.map(),
     // matches.map(match => getMatchCss(match)).join("\n")
     // setCssResult(matches.map(match => getMatchCss(match)).join("\n"))
-  }, [matches])
+  }, [matchesByArtboardAndQuery, settings.scale, settings.prefix])
   return (
     <div className="CssResult my-2">
       <textarea
