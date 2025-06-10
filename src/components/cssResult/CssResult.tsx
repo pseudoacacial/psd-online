@@ -73,7 +73,7 @@ export const CssResult = () => {
       style.fontSize =
         (
           psdElement.text?.style?.fontSize *
-          ((psdElement.text.transform && psdElement.text.transform[3]) || 1)
+          ((psdElement.text.transform && psdElement.text.transform[3]) || 1) * settings.scale
         ).toFixed(2) + "px"
     }
 
