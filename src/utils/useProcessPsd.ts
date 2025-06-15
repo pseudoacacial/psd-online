@@ -1,4 +1,5 @@
 import type { Layer, Psd } from "ag-psd"
+import { useEffect } from "react"
 import { useAppDispatch } from "../app/hooks"
 import { add, addChild, reset, setThumbnail } from "../slices/documentSlice"
 
@@ -17,6 +18,7 @@ export const useProcessPsd = (psd: Psd | null) => {
     parentNamePath: string[],
     artboardId: number | null,
   ) => {
+    console.log("checking")
     //is layer if
     const isLayer =
       //has no children
@@ -119,18 +121,21 @@ export const useProcessPsd = (psd: Psd | null) => {
       })
     }
   }
-  if (psd === null) return
-  dispatch(reset())
-  if (psd.children === undefined) {
-    throw new Error("PSD file has no children. Is it a valid psd document?")
-  }
 
-  const thumbnail = psd.canvas?.toDataURL("image/webp")
+  useEffect(() => {
+    if (!psd) return
+    dispatch(reset())
+    if (psd.children === undefined) {
+      throw new Error("PSD file has no children. Is it a valid psd document?")
+    }
 
-  dispatch(setThumbnail(thumbnail))
+    const thumbnail = psd.canvas?.toDataURL("image/webp")
 
-  psd.children.forEach(element => {
-    checkChildren(element as FileElement, [], [], null)
-  })
-  console.log(psd)
+    dispatch(setThumbnail(thumbnail))
+
+    psd.children.forEach(element => {
+      checkChildren(element as FileElement, [], [], null)
+    })
+    // console.log(psd)
+  }, [psd, dispatch])
 }

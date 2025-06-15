@@ -12,24 +12,23 @@ export interface FileElement extends Layer {
 
 export const FileInput = () => {
   const [psd, setPsd] = useState<Psd | null>(null)
-
   useProcessPsd(psd)
 
   const handleFileChange = (event: React.ChangeEvent) => {
-    const files = (event.target as HTMLInputElement).files // Get the selected file
+    const files = (event.target as HTMLInputElement).files
     if (files && files[0]) {
       const file = files[0]
       const reader = new FileReader()
 
       reader.onload = function (e) {
-        const arrayBuffer = e.target?.result // This is the ArrayBuffer
+        const arrayBuffer = e.target?.result
+        if (!arrayBuffer) return
 
         const compositeOnly = false
         const options = compositeOnly
           ? { skipLayerImageData: true }
           : { skipCompositeImageData: true }
-        const psd = readPsd(arrayBuffer as ArrayBuffer, options) // Output the ArrayBuffer
-        // You can now use the arrayBuffer as needed
+        const psd = readPsd(arrayBuffer as ArrayBuffer, options)
         setPsd(psd)
       }
 
@@ -37,7 +36,7 @@ export const FileInput = () => {
         console.error("Error reading file", e)
       }
 
-      reader.readAsArrayBuffer(file) // Read the file as an ArrayBuffer
+      reader.readAsArrayBuffer(file)
     } else {
       console.log("No file selected")
     }

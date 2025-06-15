@@ -17,15 +17,26 @@ export const SettingsEditor = () => {
   }
 
   const handleScaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("handleScaleChange", event.target.value)
     setScale(Number(event.target.value))
+    // if using arrows, input is not focused. In this case, dispatch an update on change, instead of on blur.
+    if (event.target !== document.activeElement) {
+      dispatch(
+        modifySettings({
+          groupNameRegex: groupNameRegex,
+          prefix: prefix,
+          scale: scale,
+        }),
+      )
+    }
   }
 
-  const handleSettingsBlur = (
-    event: React.FocusEvent<HTMLInputElement>,
-  ) => {
+  const handleSettingsBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     dispatch(
-      modifySettings({ groupNameRegex: groupNameRegex, prefix: prefix, scale: scale }),
+      modifySettings({
+        groupNameRegex: groupNameRegex,
+        prefix: prefix,
+        scale: scale,
+      }),
     )
   }
   const handlePrefixBlur = (event: React.FocusEvent<HTMLInputElement>) => {
