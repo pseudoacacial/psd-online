@@ -157,7 +157,7 @@ export const FileInput = () => {
           : { skipCompositeImageData: true }
         const psd = readPsd(arrayBuffer as ArrayBuffer, options) // Output the ArrayBuffer
         // You can now use the arrayBuffer as needed
-        handleFile(psd)
+        setPsd(psd)
       }
 
       reader.onerror = function (e) {
@@ -168,10 +168,6 @@ export const FileInput = () => {
     } else {
       console.log("No file selected")
     }
-  }
-
-  const handleFile = (psd: Psd) => {
-    setPsd(psd)
   }
 
   return (
