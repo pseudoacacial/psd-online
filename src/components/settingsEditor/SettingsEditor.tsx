@@ -1,13 +1,25 @@
 import { useState } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { modifySettings, selectSettings } from "../../slices/settingsSlice"
+import type { SettingsSliceState } from "../../slices/settingsSlice"
+import {
+  initialState as initialSettings,
+  modifySettings,
+  resetSettings,
+  selectSettings,
+} from "../../slices/settingsSlice"
 import { SettingsEditorInput } from "../settingsEditorInput/SettingsEditorInput"
 export const SettingsEditor = () => {
   const settings = useAppSelector(selectSettings)
   const dispatch = useAppDispatch()
+
   const [groupNameRegex, setGroupNameRegex] = useState(settings.groupNameRegex)
   const [prefix, setPrefix] = useState(settings.prefix)
   const [scale, setScale] = useState(settings.scale)
+  const updateSettingsState = (settings: SettingsSliceState["settings"]) => {
+    setGroupNameRegex(settings.groupNameRegex)
+    setPrefix(settings.prefix)
+    setScale(settings.scale)
+  }
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setGroupNameRegex(event.target.value)
   }
@@ -24,7 +36,7 @@ export const SettingsEditor = () => {
         modifySettings({
           groupNameRegex: groupNameRegex,
           prefix: prefix,
-          scale: scale,
+          scale: Number(event.target.value),
         }),
       )
     }
@@ -48,9 +60,18 @@ export const SettingsEditor = () => {
       }),
     )
   }
+  const handleClearClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (window.confirm("clear settings?")) {
+      dispatch(resetSettings())
+      updateSettingsState(initialSettings.settings)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-1 py-1">
+      <button className="border" onClick={handleClearClick}>
+        clear
+      </button>
       <SettingsEditorInput
         value={groupNameRegex}
         onChange={handleChange}

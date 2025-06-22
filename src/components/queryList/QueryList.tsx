@@ -1,16 +1,13 @@
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
-import { useState, useEffect } from "react"
-
 import {
   addQuery,
-  remove,
-  modify,
+  QueryClass,
   reset,
   selectQueries,
-  Query,
-  QueryClass,
 } from "../../slices/querySlice"
+
+import type { Query } from "../../slices/querySlice"
 import { QueryListItem } from "../queryListItem/QueryListItem"
 
 export const QueryList = () => {

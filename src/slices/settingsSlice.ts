@@ -2,30 +2,47 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 import { createSlice } from "@reduxjs/toolkit"
 
 export interface SettingsSliceState {
-  groupNameRegex: RegExp["source"]
-  prefix: string
-  scale: number
+  settings: {
+    groupNameRegex: RegExp["source"]
+    prefix: string
+    scale: number
+  }
 }
 
-const initialState: SettingsSliceState = {
-  groupNameRegex: "(\\d+x\\d+)",
-  prefix: ".b",
-  scale: 0.5,
+export const initialState: SettingsSliceState = {
+  settings: {
+    groupNameRegex: "(\\d+x\\d+)",
+    prefix: ".b",
+    scale: 0.5,
+  },
 }
+
+const localSettings = localStorage.getItem("settings")
 
 export const settingsSlice = createSlice({
   name: "settings",
-  initialState,
+  initialState: localSettings
+    ? { settings: JSON.parse(localSettings) }
+    : initialState,
   reducers: {
-    modifySettings: (state, action: PayloadAction<SettingsSliceState>) =>
-      Object.assign(state, action.payload),
+    modifySettings: (
+      state,
+      action: PayloadAction<SettingsSliceState["settings"]>,
+    ) => {
+      localStorage.setItem("settings", JSON.stringify(action.payload))
+      Object.assign(state.settings, action.payload)
+    },
+    resetSettings: (state, action: PayloadAction<void>) => {
+      localStorage.removeItem("settings")
+      state.settings = { ...initialState.settings }
+    },
   },
   selectors: {
-    selectSettings: settings => settings,
+    selectSettings: state => state.settings,
   },
 })
 
-export const { modifySettings } = settingsSlice.actions
+export const { modifySettings, resetSettings } = settingsSlice.actions
 
 export const { selectSettings } = settingsSlice.selectors
 
