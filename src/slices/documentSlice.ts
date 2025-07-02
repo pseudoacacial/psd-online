@@ -1,7 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import { Layer } from "ag-psd"
-import { createSelector } from "@reduxjs/toolkit"
+import { createSelector, createSlice } from "@reduxjs/toolkit"
+import type { Layer } from "ag-psd"
 
 import { exampleDocument } from "../utils/exampleDocument"
 export interface PsdObject {
@@ -245,7 +244,7 @@ export const selectElementsFlat = createSelector([selectDocument], document => {
       flatList = flatList.concat(flattenElement(child))
     })
 
-    flatList = flatList.concat({ ...element, children: [] })
+    flatList = flatList.concat({ ...element })
     return flatList
   }
   document.elements.forEach(element => {

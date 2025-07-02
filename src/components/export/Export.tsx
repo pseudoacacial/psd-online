@@ -1,13 +1,13 @@
-import {
-  selectMatches,
-  selectMatchesByArtboard,
-} from "../../selectors/matchSelectors"
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
-import { cropBase64Image, objectFilter } from "../../utils/functions"
-import { selectElementsFlat } from "../../slices/documentSlice"
-import { selectArtboards } from "../../slices/documentSlice"
-import { selectQueries } from "../../slices/querySlice"
 import { useEffect, useState } from "react"
+import { useAppSelector } from "../../app/hooks"
+import { selectMatchesByArtboard } from "../../selectors/matchSelectors"
+import { selectArtboards, selectElementsFlat } from "../../slices/documentSlice"
+import { selectQueries } from "../../slices/querySlice"
+import {
+  composeGroupCanvas,
+  cropBase64Image,
+  objectFilter,
+} from "../../utils/functions"
 
 export const Export = () => {
   const matches = useAppSelector(selectMatchesByArtboard)
@@ -47,9 +47,20 @@ export const Export = () => {
                     ab => ab.id === element?.artboardId,
                   )
 
-                  if (!element?.canvas || !artboard) return undefined
+                  // if (!element?.canvas || !artboard) return undefined
 
-                  let image = element.canvas
+                  let image: string | undefined = undefined
+                  if (element?.type === "layer" && element.canvas) {
+                    image = element.canvas
+                  } else if (element?.type === "group") {
+                    try {
+                      console.log(element)
+                      image = await composeGroupCanvas(element)
+                    } catch (e) {
+                      image = undefined
+                    }
+                  }
+                  if (!image || !artboard) return undefined
 
                   if (query.exportCrop === true && artboard.rect) {
                     const { top, left, right, bottom } = artboard.rect
@@ -57,7 +68,9 @@ export const Export = () => {
                       top !== undefined &&
                       left !== undefined &&
                       right !== undefined &&
-                      bottom !== undefined
+                      bottom !== undefined &&
+                      element.rect.top !== undefined &&
+                      element.rect.left !== undefined
                     ) {
                       const cropped = await cropBase64Image(image, {
                         top: top - element.rect.top,
