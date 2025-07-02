@@ -40,6 +40,8 @@ export const cropBase64Image = async (
       )
       const dataUrl = canvas.toDataURL("image/webp")
       canvas.remove()
+      if (!dataUrl)
+        throw new Error("Failed to generate base64 image from canvas.")
       resolve(dataUrl)
     }
     img.src = base64
@@ -47,15 +49,23 @@ export const cropBase64Image = async (
 }
 
 // Compose all descendant layer canvases of a group into a single base64 image
-export const composeGroupCanvas = async (group: PsdObject): Promise<string> => {
-  // Helper to recursively collect all descendant layers
+export const composeGroupCanvas = async (
+  group: PsdObject,
+  allElements: PsdObject[],
+): Promise<string> => {
+  // Helper to recursively collect all descendant layers using childrenIds
   const collectLayers = (obj: PsdObject): PsdObject[] => {
     if (obj.type === "layer" && obj.canvas) {
       return [obj]
     }
     let layers: PsdObject[] = []
-    for (const child of obj.children) {
-      layers = layers.concat(collectLayers(child))
+    if (obj.childrenIds && obj.childrenIds.length > 0) {
+      for (const childId of obj.childrenIds) {
+        const child = allElements.find(e => e.id === childId)
+        if (child) {
+          layers = layers.concat(collectLayers(child))
+        }
+      }
     }
     return layers
   }
@@ -113,7 +123,7 @@ export const composeGroupCanvas = async (group: PsdObject): Promise<string> => {
       bottom === undefined
     )
       continue
-    if (!layer.canvas) continue
+    if (!layer.canvas) throw new Error("Layer canvas is undefined.")
     await new Promise<void>(resolve => {
       const img = new window.Image()
       img.onload = () => {
@@ -130,10 +140,11 @@ export const composeGroupCanvas = async (group: PsdObject): Promise<string> => {
         )
         resolve()
       }
-      img.src = layer.canvas
+      img.src = layer.canvas as string
     })
   }
   const dataUrl = canvas.toDataURL("image/webp")
   canvas.remove()
+  if (!dataUrl) throw new Error("Failed to generate base64 image from canvas.")
   return dataUrl
 }

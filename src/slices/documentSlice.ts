@@ -21,6 +21,7 @@ export interface PsdObject {
     right: number | undefined
   }
   children: PsdObject[]
+  childrenIds?: number[]
 }
 
 export interface PsdObjectChild {
@@ -244,7 +245,10 @@ export const selectElementsFlat = createSelector([selectDocument], document => {
       flatList = flatList.concat(flattenElement(child))
     })
 
-    flatList = flatList.concat({ ...element })
+    flatList = flatList.concat({
+      ...element,
+      childrenIds: element.children.map(child => child.id),
+    })
     return flatList
   }
   document.elements.forEach(element => {
