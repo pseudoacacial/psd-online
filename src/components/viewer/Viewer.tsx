@@ -1,19 +1,12 @@
-import { useEffect, useRef } from "react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { FaObjectGroup, FaObjectUngroup } from "react-icons/fa"
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
 
 import {
-  add,
-  remove,
-  modify,
-  addChild,
   selectDocument,
   selectElements,
-  selectElementsFlat,
   selectThumbnail,
-  PsdObject,
 } from "../../slices/documentSlice"
 
 import { addQuery, QueryClass } from "../../slices/querySlice"

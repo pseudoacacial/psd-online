@@ -9,7 +9,7 @@ export interface PsdObject {
   idPath: number[]
   namePath: string[]
   name: string
-  type?: "artboard" | "group" | "layer"
+  type?: "artboard" | "group" | "layer" | "SmartObjectGroup"
   canvas?: string
   //clipping:true means that the element should be clipped to the next sibling (in photoshop layers) - or, what ends up happening in dom - to the previous sibling
   clipping?: boolean
@@ -40,9 +40,7 @@ export interface DocumentSliceState {
 // Define the initial value for the slice state
 const initialState: DocumentSliceState = {
   ...exampleDocument,
-  // artboards: [],
-  // elements: [],
-  // thumbnail: "",
+  thumbnail: undefined,
 }
 
 // Slices contain Redux reducer logic for updating state, and
@@ -169,7 +167,7 @@ export const documentSlice = createSlice({
         })
       }
 
-      formatDataWithResize(
+      formatData(
         copy,
         action.payload.parentIdPath[action.payload.parentIdPath.length - 1],
         action.payload.object,

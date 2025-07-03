@@ -54,7 +54,6 @@ export const Export = () => {
                     image = element.canvas
                   } else if (element?.type === "group") {
                     try {
-                      console.log(element)
                       image = await composeGroupCanvas(element, elements)
                     } catch (e) {
                       image = undefined

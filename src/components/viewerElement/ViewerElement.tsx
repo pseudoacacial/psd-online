@@ -1,11 +1,5 @@
-import { MouseEventHandler, useEffect, useRef, useState } from "react"
-import {
-  add,
-  remove,
-  modify,
-  selectDocument,
-  PsdObject,
-} from "../../slices/documentSlice"
+import type { MouseEventHandler } from "react"
+import type { PsdObject } from "../../slices/documentSlice"
 
 export type ViewerElementProps = {
   element: PsdObject
@@ -14,12 +8,14 @@ export type ViewerElementProps = {
     left: number | undefined
   }
   handleClick: MouseEventHandler
+  isSmartObjectRoot?: boolean
 }
 
 export const ViewerElement = ({
   element,
   offsetRect,
-  handleClick: handleClick,
+  handleClick,
+  isSmartObjectRoot = false,
 }: ViewerElementProps) => {
   // const container = useRef(null)
   // useEffect(() => {
@@ -28,6 +24,14 @@ export const ViewerElement = ({
   //     container.current.append(element.canvas)
   //   }
   // }, [container])
+
+  // Determine if this is a smart object artboard
+  const isSmartObjectArtboard =
+    element.type === "artboard" && element.name?.includes("SmartObject")
+
+  // If this is a smart object artboard or a descendant of one, render absolutely
+  // const useAbsolute = isSmartObjectRoot || isSmartObjectArtboard
+  const useAbsolute = false
 
   return (
     <div
@@ -38,18 +42,25 @@ export const ViewerElement = ({
       style={
         element.rect && {
           top:
-            element.rect.top !== undefined && element.rect.top - offsetRect.top,
+            element.rect.top !== undefined
+              ? useAbsolute
+                ? element.rect.top
+                : element.rect.top - (offsetRect.top ?? 0)
+              : undefined,
           left:
-            element.rect.left !== undefined &&
-            element.rect.left - offsetRect.left,
+            element.rect.left !== undefined
+              ? useAbsolute
+                ? element.rect.left
+                : element.rect.left - (offsetRect.left ?? 0)
+              : undefined,
           width:
-            element.rect.right !== undefined &&
-            element.rect.left !== undefined &&
-            element.rect.right - element.rect.left,
+            element.rect.right !== undefined && element.rect.left !== undefined
+              ? element.rect.right - element.rect.left
+              : undefined,
           height:
-            element.rect.bottom !== undefined &&
-            element.rect.top !== undefined &&
-            element.rect.bottom - element.rect.top,
+            element.rect.bottom !== undefined && element.rect.top !== undefined
+              ? element.rect.bottom - element.rect.top
+              : undefined,
           backgroundImage: `url("${element.canvas}")`,
         }
       }
@@ -76,6 +87,7 @@ export const ViewerElement = ({
                 : element.rect.left,
           }}
           handleClick={handleClick}
+          isSmartObjectRoot={useAbsolute}
         ></ViewerElement>
       ))}
     </div>
