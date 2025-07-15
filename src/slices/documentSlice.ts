@@ -153,27 +153,44 @@ export const documentSlice = createSlice({
 
       function formatDataWithResize(
         arr: PsdObject[],
-        Id: string | number,
+        idPath: Array<string | number>,
         objectToAdd: PsdObject,
       ) {
-        arr.forEach(i => {
-          if (i.id.toString() === Id.toString()) {
-            if (i.type !== "artboard")
-              i.rect = { ...stretch(i.rect, objectToAdd.rect) }
-            //stretch the group when you add child to it
-
-            i.children = [...i.children, objectToAdd]
-          } else {
-            formatDataWithResize(i.children, Id, objectToAdd)
+        // For each id in idPath, stretch the rect of the matching element
+        idPath.forEach(id => {
+          function stretchRectRecursive(elements: PsdObject[]) {
+            elements.forEach(element => {
+              if (element.id.toString() === id.toString()) {
+                if (element.type !== "artboard") {
+                  element.rect = { ...stretch(element.rect, objectToAdd.rect) }
+                }
+              }
+              // Recurse into children
+              stretchRectRecursive(element.children)
+            })
           }
+          stretchRectRecursive(arr)
         })
+
+        // Add the child to the immediate parent (last id in idPath)
+        const parentId = idPath[idPath.length - 1]
+        function addChildRecursive(elements: PsdObject[]) {
+          elements.forEach(element => {
+            if (element.id.toString() === parentId?.toString()) {
+              element.children = [...element.children, objectToAdd]
+            } else {
+              addChildRecursive(element.children)
+            }
+          })
+        }
+        if (parentId !== undefined) {
+          addChildRecursive(arr)
+        }
       }
 
-      const parentId =
-        action.payload.parentIdPath[action.payload.parentIdPath.length - 1]
-
-      if (parentId !== undefined) {
-        formatDataWithResize(copy, parentId, action.payload.object)
+      const idPath = action.payload.parentIdPath
+      if (idPath.length > 0) {
+        formatDataWithResize(copy, idPath, action.payload.object)
       }
 
       state.elements = copy
