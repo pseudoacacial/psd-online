@@ -171,6 +171,7 @@ export const documentSlice = createSlice({
 
       const parentId =
         action.payload.parentIdPath[action.payload.parentIdPath.length - 1]
+
       if (parentId !== undefined) {
         formatDataWithResize(copy, parentId, action.payload.object)
       }

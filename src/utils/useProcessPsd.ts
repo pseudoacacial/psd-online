@@ -31,6 +31,24 @@ export const useProcessPsd = (psd: Psd | null) => {
       //or is a text or raster
       object.text ||
       object.placedLayer
+
+    // Compute the global rect for this object
+    const globalLeft =
+      (parentRect?.left ?? 0) + (object.left ?? (object as any).rect?.left ?? 0)
+    const globalTop =
+      (parentRect?.top ?? 0) + (object.top ?? (object as any).rect?.top ?? 0)
+    const globalRight =
+      (parentRect?.left ?? 0) +
+      (object.right ?? (object as any).rect?.right ?? 0)
+    const globalBottom =
+      (parentRect?.top ?? 0) +
+      (object.bottom ?? (object as any).rect?.bottom ?? 0)
+    const rectToUse = {
+      left: globalLeft,
+      top: globalTop,
+      right: globalRight,
+      bottom: globalBottom,
+    }
     if (object.artboard !== undefined) {
       dispatch(
         add({
@@ -46,25 +64,6 @@ export const useProcessPsd = (psd: Psd | null) => {
         }),
       )
     } else {
-      // Compute the global rect for this object
-      const globalLeft =
-        (parentRect?.left ?? 0) +
-        (object.left ?? (object as any).rect?.left ?? 0)
-      const globalTop =
-        (parentRect?.top ?? 0) + (object.top ?? (object as any).rect?.top ?? 0)
-      const globalRight =
-        (parentRect?.left ?? 0) +
-        (object.right ?? (object as any).rect?.right ?? 0)
-      const globalBottom =
-        (parentRect?.top ?? 0) +
-        (object.bottom ?? (object as any).rect?.bottom ?? 0)
-      const rectToUse = {
-        left: globalLeft,
-        top: globalTop,
-        right: globalRight,
-        bottom: globalBottom,
-      }
-
       if (parentIdPath.length > 0) {
         dispatch(
           addChild({
@@ -118,20 +117,21 @@ export const useProcessPsd = (psd: Psd | null) => {
           }),
         )
       }
-      if (object.children !== undefined) {
-        object.children.forEach(child => {
-          checkChildren(
-            child,
-            [...parentIdPath, object.id],
-            [...parentNamePath, object.name],
-            object.artboard ? object.id : artboardId,
-            psdRef,
-            originalPsd,
-            rectToUse, // pass the current object's global rect as parentRect
-            absolutePositioning, // propagate absolute mode
-          )
-        })
-      }
+    }
+
+    if (object.children !== undefined) {
+      object.children.forEach(child => {
+        checkChildren(
+          child,
+          [...parentIdPath, object.id],
+          [...parentNamePath, object.name],
+          object.artboard ? object.id : artboardId,
+          psdRef,
+          originalPsd,
+          rectToUse, // pass the current object's global rect as parentRect
+          absolutePositioning, // propagate absolute mode
+        )
+      })
     }
 
     // --- Linked file logic ---
