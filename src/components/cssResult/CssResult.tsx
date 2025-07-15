@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
-import { useAppSelector } from "../../app/hooks";
-import type {
-  Match
-} from "../../selectors/matchSelectors";
+import { useEffect, useState } from "react"
+import { useAppSelector } from "../../app/hooks"
+import type { Match } from "../../selectors/matchSelectors"
 import {
   selectMatches,
-  selectMatchesByArtboardAndQuery
-} from "../../selectors/matchSelectors";
-import { selectArtboards, selectElementsFlat } from "../../slices/documentSlice";
-import { selectQueries } from "../../slices/querySlice";
-import { selectSettings } from "../../slices/settingsSlice";
+  selectMatchesByArtboardAndQuery,
+} from "../../selectors/matchSelectors"
+import { selectArtboards, selectElementsFlat } from "../../slices/documentSlice"
+import { selectQueries } from "../../slices/querySlice"
+import { selectSettings } from "../../slices/settingsSlice"
 
 export const CssResult = () => {
   const matches = useAppSelector(selectMatches)
@@ -35,7 +33,9 @@ export const CssResult = () => {
         "the psd element for the match doesn't exist in store. Matches and document out of sync?",
       )
     const artboard = match.frameId
-      ? elements.find(element => element.id === match.frameId)
+      ? elements.find(
+          element => element.id.toString() === match.frameId?.toString(),
+        )
       : artboards.find(artboard => artboard.id === psdElement?.artboardId)
 
     let style: React.CSSProperties = {}
@@ -66,14 +66,17 @@ export const CssResult = () => {
       psdElement.rect.bottom &&
       psdElement.rect.top
     ) {
-      style.width = (psdElement.rect.right - psdElement.rect.left) * scale + "px"
-      style.height = (psdElement.rect.bottom - psdElement.rect.top) * scale + "px"
+      style.width =
+        (psdElement.rect.right - psdElement.rect.left) * scale + "px"
+      style.height =
+        (psdElement.rect.bottom - psdElement.rect.top) * scale + "px"
     }
     if (query.showFontSize && psdElement.text?.style?.fontSize) {
       style.fontSize =
         (
           psdElement.text?.style?.fontSize *
-          ((psdElement.text.transform && psdElement.text.transform[3]) || 1) * settings.scale
+          ((psdElement.text.transform && psdElement.text.transform[3]) || 1) *
+          settings.scale
         ).toFixed(2) + "px"
     }
 
@@ -108,6 +111,10 @@ export const CssResult = () => {
         `${prefix}${key} {\n` +
         Object.values(value)
           .map(match => match && getMatchCss(match, settings.scale))
+          // .map(
+          //   match =>
+          //     match && String(match.documentId) + " " + String(match.frameId),
+          // )
           .join("") +
         "}\n"
     }

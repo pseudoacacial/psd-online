@@ -1,17 +1,14 @@
-import { createSelector } from "@reduxjs/toolkit";
+import { createSelector } from "@reduxjs/toolkit"
 
-import {
-  selectArtboards,
-  selectElementsFlat
-} from "../slices/documentSlice";
-import type { Query } from "../slices/querySlice";
-import { selectQueries } from "../slices/querySlice";
-import { selectSettings } from "../slices/settingsSlice";
+import { selectArtboards, selectElementsFlat } from "../slices/documentSlice"
+import type { Query } from "../slices/querySlice"
+import { selectQueries } from "../slices/querySlice"
+import { selectSettings } from "../slices/settingsSlice"
 
 export interface Match {
   selectorId: string
   documentId: number
-  frameId?: number
+  frameId?: string | number
 }
 
 export const selectMatches = createSelector(
@@ -51,11 +48,11 @@ export const selectMatches = createSelector(
       const query = selectors.find(query => query.id === match.selectorId)
       const element = elements.find(element => element.id === match.documentId)
 
-      if (!query || !query.frame || !query.framePsdSelector) return match        
+      if (!query || !query.frame || !query.framePsdSelector) return match
       const frameMatches = getMatches({
-            ...query,
-            psdSelector: query.framePsdSelector,
-          })
+        ...query,
+        psdSelector: query.framePsdSelector,
+      })
 
       const frame = frameMatches.filter(match => {
         const frameElement = elements.find(
@@ -64,8 +61,9 @@ export const selectMatches = createSelector(
         return element?.artboardId === frameElement?.artboardId
       })[0]
 
-        return frame ?{
-          ...match,
+      return frame
+        ? {
+            ...match,
             frameId: frame.documentId,
           }
         : match

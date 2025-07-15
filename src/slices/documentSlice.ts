@@ -4,12 +4,12 @@ import type { Layer } from "ag-psd"
 
 import { exampleDocument } from "../utils/exampleDocument"
 export interface PsdObject {
-  id: number
-  artboardId: number | null
-  idPath: number[]
+  id: string | number
+  artboardId: string | number | null
+  idPath: Array<string | number>
   namePath: string[]
   name: string
-  type?: "artboard" | "group" | "layer" | "SmartObjectGroup"
+  type?: string
   canvas?: string
   //clipping:true means that the element should be clipped to the next sibling (in photoshop layers) - or, what ends up happening in dom - to the previous sibling
   clipping?: boolean
@@ -21,13 +21,13 @@ export interface PsdObject {
     right: number | undefined
   }
   children: PsdObject[]
-  childrenIds?: number[]
+  childrenIds?: Array<string | number>
 }
 
 export interface PsdObjectChild {
   object: PsdObject
   // array of IDs of elements that are the elements ancestors
-  parentIdPath: number[]
+  parentIdPath: Array<string | number>
   parentNamePath: string[]
 }
 // Define the TS type for the counter slice's state
@@ -55,31 +55,33 @@ export const documentSlice = createSlice({
         state.artboards = [
           ...state.artboards
             //remove object with same id
-            .filter(x => x.id !== action.payload.id),
+            .filter(x => x.id.toString() !== action.payload.id.toString()),
           action.payload,
         ]
         state.elements = [
           ...state.elements
             //remove object with same id
-            .filter(x => x.id !== action.payload.id),
+            .filter(x => x.id.toString() !== action.payload.id.toString()),
           action.payload,
         ]
       } else {
         state.elements = [
           ...state.elements
             //remove object with same id
-            .filter(x => x.id !== action.payload.id),
+            .filter(x => x.id.toString() !== action.payload.id.toString()),
           action.payload,
         ]
       }
     },
     remove: (state, action: PayloadAction<number>) => {
-      state.artboards = state.artboards.filter(x => x.id !== action.payload)
+      state.artboards = state.artboards.filter(
+        x => x.id.toString() !== action.payload.toString(),
+      )
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
     modify: (state, action: PayloadAction<PsdObject>) => {
       state.artboards = state.artboards.map(x =>
-        x.id === action.payload.id ? action.payload : x,
+        x.id.toString() === action.payload.id.toString() ? action.payload : x,
       )
     },
     addChild: (state, action: PayloadAction<PsdObjectChild>) => {
@@ -88,11 +90,11 @@ export const documentSlice = createSlice({
 
       function formatData(
         arr: PsdObject[],
-        Id: number,
+        Id: string | number,
         objectToAdd: PsdObject,
       ) {
         arr.forEach(i => {
-          if (i.id === Id) {
+          if (i.id.toString() === Id.toString()) {
             i.children = [...i.children, objectToAdd]
           } else {
             formatData(i.children, Id, objectToAdd)
@@ -151,11 +153,11 @@ export const documentSlice = createSlice({
 
       function formatDataWithResize(
         arr: PsdObject[],
-        Id: number,
+        Id: string | number,
         objectToAdd: PsdObject,
       ) {
         arr.forEach(i => {
-          if (i.id === Id) {
+          if (i.id.toString() === Id.toString()) {
             if (i.type !== "artboard")
               i.rect = { ...stretch(i.rect, objectToAdd.rect) }
             //stretch the group when you add child to it
@@ -167,11 +169,11 @@ export const documentSlice = createSlice({
         })
       }
 
-      formatData(
-        copy,
-        action.payload.parentIdPath[action.payload.parentIdPath.length - 1],
-        action.payload.object,
-      )
+      const parentId =
+        action.payload.parentIdPath[action.payload.parentIdPath.length - 1]
+      if (parentId !== undefined) {
+        formatDataWithResize(copy, parentId, action.payload.object)
+      }
 
       state.elements = copy
 
