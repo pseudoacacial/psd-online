@@ -69,7 +69,7 @@ export const SettingsEditor = () => {
 
   return (
     <div className="flex flex-col gap-1 py-1">
-      <button className="border" onClick={handleClearClick}>
+      <button className="border hover:bg-bg-1" onClick={handleClearClick}>
         clear
       </button>
       <SettingsEditorInput

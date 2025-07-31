@@ -22,7 +22,7 @@ export const SettingsEditorInput = ({
     >
       <input
         type={type}
-        className="rounded-l pl-1"
+        className="bg-bg-2 rounded-l pl-1"
         id="groupNameRegex"
         value={value}
         onChange={onChange}

@@ -18,15 +18,19 @@ body {
     color-scheme: light;
   }
   :root {
-    --bg: theme(colors.fuchsia.100);
-    --bg1: theme(colors.fuchsia.200);
-    --bg-1: theme(colors.fuchsia.50);
-    --main: theme(colors.slate.800);
+    /* --bg: theme(colors.fuchsia.100); */
+    /* --bg-1: theme(colors.fuchsia.200);
+    --bg-2: theme(colors.fuchsia.50);
+    --main: theme(colors.slate.800); */
+    --bg: #eee;
+    --bg-1: #ccc;
+    --bg-2: #ddd;
+    --main: #171717;
   }
   .dark {
     --bg: theme(colors.slate.800);
-    --bg1: theme(colors.slate.900);
-    --bg-1: theme(colors.slate.700);
+    --bg-1: theme(colors.slate.900);
+    --bg-2: theme(colors.slate.700);
     --main: theme(colors.rose.100);
     color-scheme: dark;
   }
@@ -49,6 +53,7 @@ body {
   outline: 1px solid cornflowerblue;
   box-sizing: border-box;
   position: absolute;
+  background-repeat: no-repeat;
 }
 .element.group {
   outline: 1px dashed slategray;

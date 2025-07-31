@@ -1,22 +1,13 @@
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { objectFilter } from "../../utils/functions";
+import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { objectFilter } from "../../utils/functions"
 
-import { useState } from "react";
+import { useState } from "react"
 
-import {
-  selectMatchesByArtboard
-} from "../../selectors/matchSelectors";
-import type {
-  Query
-} from "../../slices/querySlice";
-import {
-  addQuery,
-  modify,
-  QueryClass,
-  remove,
-} from "../../slices/querySlice";
-import { QueryListItemInput } from "../queryListItemInput/QueryListItemInput";
-import { QueryListItemToggle } from "../queryListItemToggle/QueryListItemToggle";
+import { selectMatchesByArtboard } from "../../selectors/matchSelectors"
+import type { Query } from "../../slices/querySlice"
+import { addQuery, modify, QueryClass, remove } from "../../slices/querySlice"
+import { QueryListItemInput } from "../queryListItemInput/QueryListItemInput"
+import { QueryListItemToggle } from "../queryListItemToggle/QueryListItemToggle"
 
 export interface QueryListItemProps {
   query: Query
@@ -119,7 +110,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
           changeQueryValue={changeQueryValue}
           queryKey="cssSelector"
           placeholder="css name"
-          className="grow shrink min-w-0 rounded-l pl-1"
+          className="bg-bg-2 grow shrink min-w-0 rounded-l pl-1"
         />
         <QueryListItemInput
           readQuery={readQuery}
@@ -131,12 +122,14 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
         {freeze ? (
           <button
             onClick={handleAddClick}
-            className="whitespace-nowrap px-1 hover:bg-bg1 transition-colors rounded-r"
+            className="whitespace-nowrap px-1 hover:bg-bg-1 transition-colors rounded-r"
           >
             add new
           </button>
         ) : (
-          <button onClick={handleRemoveClick}>remove</button>
+          <button className="hover:bg-bg-1" onClick={handleRemoveClick}>
+            remove
+          </button>
         )}
       </div>
       {open ? (
@@ -150,11 +143,36 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
             </style>
           )}
           <div className="flex justify-start w-full flex-wrap">
-            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="Size" queryKey="showSize" />
-            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="Position" queryKey="showPosition" />
-            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="font-size" queryKey="showFontSize" />
-            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="export" queryKey="export" />
-            <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="frame" queryKey="frame" />
+            <QueryListItemToggle
+              readQuery={readQuery}
+              changeQueryValue={changeQueryValue}
+              label="Size"
+              queryKey="showSize"
+            />
+            <QueryListItemToggle
+              readQuery={readQuery}
+              changeQueryValue={changeQueryValue}
+              label="Position"
+              queryKey="showPosition"
+            />
+            <QueryListItemToggle
+              readQuery={readQuery}
+              changeQueryValue={changeQueryValue}
+              label="font-size"
+              queryKey="showFontSize"
+            />
+            <QueryListItemToggle
+              readQuery={readQuery}
+              changeQueryValue={changeQueryValue}
+              label="export"
+              queryKey="export"
+            />
+            <QueryListItemToggle
+              readQuery={readQuery}
+              changeQueryValue={changeQueryValue}
+              label="frame"
+              queryKey="frame"
+            />
             <div className="mx-1">
               <QueryListItemInput
                 readQuery={readQuery}
@@ -200,8 +218,13 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
                   queryKey="exportName"
                   placeholder="export name"
                   className="grow shrink min-w-0 rounded-l pl-1"
-                />  
-                <QueryListItemToggle readQuery={readQuery} changeQueryValue={changeQueryValue} label="crop" queryKey="exportCrop" />
+                />
+                <QueryListItemToggle
+                  readQuery={readQuery}
+                  changeQueryValue={changeQueryValue}
+                  label="crop"
+                  queryKey="exportCrop"
+                />
               </div>
             )}
           </div>

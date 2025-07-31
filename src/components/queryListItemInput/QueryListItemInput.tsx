@@ -10,14 +10,14 @@ export interface QueryListItemInputProps {
   transform?: (value: string) => string
 }
 
-export const QueryListItemInput = ({ 
-  readQuery, 
-  changeQueryValue, 
+export const QueryListItemInput = ({
+  readQuery,
+  changeQueryValue,
   queryKey,
   placeholder,
-  className = "grow shrink min-w-0 pl-1",
+  className = "grow shrink min-w-0 pl-1 bg-bg-2",
   type = "text",
-  transform = (v) => v
+  transform = v => v,
 }: QueryListItemInputProps) => {
   return (
     <input
@@ -30,4 +30,4 @@ export const QueryListItemInput = ({
       aria-label={placeholder}
     />
   )
-} 
+}
