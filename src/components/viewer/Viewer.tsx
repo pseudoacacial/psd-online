@@ -32,8 +32,8 @@ export const Viewer = () => {
         : query
     }
     const element = event.target as HTMLElement
-    //dig through layers on ctrl click
-    if (event.ctrlKey) {
+    //dig through layers on ctrl/cmnd click
+    if (event.ctrlKey || event.metaKey) {
       setDisabledLayers([...disabledLayers, element])
       element.style.pointerEvents = "none"
       //unhide layers on shift click
@@ -57,7 +57,7 @@ export const Viewer = () => {
   }
 
   const handleWheel = (event: React.WheelEvent) => {
-    if (event.ctrlKey) {
+    if (event.ctrlKey || event.metaKey) {
       if (event.deltaY < 0) {
         setZoom(zoom + 0.1)
       }

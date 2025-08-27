@@ -24,7 +24,7 @@ export const HelpPanel = () => {
             - css name needs to be filled in for the query to show up in
             resulting SCSS
           </li>
-          <li>- ctrl click to dig through layers</li>
+          <li>- ctrl/cmd click to dig through layers</li>
           <li>- shift click to undig</li>
         </ul>
       </div>
