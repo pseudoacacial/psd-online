@@ -4,6 +4,7 @@ import { selectArtboards, selectElementsFlat } from "../slices/documentSlice"
 import type { Query } from "../slices/querySlice"
 import { selectQueries } from "../slices/querySlice"
 import { selectSettings } from "../slices/settingsSlice"
+import { escapeRegex } from "../utils/functions"
 
 export interface Match {
   selectorId: string
@@ -20,7 +21,9 @@ export const selectMatches = createSelector(
       elements.forEach(element => {
         //if query is a path, search in path
         if (selector.psdSelector.includes(">")) {
-          if (element.namePath.join(">").match(selector.psdSelector)) {
+          if (
+            element.namePath.join(">").match(escapeRegex(selector.psdSelector))
+          ) {
             matches.push({
               selectorId: selector.id,
               documentId: element.id,
@@ -28,7 +31,7 @@ export const selectMatches = createSelector(
           }
         } else {
           //search in name
-          if (element.name.match(selector.psdSelector)) {
+          if (element.name.match(escapeRegex(selector.psdSelector))) {
             matches.push({
               selectorId: selector.id,
               documentId: element.id,

@@ -25,32 +25,16 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
   const [open, setOpen] = useState(false)
 
   const changeQueryValue = (key: keyof Query, value: Query[keyof Query]) => {
-    const escapeRegex = (query: Query[keyof Query]) => {
-      const REGEXP_SPECIAL_CHAR = /[\(\)]/g
-
-      return typeof query === "string"
-        ? query.replace(REGEXP_SPECIAL_CHAR, String.fromCharCode(92) + "$&")
-        : value
-    }
+    // const escapedValue = typeof value === "string" ? escapeRegex(value) : value
 
     if (freeze) {
-      setNewQuery({ ...newQuery, [key]: escapeRegex(value) })
+      setNewQuery({ ...newQuery, [key]: value })
     } else {
-      dispatch(modify({ ...query, [key]: escapeRegex(value) }))
+      dispatch(modify({ ...query, [key]: value }))
     }
   }
 
   const readQuery = freeze ? newQuery : query
-
-  // const readQuery = (key: keyof Query) => {
-  const unescapeRegex = (value: string): any => {
-    const REGEXP_SPECIAL_CHAR = /\\([\(\)])/g
-    return typeof value === "string"
-      ? value.replace(REGEXP_SPECIAL_CHAR, "$1")
-      : value
-  }
-
-  // }
 
   const handleAddClick = () => {
     if (newQuery === null) throw new Error("trying to a null query")
@@ -117,7 +101,7 @@ export const QueryListItem = ({ query, freeze }: QueryListItemProps) => {
           changeQueryValue={changeQueryValue}
           queryKey="psdSelector"
           placeholder="psd name"
-          transform={unescapeRegex}
+          transform={x => x}
         />
         {freeze ? (
           <button

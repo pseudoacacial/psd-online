@@ -49,7 +49,7 @@ export const Viewer = () => {
         dispatch(
           addQuery({
             ...newQuery,
-            psdSelector: `^${escapeRegex(event.target.dataset.name)}$`,
+            psdSelector: `^${event.target.dataset.name}$`,
           }),
         )
       event.stopPropagation()

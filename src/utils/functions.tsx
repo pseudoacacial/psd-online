@@ -148,3 +148,14 @@ export const composeGroupCanvas = async (
   if (!dataUrl) throw new Error("Failed to generate base64 image from canvas.")
   return dataUrl
 }
+
+export const escapeRegex = (value: string) => {
+  const REGEXP_SPECIAL_CHAR = /[\(\)+]/g
+
+  return value.replace(REGEXP_SPECIAL_CHAR, String.fromCharCode(92) + "$&")
+}
+
+export const unescapeRegex = (value: string): any => {
+  const REGEXP_SPECIAL_CHAR = /\\([\(\)+])/g
+  return value.replace(REGEXP_SPECIAL_CHAR, "$1")
+}
