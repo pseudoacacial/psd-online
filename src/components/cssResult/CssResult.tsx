@@ -59,12 +59,16 @@ export const CssResult = () => {
         style.top = psdElement.rect.top * scale + "px"
       }
     }
+
+    console.log(psdElement.rect, scale)
     if (
       query.showSize &&
-      psdElement.rect.right &&
-      psdElement.rect.left &&
-      psdElement.rect.bottom &&
-      psdElement.rect.top
+      [
+        psdElement.rect.right,
+        psdElement.rect.left,
+        psdElement.rect.bottom,
+        psdElement.rect.top,
+      ].every(Number.isFinite)
     ) {
       style.width =
         (psdElement.rect.right - psdElement.rect.left) * scale + "px"
@@ -79,6 +83,14 @@ export const CssResult = () => {
           settings.scale
         ).toFixed(2) + "px"
     }
+    console.log(
+      style,
+      query.showSize,
+      psdElement.rect.right,
+      psdElement.rect.left,
+      psdElement.rect.bottom,
+      psdElement.rect.top,
+    )
 
     const regex = new RegExp(/[A-Z]/g)
     const kebabCase = (str: string) =>
