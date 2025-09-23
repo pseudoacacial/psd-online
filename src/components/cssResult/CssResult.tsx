@@ -60,7 +60,6 @@ export const CssResult = () => {
       }
     }
 
-    console.log(psdElement.rect, scale)
     if (
       query.showSize &&
       [
@@ -75,22 +74,17 @@ export const CssResult = () => {
       style.height =
         (psdElement.rect.bottom - psdElement.rect.top) * scale + "px"
     }
-    if (query.showFontSize && psdElement.text?.style?.fontSize) {
+    const fontSize =
+      psdElement.text?.style?.fontSize ??
+      psdElement.text?.styleRuns?.[0]?.style?.fontSize
+    if (query.showFontSize && fontSize) {
       style.fontSize =
         (
-          psdElement.text?.style?.fontSize *
-          ((psdElement.text.transform && psdElement.text.transform[3]) || 1) *
+          fontSize *
+          ((psdElement.text?.transform && psdElement.text.transform[3]) || 1) *
           settings.scale
         ).toFixed(2) + "px"
     }
-    console.log(
-      style,
-      query.showSize,
-      psdElement.rect.right,
-      psdElement.rect.left,
-      psdElement.rect.bottom,
-      psdElement.rect.top,
-    )
 
     const regex = new RegExp(/[A-Z]/g)
     const kebabCase = (str: string) =>
