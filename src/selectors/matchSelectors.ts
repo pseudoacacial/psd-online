@@ -1,150 +1,165 @@
-import { createSelector } from "@reduxjs/toolkit"
+import { createSelector } from "@reduxjs/toolkit";
 
-import { selectArtboards, selectElementsFlat } from "../slices/documentSlice"
-import type { Query } from "../slices/querySlice"
-import { selectQueries } from "../slices/querySlice"
-import { selectSettings } from "../slices/settingsSlice"
-import { escapeRegex } from "../utils/functions"
+import { selectArtboards, selectElementsFlat } from "../slices/documentSlice";
+import type { Query } from "../slices/querySlice";
+import { selectQueries } from "../slices/querySlice";
+import { selectSettings } from "../slices/settingsSlice";
+import { escapeRegex } from "../utils/functions";
+import { escape } from "querystring";
 
 export interface Match {
-  selectorId: string
-  documentId: number
-  frameId?: string | number
+  selectorId: string;
+  documentId: number;
+  frameId?: string | number;
 }
 
 export const selectMatches = createSelector(
   [selectElementsFlat, selectQueries],
   (elements, selectors) => {
     const getMatches = (selector: Query) => {
-      let matches: Match[] = []
+      let matches: Match[] = [];
 
-      elements.forEach(element => {
-        //if query is a path, search in path
-        if (selector.psdSelector.includes(">")) {
-          if (
-            element.namePath.join(">").match(escapeRegex(selector.psdSelector))
-          ) {
-            matches.push({
-              selectorId: selector.id,
-              documentId: element.id,
-            })
+      try {
+        elements.forEach((element) => {
+          //if query is a path, search in path
+          if (selector.psdSelector.includes(">")) {
+            if (
+              element.namePath
+                .join(">")
+                .match(escapeRegex(selector.psdSelector))
+            ) {
+              matches.push({
+                selectorId: selector.id,
+                documentId: element.id,
+              });
+            }
+          } else {
+            //search in name
+            if (element.name.match(escapeRegex(selector.psdSelector))) {
+              matches.push({
+                selectorId: selector.id,
+                documentId: element.id,
+              });
+            }
           }
-        } else {
-          //search in name
-          if (element.name.match(escapeRegex(selector.psdSelector))) {
-            matches.push({
-              selectorId: selector.id,
-              documentId: element.id,
-            })
-          }
-        }
-      })
+        });
+      } catch (error) {
+        console.log(
+          "error due to",
+          selector.psdSelector,
+          "escaped as",
+          escapeRegex(selector.psdSelector)
+        );
+        console.log(error);
+      }
 
-      return matches
-    }
+      return matches;
+    };
 
-    const matchesWithoutFrames = selectors.flatMap(selector =>
-      getMatches(selector),
-    )
+    const matchesWithoutFrames = selectors.flatMap((selector) =>
+      getMatches(selector)
+    );
 
-    const matchesWithFrames = matchesWithoutFrames.map(match => {
-      const query = selectors.find(query => query.id === match.selectorId)
-      const element = elements.find(element => element.id === match.documentId)
+    const matchesWithFrames = matchesWithoutFrames.map((match) => {
+      const query = selectors.find((query) => query.id === match.selectorId);
+      const element = elements.find(
+        (element) => element.id === match.documentId
+      );
 
-      if (!query || !query.frame || !query.framePsdSelector) return match
+      if (!query || !query.frame || !query.framePsdSelector) return match;
       const frameMatches = getMatches({
         ...query,
         psdSelector: query.framePsdSelector,
-      })
+      });
 
-      const frame = frameMatches.filter(match => {
+      const frame = frameMatches.filter((match) => {
         const frameElement = elements.find(
-          element => element.id === match.documentId,
-        )
-        return element?.artboardId === frameElement?.artboardId
-      })[0]
+          (element) => element.id === match.documentId
+        );
+        return element?.artboardId === frameElement?.artboardId;
+      })[0];
 
       return frame
         ? {
             ...match,
             frameId: frame.documentId,
           }
-        : match
-    })
+        : match;
+    });
 
-    return matchesWithFrames
-  },
-)
+    return matchesWithFrames;
+  }
+);
 
 export const selectMatchesByArtboard = createSelector(
   [selectMatches, selectArtboards, selectElementsFlat, selectSettings],
   (matches, artboards, elements, settings) => {
-    const matchesByArtboard: { [key: string]: Match[] } = {}
+    const matchesByArtboard: { [key: string]: Match[] } = {};
 
     try {
-      const groupNameRegex = new RegExp(settings.groupNameRegex)
+      const groupNameRegex = new RegExp(settings.groupNameRegex);
 
-      artboards.forEach(artboard => {
-        const artboardMatch = artboard.name.match(groupNameRegex)
+      artboards.forEach((artboard) => {
+        const artboardMatch = artboard.name.match(groupNameRegex);
         if (artboardMatch) {
           // matchesByArtboard[artboard.id] = []
-          matchesByArtboard[artboardMatch[1]] = []
+          matchesByArtboard[artboardMatch[1]] = [];
         }
-      })
+      });
 
-      matches.forEach(match => {
+      matches.forEach((match) => {
         const psdElement = elements.find(
-          element => element.id === match.documentId,
-        )
+          (element) => element.id === match.documentId
+        );
         const artboard = artboards.find(
-          artboard => artboard.id === psdElement?.artboardId,
-        )
+          (artboard) => artboard.id === psdElement?.artboardId
+        );
 
-        const artboardMatch = artboard && artboard.name.match(groupNameRegex)
+        const artboardMatch = artboard && artboard.name.match(groupNameRegex);
 
         artboardMatch &&
           //if match for this selector already exists in this artboard - don't add more
           // !matchesByArtboard[artboardMatch[1]].find(
           //   e => e.selectorId === match.selectorId,
           // ) &&
-          matchesByArtboard[artboardMatch[1]].push(match)
-      })
+          matchesByArtboard[artboardMatch[1]].push(match);
+      });
       // console.table(matchesByArtboard)
-      return matchesByArtboard
+      return matchesByArtboard;
     } catch (e) {
       if (e instanceof Error) {
-        console.log("Problem with the group name regex:", e.message)
+        console.log("Problem with the group name regex:", e.message);
       } else {
-        console.log(e)
+        console.log(e);
       }
-      return matchesByArtboard
+      return matchesByArtboard;
     }
-  },
-)
+  }
+);
 
 export const selectMatchesByArtboardAndQuery = createSelector(
   [selectMatchesByArtboard, selectQueries],
   (groups, queries) => {
     const matchesByArtboardAndQuery: {
-      [artboardId: string]: { [queryId: string]: Match }
-    } = {}
+      [artboardId: string]: { [queryId: string]: Match };
+    } = {};
 
-    const groupNames = Object.keys(groups)
+    const groupNames = Object.keys(groups);
 
     //make groups
-    groupNames.forEach(groupName => {
-      matchesByArtboardAndQuery[groupName] = {}
-      queries.forEach(query => {
+    groupNames.forEach((groupName) => {
+      matchesByArtboardAndQuery[groupName] = {};
+      queries.forEach((query) => {
         const matchesForTheQuery = groups[groupName].filter(
-          match => match.selectorId === query.id,
-        )
+          (match) => match.selectorId === query.id
+        );
 
         matchesByArtboardAndQuery[groupName][query.id] =
           query.matchIndex > 0 && matchesForTheQuery.length > query.matchIndex
             ? matchesForTheQuery[query.matchIndex]
-            : matchesForTheQuery[0]
-      })
-    })
-    return matchesByArtboardAndQuery
-  },
-)
+            : matchesForTheQuery[0];
+      });
+    });
+    return matchesByArtboardAndQuery;
+  }
+);
